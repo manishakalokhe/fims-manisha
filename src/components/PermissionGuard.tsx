@@ -31,6 +31,7 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
   }
 
   if (error) {
+    console.error('Permission Guard Error:', error);
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-6 m-4">
         <div className="flex items-center space-x-3">
@@ -44,7 +45,11 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
     );
   }
 
-  if (!hasAccess(application, permission)) {
+  console.log('Permission Guard - Checking access:', application, permission);
+  const accessResult = hasAccess(application, permission);
+  console.log('Access result:', accessResult);
+
+  if (!accessResult) {
     if (fallback) {
       return <>{fallback}</>;
     }
