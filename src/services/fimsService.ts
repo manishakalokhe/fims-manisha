@@ -249,3 +249,34 @@ export const reassignInspection = async (id: string, newInspectorId: string): Pr
     throw error;
   }
 };
+
+export const fetchInspectors = async () => {
+  if (!supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select(`
+        user_id,
+        name,
+        phone_number,
+        roles (
+          id,
+          name
+        )
+      `)
+      .eq('roles.name', 'inspector')
+      .order('name');
+
+    if (error) {
+      throw error;
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error fetching inspectors:', error);
+    throw error;
+  }
+};
