@@ -112,6 +112,9 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
   const [inspectors, setInspectors] = useState<InspectorData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
+  
+  // Define viewingInspection based on editingInspection mode
+  const viewingInspection = editingInspection?.mode === 'view';
   const [searchTerm, setSearchTerm] = useState('');
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
