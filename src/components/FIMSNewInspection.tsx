@@ -108,7 +108,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
           </div>
           
           <p className="text-sm md:text-base text-gray-600 text-center">
-            {t('fims.selectCategory')}
+            {t('categories.selectCategory')}
           </p>
         </div>
 
