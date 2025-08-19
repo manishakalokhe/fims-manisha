@@ -49,40 +49,6 @@ This application is designed to be integrated with a main website dashboard. Use
 3. Set up environment variables for Supabase
 4. Run development server: `npm run dev`
 
-## Expo/React Native Setup
-
-To test the mobile application with Expo:
-
-### Prerequisites
-1. Install Expo CLI globally: `npm install -g @expo/cli`
-2. Install Expo Go app on your Android/iOS device
-3. Ensure you have Node.js 16+ installed
-
-### Setup Steps
-1. Install dependencies: `npm install`
-2. Set up your Supabase environment variables in `.env`
-3. Start the Expo development server: `npx expo start`
-4. Scan the QR code with Expo Go app (Android) or Camera app (iOS)
-
-### Mobile-Specific Features
-- **Bottom Navigation**: Dashboard, Inspections, New Inspection
-- **Touch-Optimized UI**: Large touch targets and mobile-friendly interactions
-- **Camera Integration**: Photo capture for inspection documentation
-- **GPS Location**: Automatic location capture during inspections
-- **Offline Support**: Forms can be filled offline and synced when connected
-
-### Testing on Android
-1. Install Expo Go from Google Play Store
-2. Run `npx expo start` in your project directory
-3. Scan the QR code with Expo Go app
-4. The app will load on your Android device
-
-### Testing on iOS
-1. Install Expo Go from App Store
-2. Run `npx expo start` in your project directory
-3. Scan the QR code with your iPhone's Camera app
-4. Tap the notification to open in Expo Go
-
 ## Environment Variables
 
 Create a `.env` file in the root directory with your Supabase credentials:
