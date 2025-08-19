@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   ArrowLeft,
-  FileText,
+  Building2,
   MapPin,
   Camera,
   Save,
@@ -10,9 +10,11 @@ import {
   CheckCircle,
   AlertCircle,
   Calendar,
-  Building,
   Users,
-  Heart
+  Heart,
+  BookOpen,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
@@ -25,91 +27,97 @@ interface AnganwadiTapasaniFormProps {
   editingInspection?: any;
 }
 
-interface AnganwadiTapasaniFormData {
+interface AnganwadiFormData {
   // Basic Information
   anganwadi_name: string;
   anganwadi_number: string;
   supervisor_name: string;
   helper_name: string;
   village_name: string;
+  building_condition: string;
+  building_type: string;
   
-  // Section 1: अंगणवाडी केंद्रातील उपलब्ध सुविधा
-  building_type: string; // स्वतःची/ भाड्याची/ मोफत/ इमारत नाही
-  toilet_facility: boolean; // शौचालय
-  independent_kitchen: boolean; // स्वतंत्र बंदिस्त किचन व्यवस्था
-  women_health_checkup_space: boolean; // महिलांच्या आरोग्य तपासणीसाठी जागा
-  electricity: boolean; // विद्युत पुरवठा
-  drinking_water: boolean; // पिण्याचे पाणी
+  // Facilities
+  room_availability: boolean;
+  toilet_facility: boolean;
+  drinking_water: boolean;
+  electricity: boolean;
+  kitchen_garden: boolean;
+  independent_kitchen: boolean;
+  women_health_checkup_space: boolean;
   
-  // Section 2: वजनकाटे उपलब्ध
-  baby_weighing_scale: boolean; // बेबी वजनकाटे
-  hammock_weighing_scale: boolean; // हॅमॉक [झोळीचे] वजनकाटे
-  adult_weighing_scale: boolean; // प्रौढांसाठीचे वजनकाटे
+  // Equipment
+  weighing_machine: boolean;
+  baby_weighing_scale: boolean;
+  hammock_weighing_scale: boolean;
+  adult_weighing_scale: boolean;
+  height_measuring_scale: boolean;
+  first_aid_kit: boolean;
+  cooking_utensils: boolean;
+  water_storage_containers: boolean;
+  medicine_kits: boolean;
+  teaching_materials: boolean;
+  pre_school_kit: boolean;
+  toys_available: boolean;
   
-  // Section 3: अंगणवाडीतील साहित्य उपलब्धता
-  cooking_utensils: boolean; // स्वयंपाकाची भांडी
-  water_storage_containers: boolean; // पिण्याचे पाणी ठेवण्यासाठी भांडी
-  medicine_kits: boolean; // मेडिसिन किट्स
-  pre_school_kit: boolean; // पूर्व शाले संच
-  all_registers: boolean; // विविध नमुन्यातील रजिस्टर (सर्व)
-  monthly_progress_reports: boolean; // छापील मासिक प्रगती अहवाल
+  // Records
+  attendance_register: boolean;
+  all_registers: boolean;
+  growth_chart_updated: boolean;
+  vaccination_records: boolean;
+  nutrition_records: boolean;
+  monthly_progress_reports: boolean;
+  timetable_available: boolean;
+  timetable_followed: boolean;
   
-  // Section 4: अंगणवाडी केंद्राचे वेळापत्रक
-  timetable_available: boolean; // अंगणवाडी केंद्राचे वेळापत्रक आहे काय?
-  timetable_followed: boolean; // वेळापत्रक पाळले जाते काय?
-  supervisor_regular_attendance: boolean; // सेविका नियमितपणे हजर राहते काय?
-  
-  // Section 5: आहाराविषयी
-  monthly_25_days_meals: boolean; // प्रत्येक महिन्याला २५ दिवस सकाळचा नाश्ता व पूरक पोषण आहार
-  thr_provided_regularly: boolean; // ०–३ वर्षांची बालके, गर्भवती-स्तनदा माता, व तीव्र कमी वजनाच्या बालकांना THR
-  
-  // Section 6: स्वयंसहाय्यता बचत गटांच्या/महिला मंडळाबाबत
-  food_provider: string; // अंगणवाडीतील आहार कोणाकडून दिला जातो?
-  supervisor_participation: string; // यातील अंगणवाडी सेविकेच्या असलेला सहभाग
-  food_distribution_decentralized: boolean; // आहार वाटपाचे काम विकेंद्रित केले आहे काय?
-  
-  // Section 7: मुलांना आहाराची चव व दर्जा आवडतो की कसे?
-  children_food_taste_preference: string;
-  
-  // Section 8: आहार दर्जा
-  prescribed_protein_calories: boolean; // निर्धारीत प्रथीणे व उष्मांक असलेला आहार मिळतो काय?
-  prescribed_weight_food: boolean; // निर्धारीत वजनाचा आहार मिळतो काय?
-  lab_sample_date: string; // आहार नमुने प्रयोगशाळेत पृथ:करणाकरिता केव्हा पाठविले होते?
-  
-  // Section 9: बालकांचे वजने
-  regular_weighing: boolean; // बालकांचे वजने नियमित वजने घेतली जातात किंवा कसे?
-  growth_chart_accuracy: boolean; // वय व वजन यांची नोंद तपासून पोषण श्रेणी योग्य प्रमाणे दर्शविलेली आहे काय?
-  
-  // Section 10: लसीकरण व आरोग्य तपासणी
-  vaccination_health_checkup_regular: boolean; // लसीकरण व आरोग्य तपासणी नियमितपणे होते काय?
-  vaccination_schedule_awareness: boolean; // लसीकरण दिवसाची माहिती लाभार्थी पालकांना आहे काय?
-  
-  // Section 11-17: Additional Questions
-  village_health_nutrition_planning: string; // ११. ग्राम आरोग्य व पोषण दिवसाचे गावनिहाय सूक्ष्म नियोजन
-  children_attendance_comparison: string; // १२. भेटीच्या दिवशी प्रत्यक्ष उपस्थित असलेली बालके
-  preschool_education_registered: number; // १३.१ पूर्वशालेय शिक्षणासाठी नोंदवलेली बालके
-  preschool_education_present: number; // १३.२ भेटीची वेळी प्रत्यक्ष हजर बालके
-  preschool_programs_conducted: string; // १३.३ भेटीचे दिवशी कोणकोणते कार्यक्रम घेतले
-  community_participation: string; // १४.१ अंगणवाडी केंद्राला गावातील लोकांचे सहकार्य
-  committee_member_participation: string; // १४.२ ग्राम समिती सदस्य/ ग्राम पंचायत सदस्य/ आरोग्य सेविका/ इतर उपस्थिती
-  home_visits_guidance: string; // १५. गरोदर महिला, आजारी असलेली बालके यांचे घरी भेट
-  public_opinion_improvement: string; // १६. अंगणवाडी क्षेत्रातील लोकांचे मत व सुधारणा
-  suggestions: string; // १७. काही सूचना असल्यास
-  
-  // Signature Information
-  inspector_name: string; // नाव
-  inspector_designation: string; // पद
-  visit_date: string; // भेटीचा दिनांक
-  
-  // Existing fields that need to be maintained for compatibility
+  // Children Information
   total_registered_children: number;
   children_present_today: number;
   children_0_3_years: number;
   children_3_6_years: number;
+  preschool_education_registered: number;
+  preschool_education_present: number;
+  
+  // Nutrition & Health
+  hot_meal_served: boolean;
   meal_quality: string;
+  take_home_ration: boolean;
+  supervisor_regular_attendance: boolean;
+  monthly_25_days_meals: boolean;
+  thr_provided_regularly: boolean;
+  food_provider: string;
+  supervisor_participation: string;
+  food_distribution_decentralized: boolean;
+  children_food_taste_preference: string;
+  prescribed_protein_calories: boolean;
+  prescribed_weight_food: boolean;
+  lab_sample_date: string;
+  health_checkup_conducted: boolean;
+  regular_weighing: boolean;
+  growth_chart_accuracy: boolean;
+  immunization_updated: boolean;
+  vaccination_health_checkup_regular: boolean;
+  vaccination_schedule_awareness: boolean;
+  vitamin_a_given: boolean;
+  iron_tablets_given: boolean;
+  
+  // Community & Programs
+  village_health_nutrition_planning: string;
+  children_attendance_comparison: string;
+  preschool_programs_conducted: string;
+  community_participation: string;
+  committee_member_participation: string;
+  home_visits_guidance: string;
+  public_opinion_improvement: string;
+  
+  // Final Details
   general_observations: string;
   recommendations: string;
   action_required: string;
+  suggestions: string;
+  visit_date: string;
+  inspector_designation: string;
+  inspector_name: string;
 }
 
 export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
@@ -124,7 +132,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [detectedLocationName, setDetectedLocationName] = useState('');
+
+  // Check if we're in view mode
+  const isViewMode = editingInspection?.mode === 'view';
+  const isEditMode = editingInspection?.mode === 'edit';
 
   // Basic inspection data
   const [inspectionData, setInspectionData] = useState({
@@ -137,92 +148,83 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     location_accuracy: null as number | null
   });
 
-  // Anganwadi form data with new structure
-  const [anganwadiFormData, setAnganwadiFormData] = useState<AnganwadiTapasaniFormData>({
-    // Basic Information
+  // Anganwadi form data
+  const [anganwadiFormData, setAnganwadiFormData] = useState<AnganwadiFormData>({
     anganwadi_name: '',
     anganwadi_number: '',
     supervisor_name: '',
     helper_name: '',
     village_name: '',
-    
-    // Section 1: अंगणवाडी केंद्रातील उपलब्ध सुविधा
+    building_condition: '',
     building_type: '',
+    room_availability: false,
     toilet_facility: false,
+    drinking_water: false,
+    electricity: false,
+    kitchen_garden: false,
     independent_kitchen: false,
     women_health_checkup_space: false,
-    electricity: false,
-    drinking_water: false,
-    
-    // Section 2: वजनकाटे उपलब्ध
+    weighing_machine: false,
     baby_weighing_scale: false,
     hammock_weighing_scale: false,
     adult_weighing_scale: false,
-    
-    // Section 3: अंगणवाडीतील साहित्य उपलब्धता
+    height_measuring_scale: false,
+    first_aid_kit: false,
     cooking_utensils: false,
     water_storage_containers: false,
     medicine_kits: false,
+    teaching_materials: false,
     pre_school_kit: false,
+    toys_available: false,
+    attendance_register: false,
     all_registers: false,
+    growth_chart_updated: false,
+    vaccination_records: false,
+    nutrition_records: false,
     monthly_progress_reports: false,
-    
-    // Section 4: अंगणवाडी केंद्राचे वेळापत्रक
     timetable_available: false,
     timetable_followed: false,
+    total_registered_children: 0,
+    children_present_today: 0,
+    children_0_3_years: 0,
+    children_3_6_years: 0,
+    preschool_education_registered: 0,
+    preschool_education_present: 0,
+    hot_meal_served: false,
+    meal_quality: '',
+    take_home_ration: false,
     supervisor_regular_attendance: false,
-    
-    // Section 5: आहाराविषयी
     monthly_25_days_meals: false,
     thr_provided_regularly: false,
-    
-    // Section 6: स्वयंसहाय्यता बचत गटांच्या/महिला मंडळाबाबत
     food_provider: '',
     supervisor_participation: '',
     food_distribution_decentralized: false,
-    
-    // Section 7: मुलांना आहाराची चव व दर्जा आवडतो की कसे?
     children_food_taste_preference: '',
-    
-    // Section 8: आहार दर्जा
     prescribed_protein_calories: false,
     prescribed_weight_food: false,
     lab_sample_date: '',
-    
-    // Section 9: बालकांचे वजने
+    health_checkup_conducted: false,
     regular_weighing: false,
     growth_chart_accuracy: false,
-    
-    // Section 10: लसीकरण व आरोग्य तपासणी
+    immunization_updated: false,
     vaccination_health_checkup_regular: false,
     vaccination_schedule_awareness: false,
-    
-    // Section 11-17: Additional Questions
+    vitamin_a_given: false,
+    iron_tablets_given: false,
     village_health_nutrition_planning: '',
     children_attendance_comparison: '',
-    preschool_education_registered: 0,
-    preschool_education_present: 0,
     preschool_programs_conducted: '',
     community_participation: '',
     committee_member_participation: '',
     home_visits_guidance: '',
     public_opinion_improvement: '',
-    suggestions: '',
-    
-    // Signature Information
-    inspector_name: '',
-    inspector_designation: '',
-    visit_date: '',
-    
-    // Existing fields for compatibility
-    total_registered_children: 0,
-    children_present_today: 0,
-    children_0_3_years: 0,
-    children_3_6_years: 0,
-    meal_quality: '',
     general_observations: '',
     recommendations: '',
-    action_required: ''
+    action_required: '',
+    suggestions: '',
+    visit_date: '',
+    inspector_designation: '',
+    inspector_name: ''
   });
 
   // Get anganwadi inspection category
@@ -254,54 +256,107 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       // Load anganwadi form data if it exists
       if (editingInspection.fims_anganwadi_forms && editingInspection.fims_anganwadi_forms.length > 0) {
         const formData = editingInspection.fims_anganwadi_forms[0];
-        setAnganwadiFormData(prev => ({
-          ...prev,
-          ...formData
-        }));
+        setAnganwadiFormData({
+          anganwadi_name: formData.anganwadi_name || '',
+          anganwadi_number: formData.anganwadi_number || '',
+          supervisor_name: formData.supervisor_name || '',
+          helper_name: formData.helper_name || '',
+          village_name: formData.village_name || '',
+          building_condition: formData.building_condition || '',
+          building_type: formData.building_type || '',
+          room_availability: formData.room_availability || false,
+          toilet_facility: formData.toilet_facility || false,
+          drinking_water: formData.drinking_water || false,
+          electricity: formData.electricity || false,
+          kitchen_garden: formData.kitchen_garden || false,
+          independent_kitchen: formData.independent_kitchen || false,
+          women_health_checkup_space: formData.women_health_checkup_space || false,
+          weighing_machine: formData.weighing_machine || false,
+          baby_weighing_scale: formData.baby_weighing_scale || false,
+          hammock_weighing_scale: formData.hammock_weighing_scale || false,
+          adult_weighing_scale: formData.adult_weighing_scale || false,
+          height_measuring_scale: formData.height_measuring_scale || false,
+          first_aid_kit: formData.first_aid_kit || false,
+          cooking_utensils: formData.cooking_utensils || false,
+          water_storage_containers: formData.water_storage_containers || false,
+          medicine_kits: formData.medicine_kits || false,
+          teaching_materials: formData.teaching_materials || false,
+          pre_school_kit: formData.pre_school_kit || false,
+          toys_available: formData.toys_available || false,
+          attendance_register: formData.attendance_register || false,
+          all_registers: formData.all_registers || false,
+          growth_chart_updated: formData.growth_chart_updated || false,
+          vaccination_records: formData.vaccination_records || false,
+          nutrition_records: formData.nutrition_records || false,
+          monthly_progress_reports: formData.monthly_progress_reports || false,
+          timetable_available: formData.timetable_available || false,
+          timetable_followed: formData.timetable_followed || false,
+          total_registered_children: formData.total_registered_children || 0,
+          children_present_today: formData.children_present_today || 0,
+          children_0_3_years: formData.children_0_3_years || 0,
+          children_3_6_years: formData.children_3_6_years || 0,
+          preschool_education_registered: formData.preschool_education_registered || 0,
+          preschool_education_present: formData.preschool_education_present || 0,
+          hot_meal_served: formData.hot_meal_served || false,
+          meal_quality: formData.meal_quality || '',
+          take_home_ration: formData.take_home_ration || false,
+          supervisor_regular_attendance: formData.supervisor_regular_attendance || false,
+          monthly_25_days_meals: formData.monthly_25_days_meals || false,
+          thr_provided_regularly: formData.thr_provided_regularly || false,
+          food_provider: formData.food_provider || '',
+          supervisor_participation: formData.supervisor_participation || '',
+          food_distribution_decentralized: formData.food_distribution_decentralized || false,
+          children_food_taste_preference: formData.children_food_taste_preference || '',
+          prescribed_protein_calories: formData.prescribed_protein_calories || false,
+          prescribed_weight_food: formData.prescribed_weight_food || false,
+          lab_sample_date: formData.lab_sample_date || '',
+          health_checkup_conducted: formData.health_checkup_conducted || false,
+          regular_weighing: formData.regular_weighing || false,
+          growth_chart_accuracy: formData.growth_chart_accuracy || false,
+          immunization_updated: formData.immunization_updated || false,
+          vaccination_health_checkup_regular: formData.vaccination_health_checkup_regular || false,
+          vaccination_schedule_awareness: formData.vaccination_schedule_awareness || false,
+          vitamin_a_given: formData.vitamin_a_given || false,
+          iron_tablets_given: formData.iron_tablets_given || false,
+          village_health_nutrition_planning: formData.village_health_nutrition_planning || '',
+          children_attendance_comparison: formData.children_attendance_comparison || '',
+          preschool_programs_conducted: formData.preschool_programs_conducted || '',
+          community_participation: formData.community_participation || '',
+          committee_member_participation: formData.committee_member_participation || '',
+          home_visits_guidance: formData.home_visits_guidance || '',
+          public_opinion_improvement: formData.public_opinion_improvement || '',
+          general_observations: formData.general_observations || '',
+          recommendations: formData.recommendations || '',
+          action_required: formData.action_required || '',
+          suggestions: formData.suggestions || '',
+          visit_date: formData.visit_date || '',
+          inspector_designation: formData.inspector_designation || '',
+          inspector_name: formData.inspector_name || ''
+        });
       }
     }
   }, [editingInspection]);
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by this browser.');
+      alert(t('fims.geolocationNotSupported'));
       return;
     }
 
     setIsLoading(true);
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      (position) => {
         setInspectionData(prev => ({
           ...prev,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           location_accuracy: position.coords.accuracy
         }));
-        
-        // Reverse geocoding to get location name
-        try {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          
-          const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lng}&key=59e88d8ab31c4c76a71d6a3ad8759478&language=en&pretty=1`);
-          const data = await response.json();
-          if (data.results && data.results.length > 0) {
-            const result = data.results[0];
-            const locationName = result.formatted || 
-                               `${result.components?.village || result.components?.town || result.components?.city || ''}, ${result.components?.state || ''}`;
-            setDetectedLocationName(locationName);
-          }
-        } catch (error) {
-          console.error('Error getting location name:', error);
-          // Fallback: use coordinates as location name
-          setDetectedLocationName(`${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`);
-        }
-        
         setIsLoading(false);
       },
       (error) => {
         console.error('Error getting location:', error);
-        alert('Unable to get current location');
+        alert(t('fims.unableToGetLocation'));
         setIsLoading(false);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
@@ -312,7 +367,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     const files = Array.from(event.target.files || []);
     
     if (uploadedPhotos.length + files.length > 5) {
-      alert('Maximum 5 photos allowed');
+      alert(t('fims.maxPhotosAllowed'));
       return;
     }
 
@@ -372,7 +427,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     const time = String(now.getTime()).slice(-6);
-    return `AWD-${year}${month}${day}-${time}`;
+    return `AWC-${year}${month}${day}-${time}`;
   };
 
   const handleSubmit = async (isDraft: boolean = false) => {
@@ -456,8 +511,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
       const isUpdate = editingInspection && editingInspection.id;
       const message = isDraft 
-        ? (isUpdate ? 'Inspection updated as draft' : 'Inspection saved as draft')
-        : (isUpdate ? 'Inspection updated successfully' : 'Inspection submitted successfully');
+        ? (isUpdate ? 'Inspection updated as draft successfully!' : 'Inspection saved as draft successfully!')
+        : (isUpdate ? 'Inspection updated successfully!' : 'Inspection submitted successfully!');
       
       alert(message);
       onInspectionCreated();
@@ -492,79 +547,102 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     </div>
   );
 
-  const renderBasicDetails = () => (
+  const renderBasicInformation = () => (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        मूलभूत तपशील - अंगणवाडी तपासणी
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+        <Building2 className="h-5 w-5 mr-2 text-purple-600" />
+        {t('categories.basicInformation')}
       </h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            अंगणवाडी केंद्राचे नाव *
+            {t('categories.anganwadiName')} *
           </label>
           <input
             type="text"
             value={anganwadiFormData.anganwadi_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_name: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="अंगणवाडी केंद्राचे नाव प्रविष्ट करा"
+            placeholder={t('categories.enterAnganwadiName')}
+            disabled={isViewMode}
             required
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            अंगणवाडी क्रमांक
+            {t('categories.anganwadiNumber')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.anganwadi_number}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_number: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="अंगणवाडी क्रमांक प्रविष्ट करा"
+            placeholder={t('categories.enterAnganwadiNumber')}
+            disabled={isViewMode}
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            सेविकेचे नाव
+            {t('categories.supervisorName')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.supervisor_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, supervisor_name: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="सेविकेचे नाव प्रविष्ट करा"
+            placeholder={t('categories.enterSupervisorName')}
+            disabled={isViewMode}
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            सहाय्यकाचे नाव
+            {t('categories.helperName')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.helper_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, helper_name: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="सहाय्यकाचे नाव प्रविष्ट करा"
+            placeholder={t('categories.enterHelperName')}
+            disabled={isViewMode}
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            गावाचे नाव
+            {t('categories.villageName')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.village_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_name: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="गावाचे नाव प्रविष्ट करा"
+            placeholder={t('categories.enterVillageName')}
+            disabled={isViewMode}
           />
         </div>
 
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            {t('categories.buildingCondition')}
+          </label>
+          <select
+            value={anganwadiFormData.building_condition}
+            onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_condition: e.target.value}))}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            disabled={isViewMode}
+          >
+            <option value="">{t('categories.selectCondition')}</option>
+            <option value="excellent">{t('categories.excellent')}</option>
+            <option value="good">{t('categories.good')}</option>
+            <option value="average">{t('categories.average')}</option>
+            <option value="poor">{t('categories.poor')}</option>
+          </select>
+        </div>
       </div>
     </div>
   );
@@ -572,63 +650,73 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const renderLocationDetails = () => (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        स्थान तपशील
+        {t('categories.locationInformation')}
       </h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            स्थानाचे नाव *
+            {t('categories.locationName')} *
           </label>
           <input
             type="text"
             value={inspectionData.location_name}
             onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="स्थानाचे नाव प्रविष्ट करा"
+            placeholder={t('categories.enterLocationName')}
+            disabled={isViewMode}
             required
           />
         </div>
 
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            {t('categories.address')}
+          </label>
+          <textarea
+            value={inspectionData.address}
+            onChange={(e) => setInspectionData(prev => ({...prev, address: e.target.value}))}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            rows={3}
+            placeholder={t('categories.enterFullAddress')}
+            disabled={isViewMode}
+          />
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            नियोजित दिनांक
+            {t('categories.plannedDate')}
           </label>
           <input
             type="date"
             value={inspectionData.planned_date}
             onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            disabled={isViewMode}
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            GPS स्थान
+            GPS Location
           </label>
           <button
             type="button"
             onClick={getCurrentLocation}
-            disabled={isLoading}
-            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+            disabled={isLoading || isViewMode}
+            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
           >
             <MapPin className="h-4 w-4" />
-            <span>{isLoading ? 'स्थान मिळत आहे...' : 'सध्याचे स्थान मिळवा'}</span>
+            <span>{isLoading ? t('categories.gettingLocation') : t('categories.getCurrentLocation')}</span>
           </button>
           
           {inspectionData.latitude && inspectionData.longitude && (
             <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-800 font-medium">स्थान कॅप्चर केले</p>
-              {detectedLocationName && (
-                <p className="text-sm text-green-700 mb-2">
-                  स्थान: {detectedLocationName}
-                </p>
-              )}
+              <p className="text-sm text-green-800 font-medium">{t('categories.locationCaptured')}</p>
               <p className="text-xs text-green-600">
-                अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
-                रेखांश: {inspectionData.longitude.toFixed(6)}<br />
-                अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                {t('categories.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
+                {t('categories.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
+                {t('categories.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
               </p>
             </div>
           )}
@@ -637,52 +725,195 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     </div>
   );
 
-  const renderAnganwadiTapasaniForm = () => (
-    <div className="p-6 bg-white rounded-lg shadow-md space-y-6">
-      <h2 className="text-xl font-bold text-center mb-4">
-        अंगणवाडी केंद्र तपासणी अहवाल (नमुना)
-      </h2>
-      <p className="text-center mb-6">
-        (केंद्र शासनाचे पत्र क्र. F.No.१६-३/२००४-ME (P+) दि. २२ ऑक्टोबर२०१०.)
-      </p>
+  const renderInspectionForm = () => (
+    <div className="space-y-8">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        {t('categories.inspectionForm')}
+      </h3>
 
-      {/* 1. अंगणवाडी केंद्रातील उपलब्ध सुविधा */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">१. अंगणवाडी केंद्रातील उपलब्ध सुविधा:</h3>
+      {/* Section A: Infrastructure and Basic Facilities */}
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <h4 className="text-md font-semibold text-gray-800 mb-4">
+          {t('categories.sectionA')}
+        </h4>
         
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            { key: 'room_availability', label: t('categories.roomAvailability') },
+            { key: 'toilet_facility', label: t('categories.toiletFacility') },
+            { key: 'drinking_water', label: t('categories.drinkingWater') },
+            { key: 'electricity', label: t('categories.electricity') },
+            { key: 'kitchen_garden', label: t('categories.kitchenGarden') }
+          ].map((field) => (
+            <div key={field.key} className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                id={field.key}
+                checked={anganwadiFormData[field.key as keyof AnganwadiFormData] as boolean}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
+                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                disabled={isViewMode}
+              />
+              <label htmlFor={field.key} className="text-sm text-gray-700">
+                {field.label}
+              </label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section B: Equipment and Materials */}
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <h4 className="text-md font-semibold text-gray-800 mb-4">
+          {t('categories.sectionB')}
+        </h4>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            { key: 'weighing_machine', label: t('categories.weighingMachine') },
+            { key: 'height_measuring_scale', label: t('categories.heightMeasuringScale') },
+            { key: 'first_aid_kit', label: t('categories.firstAidKit') },
+            { key: 'teaching_materials', label: t('categories.teachingMaterials') },
+            { key: 'toys_available', label: t('categories.toysAvailable') }
+          ].map((field) => (
+            <div key={field.key} className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                id={field.key}
+                checked={anganwadiFormData[field.key as keyof AnganwadiFormData] as boolean}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
+                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                disabled={isViewMode}
+              />
+              <label htmlFor={field.key} className="text-sm text-gray-700">
+                {field.label}
+              </label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section C: Records and Documentation */}
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <h4 className="text-md font-semibold text-gray-800 mb-4">
+          {t('categories.sectionC')}
+        </h4>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            { key: 'attendance_register', label: t('categories.attendanceRegister') },
+            { key: 'growth_chart_updated', label: t('categories.growthChartUpdated') },
+            { key: 'vaccination_records', label: t('categories.vaccinationRecords') },
+            { key: 'nutrition_records', label: t('categories.nutritionRecords') }
+          ].map((field) => (
+            <div key={field.key} className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                id={field.key}
+                checked={anganwadiFormData[field.key as keyof AnganwadiFormData] as boolean}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
+                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                disabled={isViewMode}
+              />
+              <label htmlFor={field.key} className="text-sm text-gray-700">
+                {field.label}
+              </label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section D: Children Information */}
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center">
+          <Users className="h-5 w-5 mr-2 text-purple-600" />
+          {t('categories.sectionD')}
+        </h4>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              अंगणवाडी इमारत
+              {t('categories.totalRegistered')}
             </label>
-            <select
-              value={anganwadiFormData.building_type}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_type: e.target.value}))}
+            <input
+              type="number"
+              value={anganwadiFormData.total_registered_children}
+              onChange={(e) => setAnganwadiFormData(prev => ({...prev, total_registered_children: parseInt(e.target.value) || 0}))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            >
-              <option value="">निवडा</option>
-              <option value="own">स्वतःची</option>
-              <option value="rented">भाड्याची</option>
-              <option value="free">मोफत</option>
-              <option value="no_building">इमारत नाही</option>
-            </select>
+              min="0"
+              disabled={isViewMode}
+            />
           </div>
-          
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t('categories.presentToday')}
+            </label>
+            <input
+              type="number"
+              value={anganwadiFormData.children_present_today}
+              onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_present_today: parseInt(e.target.value) || 0}))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              min="0"
+              disabled={isViewMode}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t('categories.age0to3Years')}
+            </label>
+            <input
+              type="number"
+              value={anganwadiFormData.children_0_3_years}
+              onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_0_3_years: parseInt(e.target.value) || 0}))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              min="0"
+              disabled={isViewMode}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t('categories.age3to6Years')}
+            </label>
+            <input
+              type="number"
+              value={anganwadiFormData.children_3_6_years}
+              onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_3_6_years: parseInt(e.target.value) || 0}))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              min="0"
+              disabled={isViewMode}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Section E: Nutrition & Health Services */}
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center">
+          <Heart className="h-5 w-5 mr-2 text-purple-600" />
+          {t('categories.sectionE')}
+        </h4>
+        
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { key: 'toilet_facility', label: 'शौचालय' },
-              { key: 'independent_kitchen', label: 'स्वतंत्र बंदिस्त किचन व्यवस्था' },
-              { key: 'women_health_checkup_space', label: 'महिलांच्या आरोग्य तपासणीसाठी जागा' },
-              { key: 'electricity', label: 'विद्युत पुरवठा' },
-              { key: 'drinking_water', label: 'पिण्याचे पाणी' }
+              { key: 'hot_meal_served', label: t('categories.hotMealServed') },
+              { key: 'take_home_ration', label: t('categories.takeHomeRation') },
+              { key: 'health_checkup_conducted', label: t('categories.healthCheckupConducted') },
+              { key: 'immunization_updated', label: t('categories.immunizationUpdated') },
+              { key: 'vitamin_a_given', label: t('categories.vitaminAGiven') },
+              { key: 'iron_tablets_given', label: t('categories.ironTabletsGiven') }
             ].map((field) => (
               <div key={field.key} className="flex items-center space-x-3">
                 <input
                   type="checkbox"
                   id={field.key}
-                  checked={anganwadiFormData[field.key as keyof AnganwadiTapasaniFormData] as boolean}
+                  checked={anganwadiFormData[field.key as keyof AnganwadiFormData] as boolean}
                   onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
                   className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                  disabled={isViewMode}
                 />
                 <label htmlFor={field.key} className="text-sm text-gray-700">
                   {field.label}
@@ -690,512 +921,141 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* 2. वजनकाटे उपलब्ध */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">२. वजनकाटे उपलब्ध:</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            { key: 'baby_weighing_scale', label: 'बेबी वजनकाटे' },
-            { key: 'hammock_weighing_scale', label: 'हॅमॉक [झोळीचे] वजनकाटे' },
-            { key: 'adult_weighing_scale', label: 'प्रौढांसाठीचे वजनकाटे' }
-          ].map((field) => (
-            <div key={field.key} className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id={field.key}
-                checked={anganwadiFormData[field.key as keyof AnganwadiTapasaniFormData] as boolean}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-              />
-              <label htmlFor={field.key} className="text-sm text-gray-700">
-                {field.label}
-              </label>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 3. अंगणवाडीतील साहित्य उपलब्धता */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">३. अंगणवाडीतील साहित्य उपलब्धता:</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            { key: 'cooking_utensils', label: 'स्वयंपाकाची भांडी' },
-            { key: 'water_storage_containers', label: 'पिण्याचे पाणी ठेवण्यासाठी भांडी' },
-            { key: 'medicine_kits', label: 'मेडिसिन किट्स' },
-            { key: 'pre_school_kit', label: 'पूर्व शाले संच' },
-            { key: 'all_registers', label: 'विविध नमुन्यातील रजिस्टर (सर्व)' },
-            { key: 'monthly_progress_reports', label: 'छापील मासिक प्रगती अहवाल' }
-          ].map((field) => (
-            <div key={field.key} className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id={field.key}
-                checked={anganwadiFormData[field.key as keyof AnganwadiTapasaniFormData] as boolean}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-              />
-              <label htmlFor={field.key} className="text-sm text-gray-700">
-                {field.label}
-              </label>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 4. अंगणवाडी केंद्राचे वेळापत्रक */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">४. अंगणवाडी केंद्राचे वेळापत्रक:</h3>
-        <div className="space-y-4">
-          {[
-            { key: 'timetable_available', label: '१] अंगणवाडी केंद्राचे वेळापत्रक आहे काय?' },
-            { key: 'timetable_followed', label: '२] वेळापत्रक पाळले जाते काय?' },
-            { key: 'supervisor_regular_attendance', label: '३] सेविका नियमितपणे हजर राहते काय?' }
-          ].map((field) => (
-            <div key={field.key} className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id={field.key}
-                checked={anganwadiFormData[field.key as keyof AnganwadiTapasaniFormData] as boolean}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-              />
-              <label htmlFor={field.key} className="text-sm text-gray-700">
-                {field.label}
-              </label>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 5. आहाराविषयी */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">५. आहाराविषयी:</h3>
-        <div className="space-y-4">
-          {[
-            { key: 'monthly_25_days_meals', label: '१] अंगणवाडी केंद्रात प्रत्येक महिन्याला २५ दिवस सकाळचा नाश्ता व पूरक पोषण आहार पुरविण्यात येतो काय?' },
-            { key: 'thr_provided_regularly', label: '२] ०–३ वर्षांची बालके, गर्भवती-स्तनदा माता, व तीव्र कमी वजनाच्या बालकांना THR नियमितपणे दिला जातो काय?' }
-          ].map((field) => (
-            <div key={field.key} className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id={field.key}
-                checked={anganwadiFormData[field.key as keyof AnganwadiTapasaniFormData] as boolean}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-              />
-              <label htmlFor={field.key} className="text-sm text-gray-700">
-                {field.label}
-              </label>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 6. स्वयंसहाय्यता बचत गटांच्या/महिला मंडळाबाबत */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">६. स्वयंसहाय्यता बचत गटांच्या/महिला मंडळाबाबत:</h3>
-        <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              १] अंगणवाडीतील आहार कोणाकडून दिला जातो?
-            </label>
-            <textarea
-              value={anganwadiFormData.food_provider}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, food_provider: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              rows={2}
-              placeholder="उत्तर प्रविष्ट करा"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              २] यातील अंगणवाडी सेविकेच्या असलेला सहभाग
-            </label>
-            <textarea
-              value={anganwadiFormData.supervisor_participation}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, supervisor_participation: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              rows={2}
-              placeholder="उत्तर प्रविष्ट करा"
-            />
-          </div>
-          
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              id="food_distribution_decentralized"
-              checked={anganwadiFormData.food_distribution_decentralized}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, food_distribution_decentralized: e.target.checked}))}
-              className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-            />
-            <label htmlFor="food_distribution_decentralized" className="text-sm text-gray-700">
-              ३] आहार वाटपाचे काम विकेंद्रित केले आहे काय?
-            </label>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. मुलांना आहाराची चव व दर्जा */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">७. मुलांना आहाराची चव व दर्जा आवडतो की कसे?</h3>
-        <textarea
-          value={anganwadiFormData.children_food_taste_preference}
-          onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_food_taste_preference: e.target.value}))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          rows={2}
-          placeholder="उत्तर प्रविष्ट करा"
-        />
-      </section>
-
-      {/* 8. आहार दर्जा */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">८. आहार दर्जा:</h3>
-        <div className="space-y-4">
-          {[
-            { key: 'prescribed_protein_calories', label: '१] निर्धारीत प्रथीणे व उष्मांक असलेला आहार मिळतो काय?' },
-            { key: 'prescribed_weight_food', label: '२] निर्धारीत वजनाचा आहार मिळतो काय?' }
-          ].map((field) => (
-            <div key={field.key} className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id={field.key}
-                checked={anganwadiFormData[field.key as keyof AnganwadiTapasaniFormData] as boolean}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-              />
-              <label htmlFor={field.key} className="text-sm text-gray-700">
-                {field.label}
-              </label>
-            </div>
-          ))}
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              ३] आहार नमुने प्रयोगशाळेत पृथ:करणाकरिता केव्हा पाठविले होते?
-            </label>
-            <input
-              type="date"
-              value={anganwadiFormData.lab_sample_date}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, lab_sample_date: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              ४] आहाराचा दर्जा
+              {t('categories.mealQuality')}
             </label>
             <select
               value={anganwadiFormData.meal_quality}
               onChange={(e) => setAnganwadiFormData(prev => ({...prev, meal_quality: e.target.value}))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              disabled={isViewMode}
             >
-              <option value="">दर्जा निवडा</option>
-              <option value="excellent">उत्कृष्ट</option>
-              <option value="good">चांगला</option>
-              <option value="average">सरासरी</option>
-              <option value="poor">खराब</option>
+              <option value="">{t('categories.selectQuality')}</option>
+              <option value="excellent">{t('categories.excellent')}</option>
+              <option value="good">{t('categories.good')}</option>
+              <option value="average">{t('categories.average')}</option>
+              <option value="poor">{t('categories.poor')}</option>
             </select>
           </div>
         </div>
-      </section>
-
-      {/* 9. बालकांचे वजने */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">९.</h3>
-        <div className="space-y-4">
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              id="regular_weighing"
-              checked={anganwadiFormData.regular_weighing}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, regular_weighing: e.target.checked}))}
-              className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-            />
-            <label htmlFor="regular_weighing" className="text-sm text-gray-700">
-              १] बालकांचे वजने नियमित वजने घेतली जातात किंवा कसे?
-            </label>
-          </div>
-          
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              id="growth_chart_accuracy"
-              checked={anganwadiFormData.growth_chart_accuracy}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, growth_chart_accuracy: e.target.checked}))}
-              className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-            />
-            <label htmlFor="growth_chart_accuracy" className="text-sm text-gray-700">
-              २] (वृद्धिपत्रक तपासून) वय व वजन यांची नोंद तपासून पोषण श्रेणी योग्य प्रमाणे दर्शविलेली आहे काय?
-            </label>
-          </div>
-        </div>
-      </section>
-
-      {/* 10. लसीकरण व आरोग्य तपासणी */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">१०.</h3>
-        <div className="space-y-4">
-          {[
-            { key: 'vaccination_health_checkup_regular', label: '१] लसीकरण व आरोग्य तपासणी नियमितपणे होते काय? (मागील दोन महिन्याचे रेकॉर्ड तपासावे.)' },
-            { key: 'vaccination_schedule_awareness', label: '२] लसीकरण दिवसाची माहिती लाभार्थी पालकांना आहे काय? (एक-दोन घरी जाऊन तपासावे)' }
-          ].map((field) => (
-            <div key={field.key} className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id={field.key}
-                checked={anganwadiFormData[field.key as keyof AnganwadiTapasaniFormData] as boolean}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-              />
-              <label htmlFor={field.key} className="text-sm text-gray-700">
-                {field.label}
-              </label>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 11-17. Additional Questions */}
-      <div className="space-y-6">
-        <section className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold mb-4">११. ग्राम आरोग्य व पोषण दिवसाचे गावनिहाय सूक्ष्म नियोजन केले आहे काय?</h3>
-          <textarea
-            value={anganwadiFormData.village_health_nutrition_planning}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_health_nutrition_planning: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            rows={2}
-            placeholder="उत्तर प्रविष्ट करा"
-          />
-        </section>
-
-        <section className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold mb-4">१२. भेटीच्या दिवशी प्रत्यक्ष उपस्थित असलेली बालके व नोंदविलेल्या बालकांपैकी त्या दिवशी प्रत्यक्ष हजर असलेली बालके. (मागील आठवड्यातील सरासरी आकडेवारीची ही संख्या पडताळून पहावी.):</h3>
-          <textarea
-            value={anganwadiFormData.children_attendance_comparison}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_attendance_comparison: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            rows={2}
-            placeholder="उत्तर प्रविष्ट करा"
-          />
-        </section>
-
-        <section className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold mb-4">१३. पूर्व शालेय शिक्षण:</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                १] पूर्वशालेय शिक्षणासाठी नोंदवलेली बालके
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={anganwadiFormData.preschool_education_registered}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, preschool_education_registered: parseInt(e.target.value) || 0}))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                २] भेटीची वेळी प्रत्यक्ष हजर बालके
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={anganwadiFormData.preschool_education_present}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, preschool_education_present: parseInt(e.target.value) || 0}))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                ३] भेटीचे दिवशी कोणकोणते कार्यक्रम घेतले
-              </label>
-              <textarea
-                value={anganwadiFormData.preschool_programs_conducted}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, preschool_programs_conducted: e.target.value}))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                rows={2}
-                placeholder="उत्तर प्रविष्ट करा"
-              />
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold mb-4">१४. लोकसहभाग:</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                १] अंगणवाडी केंद्राला गावातील लोकांचे सहकार्य मिळते काय? मिळत नसेल तर का?(याबाबत ग्राम समिती अथवा ग्राम पंचायत सदस्य यांचेशी चर्चा करावी.)
-              </label>
-              <textarea
-                value={anganwadiFormData.community_participation}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, community_participation: e.target.value}))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                rows={3}
-                placeholder="उत्तर प्रविष्ट करा"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                २] यामध्ये ग्राम समिती सदस्य/ ग्राम पंचायत सदस्य/ आरोग्य सेविका/ इतर उपस्थिती कशी होती?
-              </label>
-              <textarea
-                value={anganwadiFormData.committee_member_participation}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, committee_member_participation: e.target.value}))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                rows={3}
-                placeholder="उत्तर प्रविष्ट करा"
-              />
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold mb-4">१५. गरोदर महिला, आजारी असलेली बालके यांचे घरी अंगणवाडी सेविका नियमित भेट देऊन त्यांना मार्गदर्शन व सल्ला देण्याचे काम करते किंवा कसे? (काही घरी भेट देऊन याबाबत पडताळणी करावी.) :</h3>
-          <textarea
-            value={anganwadiFormData.home_visits_guidance}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, home_visits_guidance: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            rows={3}
-            placeholder="उत्तर प्रविष्ट करा"
-          />
-        </section>
-
-        <section className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold mb-4">१६. अंगणवाडी क्षेत्रातील लोकांचे अंगणवाडीचे कामकाजाबाबत सर्वसाधारण मत कसे आहे? तसेच मागील २–३ वर्षाचे कालावधीत काही सुधारणा झालेल्या आहेत काय?</h3>
-          <textarea
-            value={anganwadiFormData.public_opinion_improvement}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, public_opinion_improvement: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            rows={3}
-            placeholder="उत्तर प्रविष्ट करा"
-          />
-        </section>
-
-        <section className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold mb-4">१७. काही सूचना असल्यास-</h3>
-          <textarea
-            value={anganwadiFormData.suggestions}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, suggestions: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            rows={3}
-            placeholder="सूचना प्रविष्ट करा"
-          />
-        </section>
       </div>
 
-      {/* Signature Section */}
-      <section className="bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
-        <h3 className="font-semibold mb-4 text-blue-800">स्वाक्षरी विभाग</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Section F: Observations & Recommendations */}
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center">
+          <BookOpen className="h-5 w-5 mr-2 text-purple-600" />
+          {t('categories.sectionF')}
+        </h4>
+        
+        <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">नाव:</label>
-            <input
-              type="text"
-              value={anganwadiFormData.inspector_name}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, inspector_name: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="तपासकर्त्याचे नाव"
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t('categories.generalObservations')}
+            </label>
+            <textarea
+              value={anganwadiFormData.general_observations}
+              onChange={(e) => setAnganwadiFormData(prev => ({...prev, general_observations: e.target.value}))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              rows={4}
+              placeholder={t('categories.enterGeneralObservations')}
+              disabled={isViewMode}
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">पद:</label>
-            <input
-              type="text"
-              value={anganwadiFormData.inspector_designation}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, inspector_designation: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="पदनाम"
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t('categories.recommendations')}
+            </label>
+            <textarea
+              value={anganwadiFormData.recommendations}
+              onChange={(e) => setAnganwadiFormData(prev => ({...prev, recommendations: e.target.value}))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              rows={4}
+              placeholder={t('categories.enterRecommendations')}
+              disabled={isViewMode}
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">भेटीचा दिनांक:</label>
-            <input
-              type="date"
-              value={anganwadiFormData.visit_date}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, visit_date: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t('categories.actionRequired')}
+            </label>
+            <textarea
+              value={anganwadiFormData.action_required}
+              onChange={(e) => setAnganwadiFormData(prev => ({...prev, action_required: e.target.value}))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              rows={4}
+              placeholder={t('categories.enterActionRequired')}
+              disabled={isViewMode}
             />
-          </div>
-          
-          <div className="flex items-end">
-            <div className="text-right w-full">
-              <p className="text-sm font-medium text-gray-700">स्वाक्षरी :</p>
-              <div className="mt-2 border-b-2 border-gray-300 w-48 ml-auto"></div>
-            </div>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 
   const renderPhotoUpload = () => (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        फोटो दस्तऐवजीकरण
+        {t('categories.photoDocumentation')}
       </h3>
       
-      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <h4 className="text-lg font-medium text-gray-900 mb-2">
-          अंगणवाडी फोटो अपलोड करा
-        </h4>
-        <p className="text-gray-600 mb-4">
-          दस्तऐवजीकरणासाठी अंगणवाडी केंद्राचे फोटो अपलोड करा
-        </p>
-        
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={handlePhotoUpload}
-          className="hidden"
-          id="photo-upload"
-        />
-        <label
-          htmlFor="photo-upload"
-          className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
-        >
-          <Camera className="h-4 w-4 mr-2" />
-          फाइल निवडा
-        </label>
-        
-        <p className="text-xs text-gray-500 mt-2">
-          जास्तीत जास्त ५ फोटो अनुमतीत
-        </p>
-      </div>
+      {!isViewMode && (
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+          <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h4 className="text-lg font-medium text-gray-900 mb-2">
+            {t('categories.uploadInspectionPhotos')}
+          </h4>
+          <p className="text-gray-600 mb-4">
+            {t('categories.uploadPhotosToDocument')}
+          </p>
+          
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            className="hidden"
+            id="photo-upload"
+            disabled={isViewMode}
+          />
+          <label
+            htmlFor="photo-upload"
+            className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
+          >
+            <Camera className="h-4 w-4 mr-2" />
+            {t('categories.chooseFiles')}
+          </label>
+          
+          <p className="text-xs text-gray-500 mt-2">
+            Maximum 5 photos allowed
+          </p>
+        </div>
+      )}
 
       {uploadedPhotos.length > 0 && (
         <div>
           <h4 className="text-md font-medium text-gray-900 mb-3">
-            अपलोड केलेले फोटो ({uploadedPhotos.length}/5)
+            {t('categories.uploadedPhotos')} ({uploadedPhotos.length}/5)
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {uploadedPhotos.map((photo, index) => (
               <div key={index} className="relative">
                 <img
                   src={URL.createObjectURL(photo)}
-                  alt={`अंगणवाडी फोटो ${index + 1}`}
+                  alt={`Anganwadi photo ${index + 1}`}
                   className="w-full h-32 object-cover rounded-lg"
                 />
-                <button
-                  onClick={() => removePhoto(index)}
-                  className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
-                >
-                  ×
-                </button>
+                {!isViewMode && (
+                  <button
+                    onClick={() => removePhoto(index)}
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
+                  >
+                    ×
+                  </button>
+                )}
                 <p className="text-xs text-gray-600 mt-1 truncate">
                   {photo.name}
                 </p>
@@ -1205,10 +1065,46 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         </div>
       )}
 
+      {/* Display existing photos when viewing */}
+      {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
+        <div>
+          <h4 className="text-md font-medium text-gray-900 mb-3">
+            Inspection Photos ({editingInspection.fims_inspection_photos.length})
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
+              <div key={photo.id} className="relative">
+                <img
+                  src={photo.photo_url}
+                  alt={photo.description || `Anganwadi photo ${index + 1}`}
+                  className="w-full h-32 object-cover rounded-lg"
+                />
+                <p className="text-xs text-gray-600 mt-1 truncate">
+                  {photo.photo_name || `Photo ${index + 1}`}
+                </p>
+                {photo.description && (
+                  <p className="text-xs text-gray-500 truncate">
+                    {photo.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Show message when no photos in view mode */}
+      {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
+        <div className="text-center py-8 text-gray-500">
+          <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+          <p>No photos found for this inspection</p>
+        </div>
+      )}
+
       {isUploading && (
         <div className="text-center py-4">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
-          <p className="text-gray-600">फोटो अपलोड होत आहेत...</p>
+          <p className="text-gray-600">{t('categories.uploadingPhotos')}</p>
         </div>
       )}
     </div>
@@ -1217,11 +1113,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return renderBasicDetails();
+        return renderBasicInformation();
       case 2:
         return renderLocationDetails();
       case 3:
-        return renderAnganwadiTapasaniForm();
+        return renderInspectionForm();
       case 4:
         return renderPhotoUpload();
       default:
@@ -1244,18 +1140,15 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     }
   };
 
-  const isViewMode = editingInspection?.mode === 'view';
-  const isEditMode = editingInspection?.mode === 'edit';
-
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
-          {editingInspection?.mode === 'view' && (
+          {isViewMode && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
               <p className="text-blue-800 text-sm font-medium">
-                दृश्य मोड - फॉर्म केवळ वाचनीय
+                View Mode - This form is read-only
               </p>
             </div>
           )}
@@ -1266,12 +1159,12 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
             >
               <ArrowLeft className="h-5 w-5" />
-              <span>मागे</span>
+              <span>Back</span>
             </button>
             <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center">
-              {editingInspection?.mode === 'view' ? 'तपासणी पहा' : 
-               editingInspection?.mode === 'edit' ? 'तपासणी संपादित करा' : 
-               'नवीन तपासणी'} - अंगणवाडी तपासणी
+              {isViewMode ? 'View Inspection' : 
+               isEditMode ? 'Edit Inspection' : 
+               'New Inspection'} - अंगणवाडी केंद्र तपासणी
             </h1>
             <div className="w-20"></div>
           </div>
@@ -1280,16 +1173,16 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
           <div className="flex justify-center space-x-4 md:space-x-8 text-xs md:text-sm">
             <div className={`${currentStep === 1 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              मूलभूत तपशील
+              मूलभूत माहिती
             </div>
             <div className={`${currentStep === 2 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
               स्थान तपशील
             </div>
             <div className={`${currentStep === 3 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              अंगणवाडी तपासणी
+              तपासणी फॉर्म
             </div>
             <div className={`${currentStep === 4 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              फोटो व सबमिट
+              फोटो आणि सबमिट
             </div>
           </div>
         </div>
@@ -1306,7 +1199,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             disabled={currentStep === 1}
             className="px-4 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
           >
-            मागील
+            {t('common.previous')}
           </button>
 
           <div className="flex space-x-2 md:space-x-3">
@@ -1319,7 +1212,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
                 >
                   <Save className="h-4 w-4" />
-                  <span>मसुदा म्हणून जतन करा</span>
+                  <span>{t('categories.saveAsDraft')}</span>
                 </button>
                 )}
                 {!isViewMode && (
@@ -1329,7 +1222,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
                 >
                   <Send className="h-4 w-4" />
-                  <span>{isEditMode ? 'तपासणी अपडेट करा' : 'तपासणी सबमिट करा'}</span>
+                  <span>{isEditMode ? 'Update Inspection' : t('categories.submitInspection')}</span>
                 </button>
                 )}
               </>
@@ -1339,7 +1232,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                 disabled={!canProceedToNext() || isViewMode}
                 className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
               >
-                पुढील
+                {t('common.next')}
               </button>
             )}
           </div>
