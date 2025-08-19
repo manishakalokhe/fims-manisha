@@ -33,7 +33,7 @@ import {
 } from 'lucide-react';
 import {
   fetchInspectionStats,
-  fetchInspections,
+  getInspections,
   fetchCategories,
   fetchInspectors,
   deleteInspection,
