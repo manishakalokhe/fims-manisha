@@ -868,6 +868,7 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
                   src={URL.createObjectURL(photo)}
                   alt={`Office photo ${index + 1}`}
                   className="w-full h-32 object-cover rounded-lg"
+                />
                 {!isViewMode && (
                   <button
                     onClick={() => removePhoto(index)}
