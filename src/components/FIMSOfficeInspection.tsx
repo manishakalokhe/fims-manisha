@@ -588,7 +588,7 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
           <button
             type="button"
             onClick={getCurrentLocation}
-            disabled={isLoading}
+            disabled={isLoading || isViewMode}
             className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
           >
             <MapPin className="h-4 w-4" />
@@ -638,7 +638,6 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
               <input
                 type="checkbox"
                 id={field.key}
-                disabled={isViewMode}
                 checked={officeFormData[field.key as keyof OfficeInspectionFormData] as boolean}
                 onChange={(e) => setOfficeFormData(prev => ({...prev, [field.key]: e.target.checked}))}
                 className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
@@ -668,7 +667,6 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
               <input
                 type="checkbox"
                 id={field.key}
-                disabled={isViewMode}
                 checked={officeFormData[field.key as keyof OfficeInspectionFormData] as boolean}
                 onChange={(e) => setOfficeFormData(prev => ({...prev, [field.key]: e.target.checked}))}
                 className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
@@ -704,7 +702,6 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
               <input
                 type="checkbox"
                 id={field.key}
-                disabled={isViewMode}
                 checked={officeFormData[field.key as keyof OfficeInspectionFormData] as boolean}
                 onChange={(e) => setOfficeFormData(prev => ({...prev, [field.key]: e.target.checked}))}
                 className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
