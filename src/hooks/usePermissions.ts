@@ -60,8 +60,7 @@ export const usePermissions = (user: User | null): PermissionCheck => {
 
         if (userRolesError) {
           console.error('Error fetching user roles:', userRolesError);
-          // Don't throw error, continue with empty permissions
-          console.warn('Continuing with empty permissions due to user roles error');
+          throw userRolesError;
         }
 
         // Get role IDs for permission lookup
@@ -101,13 +100,6 @@ export const usePermissions = (user: User | null): PermissionCheck => {
           }
         }
 
-        // Debug logging
-        console.log('User ID:', user.id);
-        console.log('User Roles Data:', userRolesData);
-        console.log('Role IDs:', roleIds);
-        console.log('Permissions Data:', permissionsData);
-        console.log('FIMS Permission:', permissionsData.find(p => p.application_name === 'fims'));
-
         setPermissions(permissionsData);
 
         // Set user profile from the fetched data
@@ -138,12 +130,7 @@ export const usePermissions = (user: User | null): PermissionCheck => {
   }, [user]);
 
   const hasAccess = (app: string, permission: 'read' | 'write' | 'delete' | 'admin' = 'read'): boolean => {
-    console.log('Checking access for:', app, permission);
-    console.log('Available permissions:', permissions);
-    
     const appPermission = permissions.find(p => p.application_name === app);
-    console.log('Found app permission:', appPermission);
-    
     if (!appPermission) return false;
 
     switch (permission) {
