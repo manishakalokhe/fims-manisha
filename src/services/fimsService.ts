@@ -184,6 +184,29 @@ export const deleteInspection = async (id: string): Promise<void> => {
   }
 };
 
+export const fetchCategories = async () => {
+  if (!supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('fims_categories')
+      .select('*')
+      .eq('is_active', true)
+      .order('name');
+
+    if (error) {
+      throw error;
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw error;
+  }
+};
+
 export const reassignInspection = async (id: string, newInspectorId: string): Promise<Inspection> => {
   if (!supabase) {
     throw new Error('Supabase client not initialized');
