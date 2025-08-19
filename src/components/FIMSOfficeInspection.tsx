@@ -796,7 +796,6 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
             </label>
             <textarea
               value={officeFormData.supervisor_remarks}
-              disabled={isViewMode}
               onChange={(e) => setOfficeFormData(prev => ({...prev, supervisor_remarks: e.target.value}))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               rows={4}
@@ -869,19 +868,56 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
                   src={URL.createObjectURL(photo)}
                   alt={`Office photo ${index + 1}`}
                   className="w-full h-32 object-cover rounded-lg"
-                />
-                <button
-                  onClick={() => removePhoto(index)}
-                  className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
-                >
-                  ×
-                </button>
+                {!isViewMode && (
+                  <button
+                    onClick={() => removePhoto(index)}
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
+                  >
+                    ×
+                  </button>
+                )}
                 <p className="text-xs text-gray-600 mt-1 truncate">
                   {photo.name}
                 </p>
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Display existing photos when viewing */}
+      {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
+        <div>
+          <h4 className="text-md font-medium text-gray-900 mb-3">
+            Inspection Photos ({editingInspection.fims_inspection_photos.length})
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
+              <div key={photo.id} className="relative">
+                <img
+                  src={photo.photo_url}
+                  alt={photo.description || `Office photo ${index + 1}`}
+                  className="w-full h-32 object-cover rounded-lg"
+                />
+                <p className="text-xs text-gray-600 mt-1 truncate">
+                  {photo.photo_name || `Photo ${index + 1}`}
+                </p>
+                {photo.description && (
+                  <p className="text-xs text-gray-500 truncate">
+                    {photo.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Show message when no photos in view mode */}
+      {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
+        <div className="text-center py-8 text-gray-500">
+          <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+          <p>{t('fims.noPhotosFound')}</p>
         </div>
       )}
 
