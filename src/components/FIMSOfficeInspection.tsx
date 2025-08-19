@@ -588,7 +588,7 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
           <button
             type="button"
             onClick={getCurrentLocation}
-            disabled={isLoading || isViewMode}
+            disabled={isLoading}
             className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
           >
             <MapPin className="h-4 w-4" />
@@ -729,6 +729,7 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
             <input
               type="number"
               value={officeFormData.evaluation_score}
+              disabled={isViewMode}
               readOnly
               className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100"
             />
