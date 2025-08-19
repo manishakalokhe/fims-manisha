@@ -113,8 +113,6 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   
-  // Define viewingInspection based on editingInspection mode
-  const viewingInspection = editingInspection?.mode === 'view';
   const [searchTerm, setSearchTerm] = useState('');
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
@@ -146,6 +144,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
     fetchAllData();
   }, []);
 
+  const viewingInspection = editingInspection?.mode === 'view';
 
   const fetchAllData = async () => {
     setIsLoading(true);
