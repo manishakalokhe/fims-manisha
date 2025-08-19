@@ -353,7 +353,11 @@
     "accessRestricted": "प्रवेश प्रतिबंधित",
     "noAccess": "आपल्याकडे {{system}} प्रणालीसाठी {{permission}} प्रवेश नाही.",
     "contactAdmin": "जर आपल्याला वाटत असेल की ही चूक आहे तर कृपया आपल्या प्रशासकाशी संपर्क साधा.",
-    "permissionError": "परवानगी त्रुटी"
+    "permissionError": "परवानगी त्रुटी",
+    "read": "वाचा",
+    "write": "लिहा", 
+    "delete": "हटवा",
+    "admin": "प्रशासक"
   },
   "retirementTracker": {
     "title": "सेवानिवृत्ती ट्रॅकर",
