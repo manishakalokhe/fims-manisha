@@ -20,8 +20,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'mr',
-    lng: 'en', // Start with English to avoid conflicts
+    fallbackLng: 'en',
+    lng: 'mr', // Start with Marathi as default
     debug: false,
     
     detection: {
