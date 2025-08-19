@@ -149,7 +149,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
     try {
       // Fetch all data using service functions
       const [inspectionsData, categoriesData, inspectorsData] = await Promise.all([
-        fetchInspections({ limit: 50 }),
+        getInspections(user.id),
         fetchCategories(),
         fetchInspectors()
       ]);
