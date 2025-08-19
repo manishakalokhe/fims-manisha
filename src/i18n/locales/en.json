@@ -371,11 +371,7 @@
     "accessRestricted": "Access Restricted",
     "noAccess": "You don't have {{permission}} access to the {{system}} system.",
     "contactAdmin": "Please contact your administrator if you believe this is an error.",
-    "permissionError": "Permission Error",
-    "read": "read",
-    "write": "write",
-    "delete": "delete", 
-    "admin": "admin"
+    "permissionError": "Permission Error"
   },
   "retirementTracker": {
     "title": "Retirement Tracker",
