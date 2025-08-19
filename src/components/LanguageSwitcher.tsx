@@ -39,15 +39,15 @@ export const LanguageSwitcher: React.FC = () => {
     <div className="relative language-switcher">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg transition-colors duration-200 min-w-[100px] justify-between"
+        className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 text-black px-3 py-2 rounded-lg transition-colors duration-200 min-w-[100px] justify-between"
       >
         <div className="flex items-center space-x-2">
-          <Globe className="h-4 w-4 flex-shrink-0" />
+          <Globe className="h-4 w-4 flex-shrink-0 text-black" />
           <span className="text-sm font-medium">
             {currentLanguage.nativeName}
           </span>
         </div>
-        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`h-4 w-4 text-black transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
