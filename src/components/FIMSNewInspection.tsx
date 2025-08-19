@@ -125,24 +125,24 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
               </div>
               <div>
                 <h3 className="text-lg md:text-xl font-semibold text-gray-900">
-                  {t('fims.anganwadiInspection')}
+                  अंगणवाडी केंद्र तपासणी
                 </h3>
                 <p className="text-sm md:text-base text-purple-700 font-medium">
-                  {t('fims.anganwadiCenterInspection')}
+                  अंगणवाडी केंद्र तपासणी
                 </p>
               </div>
             </div>
             
             <div className="space-y-2 text-sm text-purple-800">
-              <p>• {t('erms.departments.anganwadiInspectionDescription')}</p>
-              <p>• {t('erms.departments.equipmentMaterialsVerification')}</p>
-              <p>• {t('erms.departments.childrenInformationRecords')}</p>
-              <p>• {t('erms.departments.nutritionHealthServicesCheck')}</p>
+              <p>• पायाभूत सुविधा आणि सुविधांचे मूल्यांकन</p>
+              <p>• उपकरणे आणि साहित्य सत्यापन</p>
+              <p>• मुलांची माहिती आणि नोंदी</p>
+              <p>• पोषण आणि आरोग्य सेवा</p>
             </div>
             
             <div className="mt-4 flex items-center justify-between">
               <span className="text-sm font-bold text-purple-700 bg-white/50 px-3 py-1 rounded-full">
-                {t('erms.departments.selectToStartInspection')}
+                तपासणी सुरू करण्यासाठी निवडा
               </span>
               <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-2 rounded-full shadow-lg">
                 <Plus className="h-5 w-5 text-white" />
@@ -164,21 +164,21 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
                   दफ्तर निरीक्षण प्रपत्र
                 </h3>
                 <p className="text-sm md:text-base text-blue-700 font-medium">
-                  {t('fims.officeInspection')}
+                  दफ्तर निरीक्षण
                 </p>
               </div>
             </div>
             
             <div className="space-y-2 text-sm text-blue-800">
-              <p>• {t('erms.departments.officeInspectionDescription')}</p>
-              <p>• {t('erms.departments.letterCorrespondenceCheck')}</p>
-              <p>• {t('erms.departments.registersOfficeStructure')}</p>
-              <p>• {t('erms.departments.workQualityEvaluation')}</p>
+              <p>• कर्मचारी माहिती आणि कामाचे स्वरूप</p>
+              <p>• पत्र व्यवहार तपशील तपासणी</p>
+              <p>• नोंदवह्या आणि दप्तरची रचना</p>
+              <p>• कामाचा दर्जा मूल्यांकन</p>
             </div>
             
             <div className="mt-4 flex items-center justify-between">
               <span className="text-sm font-bold text-blue-700 bg-white/50 px-3 py-1 rounded-full">
-                {t('erms.departments.selectToStartInspection')}
+                तपासणी सुरू करण्यासाठी निवडा
               </span>
               <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-2 rounded-full shadow-lg">
                 <Plus className="h-5 w-5 text-white" />
