@@ -89,6 +89,10 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
+  // Check if we're in view mode
+  const isViewMode = editingInspection?.mode === 'view';
+  const isEditMode = editingInspection?.mode === 'edit';
+
   // Basic inspection data
   const [inspectionData, setInspectionData] = useState({
     category_id: '',
