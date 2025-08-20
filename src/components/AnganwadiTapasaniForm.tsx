@@ -171,6 +171,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     supervisor_name: '',
     helper_name: '',
     village_name: '',
+    building_type: '',
     building_condition: '',
     room_availability: false,
     toilet_facility: false,
@@ -276,8 +277,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       if (editingInspection.fims_anganwadi_forms && editingInspection.fims_anganwadi_forms.length > 0) {
         formDataToLoad = editingInspection.fims_anganwadi_forms[0];
         console.log('Loading from fims_anganwadi_forms:', formDataToLoad);
-      }
-      // Fallback to form_data JSON field
+      } else if (editingInspection.form_data) {
+        // Fallback to form_data JSON field
         formDataToLoad = editingInspection.form_data;
         console.log('Loading from form_data JSON:', formDataToLoad);
       }
@@ -1521,7 +1522,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </button>
 
           <div className="flex space-x-2 md:space-x-3">
-            {currentStep === 3 ? (
+            {currentStep === 4 ? (
               <>
                 {!isViewMode && (
                 <button
@@ -1546,7 +1547,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               </>
             ) : (
               <button
-                onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
+                onClick={() => setCurrentStep(prev => Math.min(4, prev + 1))}
                 disabled={!canProceedToNext()}
                 className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
               >
