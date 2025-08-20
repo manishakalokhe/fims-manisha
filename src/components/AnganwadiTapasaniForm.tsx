@@ -1606,11 +1606,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         return renderAnganwadiInspectionForm();
       case 3:
         return renderPhotoUpload();
-      default:
-        return null;
-    }
-  };
-
   const canProceedToNext = () => {
     switch (currentStep) {
       case 1:
