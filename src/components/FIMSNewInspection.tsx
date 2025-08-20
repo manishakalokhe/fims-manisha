@@ -60,6 +60,11 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
 
   // Handle back navigation
   const handleBackToSelection = () => {
+    // Only allow back to selection if not editing an existing inspection
+    if (editingInspection && editingInspection.id) {
+      onBack(); // Go back to dashboard instead
+      return;
+    }
     setSelectedInspectionType(null);
   };
 

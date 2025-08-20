@@ -1212,7 +1212,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
               }}
               categories={categories}
               onInspectionCreated={fetchInspectionsData}
-              editingInspection={{...viewingInspection, mode: 'view'}}
+              editingInspection={editingInspection}
             />
           )}
           {activeTab === 'analytics' && renderAnalytics()}
