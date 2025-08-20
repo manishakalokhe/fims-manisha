@@ -1030,21 +1030,21 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       </div>
 
       {/* Section F: Observations & Recommendations */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center">
-          <BookOpen className="h-5 w-5 mr-2 text-purple-600" />
+      <div className="bg-gradient-to-br from-pink-50 to-rose-50 p-8 rounded-3xl border-2 border-pink-200 shadow-lg">
+        <h4 className="text-xl font-bold text-pink-800 mb-6 flex items-center">
+          <BookOpen className="h-6 w-6 mr-3 text-pink-600" />
           {t('categories.sectionF')}
         </h4>
         
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-lg font-bold text-pink-700 mb-4">
               {t('categories.generalObservations')}
             </label>
             <textarea
               value={anganwadiFormData.general_observations}
               onChange={(e) => setAnganwadiFormData(prev => ({...prev, general_observations: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
               rows={4}
               placeholder={t('categories.enterGeneralObservations')}
               disabled={isViewMode}
@@ -1052,13 +1052,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-lg font-bold text-pink-700 mb-4">
               {t('categories.recommendations')}
             </label>
             <textarea
               value={anganwadiFormData.recommendations}
               onChange={(e) => setAnganwadiFormData(prev => ({...prev, recommendations: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
               rows={4}
               placeholder={t('categories.enterRecommendations')}
               disabled={isViewMode}
@@ -1066,13 +1066,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-lg font-bold text-pink-700 mb-4">
               {t('categories.actionRequired')}
             </label>
             <textarea
               value={anganwadiFormData.action_required}
               onChange={(e) => setAnganwadiFormData(prev => ({...prev, action_required: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
               rows={4}
               placeholder={t('categories.enterActionRequired')}
               disabled={isViewMode}
