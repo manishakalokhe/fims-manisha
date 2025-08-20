@@ -1601,7 +1601,12 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return renderBasicInformationAndLocation();
+        return renderBasicDetailsAndLocation();
+      case 2:
+        return renderAnganwadiInspectionForm();
+      case 3:
+        return renderPhotoUpload();
+      default:
         return null;
     }
   };
@@ -1613,7 +1618,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       case 2:
         return inspectionData.location_name;
       default:
-        return renderPhotoUpload();
+        return true;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 md:p-6">
+      <section className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-6 md:mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 px-6 md:px-8 py-8 md:py-12 text-white relative">
