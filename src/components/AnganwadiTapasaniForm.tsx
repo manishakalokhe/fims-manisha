@@ -1322,80 +1322,80 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                अंगणवाडी नाव *
-              </label>
-              <input
+            <label className="block text-sm font-medium text-emerald-700 mb-2">
+              अंगणवाडी नाव *
+            </label>
                 type="text"
                 value={anganwadiFormData.anganwadi_name}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_name: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="अंगणवाडी नाव प्रविष्ट करा"
-                required
+              placeholder="अंगणवाडी नाव प्रविष्ट करा"
                 disabled={isViewMode}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                अंगणवाडी क्रमांक
-              </label>
-              <input
+            <label className="block text-sm font-medium text-emerald-700 mb-2">
+              अंगणवाडी क्रमांक
+            </label>
                 type="text"
                 value={anganwadiFormData.anganwadi_number}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_number: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="अंगणवाडी क्रमांक प्रविष्ट करा"
-                disabled={isViewMode}
+              placeholder="अंगणवाडी क्रमांक प्रविष्ट करा"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                पर्यवेक्षक नाव
-              </label>
-              <input
+            <label className="block text-sm font-medium text-emerald-700 mb-2">
+              पर्यवेक्षक नाव
+            </label>
                 type="text"
                 value={anganwadiFormData.supervisor_name}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, supervisor_name: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="पर्यवेक्षक नाव प्रविष्ट करा"
-                disabled={isViewMode}
+              placeholder="पर्यवेक्षक नाव प्रविष्ट करा"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                सहायक नाव
-              </label>
-              <input
+            <label className="block text-sm font-medium text-emerald-700 mb-2">
+              सहायक नाव
+            </label>
                 type="text"
                 value={anganwadiFormData.helper_name}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, helper_name: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="सहायक नाव प्रविष्ट करा"
-                disabled={isViewMode}
+              placeholder="सहायक नाव प्रविष्ट करा"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                गावाचे नाव
-              </label>
-              <input
+            <label className="block text-sm font-medium text-emerald-700 mb-2">
+              गावाचे नाव
+            </label>
                 type="text"
                 value={anganwadiFormData.village_name}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_name: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="गावाचे नाव प्रविष्ट करा"
-                disabled={isViewMode}
+              placeholder="गावाचे नाव प्रविष्ट करा"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                अंगणवाडी इमारत प्रकार
-              </label>
-              <select
+            <label className="block text-sm font-medium text-emerald-700 mb-2">
+              इमारतीचा प्रकार
+            </label>
                 value={anganwadiFormData.building_type}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_type: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
@@ -1606,6 +1606,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         return renderAnganwadiInspectionForm();
       case 3:
         return renderPhotoUpload();
+      default:
+        return null;
+    }
+  };
+
   const canProceedToNext = () => {
     switch (currentStep) {
       case 1:
@@ -1667,24 +1672,24 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         {/* Navigation Buttons */}
         <div className="flex justify-between items-center">
           <button
-            onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-            disabled={currentStep === 1}
-            className="px-4 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
+            <label className="block text-sm font-medium text-blue-700 mb-2">
+              स्थानाचे नाव *
+            </label>
           >
             {t('common.previous')}
           </button>
 
           <div className="flex space-x-2 md:space-x-3">
-            {currentStep === 3 ? (
+              placeholder="स्थानाचे नाव प्रविष्ट करा"
               <>
                 {!isViewMode && (
                   <button
                     onClick={() => handleSubmit(true)}
                     disabled={isLoading || isUploading}
                     className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                  >
-                    <Save className="h-4 w-4" />
-                    <span>{t('fims.saveAsDraft')}</span>
+            <label className="block text-sm font-medium text-blue-700 mb-2">
+              नियोजित तारीख
+            </label>
                   </button>
                 )}
                 {!isViewMode && (
@@ -1695,21 +1700,21 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   >
                     <Send className="h-4 w-4" />
                     <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
-                  </button>
-                )}
-              </>
+            <label className="block text-sm font-medium text-blue-700 mb-2">
+              GPS स्थान
+            </label>
             ) : (
               <button
                 onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
-                disabled={!canProceedToNext()}
-                className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
-              >
-                {t('common.next')}
+                  अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
+                  रेखांश: {inspectionData.longitude.toFixed(6)}<br />
+                  अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                <span>{isLoading ? 'स्थान मिळवत आहे...' : 'सध्याचे स्थान मिळवा'}</span>
               </button>
             )}
           </div>
         </div>
       </section>
-    </div>
+                <p className="text-sm text-green-800 font-medium">स्थान कॅप्चर केले</p>
   );
 };
