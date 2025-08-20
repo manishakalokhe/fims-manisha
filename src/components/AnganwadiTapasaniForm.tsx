@@ -713,23 +713,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.buildingCondition')}
-          </label>
-          <select
-            value={anganwadiFormData.building_condition}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_condition: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            disabled={isViewMode}
-          >
-            <option value="">{t('categories.selectCondition')}</option>
-            <option value="excellent">{t('categories.excellent')}</option>
-            <option value="good">{t('categories.good')}</option>
-            <option value="average">{t('categories.average')}</option>
-            <option value="poor">{t('categories.poor')}</option>
-          </select>
-        </div>
       </div>
     </div>
   );
