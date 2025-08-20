@@ -21,12 +21,25 @@ function App() {
           return;
         }
         
+        // Additional check for proper configuration
+        if (!isSupabaseConfigured) {
+          console.warn('Supabase not properly configured');
+          setIsLoading(false);
+          return;
+        }
+
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
       } catch (error) {
         console.error('Error checking user:', error);
-        // Clear stale session data if JWT is invalid
-        await supabase.auth.signOut();
+        // Only attempt signOut if supabase is available
+        if (supabase) {
+          try {
+            await supabase.auth.signOut();
+          } catch (signOutError) {
+            console.error('Error signing out:', signOutError);
+          }
+        }
         setUser(null);
       } finally {
         setIsLoading(false);
@@ -35,13 +48,21 @@ function App() {
 
     checkUser();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-    });
+    // Only set up auth listener if supabase is properly configured
+    let subscription: any = null;
+    if (supabase && isSupabaseConfigured) {
+      const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        setUser(session?.user ?? null);
+        setIsLoading(false);
+      });
+      subscription = authSubscription;
+    }
 
-    return () => subscription.unsubscribe();
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const handleSignInSuccess = () => {

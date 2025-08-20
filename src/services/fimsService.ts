@@ -44,10 +44,17 @@ export interface Inspection {
 
 export const getInspections = async (userId?: string): Promise<Inspection[]> => {
   if (!supabase) {
-    throw new Error('Supabase client not initialized');
+    console.warn('Supabase client not initialized');
+    return [];
   }
 
   try {
+    // Check if supabase client is properly configured
+    if (!supabase.supabaseUrl || !supabase.supabaseKey) {
+      console.warn('Supabase not properly configured, returning empty inspections list');
+      return [];
+    }
+
     let query = supabase
       .from('fims_inspections')
       .select(`
@@ -83,7 +90,8 @@ export const getInspections = async (userId?: string): Promise<Inspection[]> => 
     return data || [];
   } catch (error) {
     console.error('Error fetching inspections:', error);
-    throw error;
+    // Return empty array instead of throwing to prevent app crash
+    return [];
   }
 };
 
@@ -186,10 +194,17 @@ export const deleteInspection = async (id: string): Promise<void> => {
 
 export const fetchCategories = async () => {
   if (!supabase) {
-    throw new Error('Supabase client not initialized');
+    console.warn('Supabase client not initialized');
+    return [];
   }
 
   try {
+    // Check if supabase client is properly configured
+    if (!supabase.supabaseUrl || !supabase.supabaseKey) {
+      console.warn('Supabase not properly configured, returning empty categories list');
+      return [];
+    }
+
     const { data, error } = await supabase
       .from('fims_categories')
       .select('*')
@@ -203,7 +218,8 @@ export const fetchCategories = async () => {
     return data || [];
   } catch (error) {
     console.error('Error fetching categories:', error);
-    throw error;
+    // Return empty array instead of throwing to prevent app crash
+    return [];
   }
 };
 
@@ -256,6 +272,12 @@ export const fetchInspectors = async () => {
   }
 
   try {
+    // Check if supabase client is properly configured
+    if (!supabase.supabaseUrl || !supabase.supabaseKey) {
+      console.warn('Supabase not properly configured, returning empty inspectors list');
+      return [];
+    }
+
     const { data, error } = await supabase
       .from('user_roles')
       .select(`
@@ -277,6 +299,7 @@ export const fetchInspectors = async () => {
     return data || [];
   } catch (error) {
     console.error('Error fetching inspectors:', error);
-    throw error;
+    // Return empty array instead of throwing to prevent app crash
+    return [];
   }
 };
