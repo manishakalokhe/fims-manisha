@@ -242,6 +242,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   // Load existing inspection data when editing
   useEffect(() => {
     if (editingInspection && editingInspection.id) {
+      console.log('Loading inspection data:', editingInspection);
+      
       // Load basic inspection data
       setInspectionData({
         category_id: editingInspection.category_id || '',
@@ -256,6 +258,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       // Load anganwadi form data if it exists
       if (editingInspection.fims_anganwadi_forms && editingInspection.fims_anganwadi_forms.length > 0) {
         const formData = editingInspection.fims_anganwadi_forms[0];
+        console.log('Loading form data:', formData);
         setAnganwadiFormData({
           anganwadi_name: formData.anganwadi_name || '',
           anganwadi_number: formData.anganwadi_number || '',
@@ -333,6 +336,90 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           inspector_designation: formData.inspector_designation || '',
           inspector_name: formData.inspector_name || ''
         });
+      } else {
+        console.log('No anganwadi form data found, checking form_data field');
+        // Try to load from form_data field if fims_anganwadi_forms is empty
+        if (editingInspection.form_data) {
+          const formData = editingInspection.form_data;
+          console.log('Loading from form_data:', formData);
+          setAnganwadiFormData({
+            anganwadi_name: formData.anganwadi_name || '',
+            anganwadi_number: formData.anganwadi_number || '',
+            supervisor_name: formData.supervisor_name || '',
+            helper_name: formData.helper_name || '',
+            village_name: formData.village_name || '',
+            building_condition: formData.building_condition || '',
+            building_type: formData.building_type || '',
+            room_availability: formData.room_availability || false,
+            toilet_facility: formData.toilet_facility || false,
+            drinking_water: formData.drinking_water || false,
+            electricity: formData.electricity || false,
+            kitchen_garden: formData.kitchen_garden || false,
+            independent_kitchen: formData.independent_kitchen || false,
+            women_health_checkup_space: formData.women_health_checkup_space || false,
+            weighing_machine: formData.weighing_machine || false,
+            baby_weighing_scale: formData.baby_weighing_scale || false,
+            hammock_weighing_scale: formData.hammock_weighing_scale || false,
+            adult_weighing_scale: formData.adult_weighing_scale || false,
+            height_measuring_scale: formData.height_measuring_scale || false,
+            first_aid_kit: formData.first_aid_kit || false,
+            cooking_utensils: formData.cooking_utensils || false,
+            water_storage_containers: formData.water_storage_containers || false,
+            medicine_kits: formData.medicine_kits || false,
+            teaching_materials: formData.teaching_materials || false,
+            pre_school_kit: formData.pre_school_kit || false,
+            toys_available: formData.toys_available || false,
+            attendance_register: formData.attendance_register || false,
+            all_registers: formData.all_registers || false,
+            growth_chart_updated: formData.growth_chart_updated || false,
+            vaccination_records: formData.vaccination_records || false,
+            nutrition_records: formData.nutrition_records || false,
+            monthly_progress_reports: formData.monthly_progress_reports || false,
+            timetable_available: formData.timetable_available || false,
+            timetable_followed: formData.timetable_followed || false,
+            total_registered_children: formData.total_registered_children || 0,
+            children_present_today: formData.children_present_today || 0,
+            children_0_3_years: formData.children_0_3_years || 0,
+            children_3_6_years: formData.children_3_6_years || 0,
+            preschool_education_registered: formData.preschool_education_registered || 0,
+            preschool_education_present: formData.preschool_education_present || 0,
+            hot_meal_served: formData.hot_meal_served || false,
+            meal_quality: formData.meal_quality || '',
+            take_home_ration: formData.take_home_ration || false,
+            supervisor_regular_attendance: formData.supervisor_regular_attendance || false,
+            monthly_25_days_meals: formData.monthly_25_days_meals || false,
+            thr_provided_regularly: formData.thr_provided_regularly || false,
+            food_provider: formData.food_provider || '',
+            supervisor_participation: formData.supervisor_participation || '',
+            food_distribution_decentralized: formData.food_distribution_decentralized || false,
+            children_food_taste_preference: formData.children_food_taste_preference || '',
+            prescribed_protein_calories: formData.prescribed_protein_calories || false,
+            prescribed_weight_food: formData.prescribed_weight_food || false,
+            lab_sample_date: formData.lab_sample_date || '',
+            health_checkup_conducted: formData.health_checkup_conducted || false,
+            regular_weighing: formData.regular_weighing || false,
+            growth_chart_accuracy: formData.growth_chart_accuracy || false,
+            immunization_updated: formData.immunization_updated || false,
+            vaccination_health_checkup_regular: formData.vaccination_health_checkup_regular || false,
+            vaccination_schedule_awareness: formData.vaccination_schedule_awareness || false,
+            vitamin_a_given: formData.vitamin_a_given || false,
+            iron_tablets_given: formData.iron_tablets_given || false,
+            village_health_nutrition_planning: formData.village_health_nutrition_planning || '',
+            children_attendance_comparison: formData.children_attendance_comparison || '',
+            preschool_programs_conducted: formData.preschool_programs_conducted || '',
+            community_participation: formData.community_participation || '',
+            committee_member_participation: formData.committee_member_participation || '',
+            home_visits_guidance: formData.home_visits_guidance || '',
+            public_opinion_improvement: formData.public_opinion_improvement || '',
+            general_observations: formData.general_observations || '',
+            recommendations: formData.recommendations || '',
+            action_required: formData.action_required || '',
+            suggestions: formData.suggestions || '',
+            visit_date: formData.visit_date || '',
+            inspector_designation: formData.inspector_designation || '',
+            inspector_name: formData.inspector_name || ''
+          });
+        }
       }
     }
   }, [editingInspection]);
