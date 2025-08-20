@@ -14,32 +14,17 @@ function App() {
   useEffect(() => {
     // Check if user is already signed in
     const checkUser = async () => {
-      try {
-        if (!supabase) {
-          console.error('Supabase client not initialized. Please check your environment variables.');
-          setIsLoading(false);
-          return;
-        }
-        
-        // Additional check for proper configuration
-        if (!isSupabaseConfigured) {
-          console.warn('Supabase not properly configured');
-          setIsLoading(false);
-          return;
-        }
+      // Don't attempt any Supabase operations if not configured
+      if (!isSupabaseConfigured || !supabase) {
+        setIsLoading(false);
+        return;
+      }
 
+      try {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
       } catch (error) {
         console.error('Error checking user:', error);
-        // Only attempt signOut if supabase is available
-        if (supabase) {
-          try {
-            await supabase.auth.signOut();
-          } catch (signOutError) {
-            console.error('Error signing out:', signOutError);
-          }
-        }
         setUser(null);
       } finally {
         setIsLoading(false);
@@ -48,9 +33,9 @@ function App() {
 
     checkUser();
 
-    // Only set up auth listener if supabase is properly configured
+    // Only set up auth listener if Supabase is properly configured
     let subscription: any = null;
-    if (supabase && isSupabaseConfigured) {
+    if (isSupabaseConfigured && supabase) {
       const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
         setUser(session?.user ?? null);
         setIsLoading(false);
@@ -76,9 +61,16 @@ function App() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50 flex items-center justify-center">
-        {isSupabaseConfigured ? (
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-        ) : (
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+
+  // Show configuration error if Supabase is not configured
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="w-full max-w-md mx-4">
           <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-4">
             <div className="text-center">
               <div className="bg-red-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
@@ -109,7 +101,7 @@ function App() {
               )}
             </div>
           </div>
-        )}
+        </div>
       </div>
     );
   }

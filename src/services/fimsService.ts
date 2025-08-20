@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { isSupabaseConfigured } from '../lib/supabase';
 
 export interface Inspection {
   id: string;
@@ -43,18 +44,13 @@ export interface Inspection {
 }
 
 export const getInspections = async (userId?: string): Promise<Inspection[]> => {
-  if (!supabase) {
-    console.warn('Supabase client not initialized');
+  // Return empty array immediately if Supabase is not configured
+  if (!isSupabaseConfigured || !supabase) {
+    console.warn('Supabase not configured, returning empty inspections list');
     return [];
   }
 
   try {
-    // Check if supabase client is properly configured
-    if (!supabase.supabaseUrl || !supabase.supabaseKey) {
-      console.warn('Supabase not properly configured, returning empty inspections list');
-      return [];
-    }
-
     let query = supabase
       .from('fims_inspections')
       .select(`
@@ -96,7 +92,7 @@ export const getInspections = async (userId?: string): Promise<Inspection[]> => 
 };
 
 export const createInspection = async (inspectionData: Partial<Inspection>): Promise<Inspection> => {
-  if (!supabase) {
+  if (!isSupabaseConfigured || !supabase) {
     throw new Error('Supabase client not initialized');
   }
 
@@ -134,7 +130,7 @@ export const createInspection = async (inspectionData: Partial<Inspection>): Pro
 };
 
 export const updateInspection = async (id: string, updates: Partial<Inspection>): Promise<Inspection> => {
-  if (!supabase) {
+  if (!isSupabaseConfigured || !supabase) {
     throw new Error('Supabase client not initialized');
   }
 
@@ -173,7 +169,7 @@ export const updateInspection = async (id: string, updates: Partial<Inspection>)
 };
 
 export const deleteInspection = async (id: string): Promise<void> => {
-  if (!supabase) {
+  if (!isSupabaseConfigured || !supabase) {
     throw new Error('Supabase client not initialized');
   }
 
@@ -193,18 +189,13 @@ export const deleteInspection = async (id: string): Promise<void> => {
 };
 
 export const fetchCategories = async () => {
-  if (!supabase) {
-    console.warn('Supabase client not initialized');
+  // Return empty array immediately if Supabase is not configured
+  if (!isSupabaseConfigured || !supabase) {
+    console.warn('Supabase not configured, returning empty categories list');
     return [];
   }
 
   try {
-    // Check if supabase client is properly configured
-    if (!supabase.supabaseUrl || !supabase.supabaseKey) {
-      console.warn('Supabase not properly configured, returning empty categories list');
-      return [];
-    }
-
     const { data, error } = await supabase
       .from('fims_categories')
       .select('*')
@@ -224,7 +215,7 @@ export const fetchCategories = async () => {
 };
 
 export const reassignInspection = async (id: string, newInspectorId: string): Promise<Inspection> => {
-  if (!supabase) {
+  if (!isSupabaseConfigured || !supabase) {
     throw new Error('Supabase client not initialized');
   }
 
@@ -267,17 +258,13 @@ export const reassignInspection = async (id: string, newInspectorId: string): Pr
 };
 
 export const fetchInspectors = async () => {
-  if (!supabase) {
-    throw new Error('Supabase client not initialized');
+  // Return empty array immediately if Supabase is not configured
+  if (!isSupabaseConfigured || !supabase) {
+    console.warn('Supabase not configured, returning empty inspectors list');
+    return [];
   }
 
   try {
-    // Check if supabase client is properly configured
-    if (!supabase.supabaseUrl || !supabase.supabaseKey) {
-      console.warn('Supabase not properly configured, returning empty inspectors list');
-      return [];
-    }
-
     const { data, error } = await supabase
       .from('user_roles')
       .select(`
