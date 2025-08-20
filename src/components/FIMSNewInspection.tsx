@@ -43,6 +43,16 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
     }
   }, [editingInspection, categories]);
 
+  // Auto-navigate to form if editing an existing inspection
+  useEffect(() => {
+    if (editingInspection && editingInspection.id && categories.length > 0) {
+      const category = categories.find(cat => cat.id === editingInspection.category_id);
+      if (category && category.form_type) {
+        setSelectedInspectionType(category.form_type);
+      }
+    }
+  }, [editingInspection, categories]);
+
   // Handle inspection type selection
   const handleInspectionTypeSelect = (type: string) => {
     setSelectedInspectionType(type);
