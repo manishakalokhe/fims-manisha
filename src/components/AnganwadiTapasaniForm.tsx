@@ -635,24 +635,22 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   );
 
   const renderBasicInformation = () => (
-    <div className="space-y-8">
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6 rounded-2xl">
-        <div className="flex items-center text-white">
-          <Building2 className="w-8 h-8 mr-4" />
-          <h3 className="text-2xl font-bold">{t('categories.basicInformation')}</h3>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+        <Building2 className="h-5 w-5 mr-2 text-purple-600" />
+        {t('categories.basicInformation')}
+      </h3>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-lg font-bold text-gray-700 mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {t('categories.anganwadiName')} *
           </label>
           <input
             type="text"
             value={anganwadiFormData.anganwadi_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_name: e.target.value}))}
-            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             placeholder={t('categories.enterAnganwadiName')}
             disabled={isViewMode}
             required
@@ -660,69 +658,69 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         </div>
 
         <div>
-          <label className="block text-lg font-bold text-gray-700 mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {t('categories.anganwadiNumber')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.anganwadi_number}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_number: e.target.value}))}
-            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             placeholder={t('categories.enterAnganwadiNumber')}
             disabled={isViewMode}
           />
         </div>
 
         <div>
-          <label className="block text-lg font-bold text-gray-700 mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {t('categories.supervisorName')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.supervisor_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, supervisor_name: e.target.value}))}
-            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             placeholder={t('categories.enterSupervisorName')}
             disabled={isViewMode}
           />
         </div>
 
         <div>
-          <label className="block text-lg font-bold text-gray-700 mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {t('categories.helperName')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.helper_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, helper_name: e.target.value}))}
-            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             placeholder={t('categories.enterHelperName')}
             disabled={isViewMode}
           />
         </div>
 
         <div>
-          <label className="block text-lg font-bold text-gray-700 mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {t('categories.villageName')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.village_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_name: e.target.value}))}
-            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             placeholder={t('categories.enterVillageName')}
             disabled={isViewMode}
           />
         </div>
 
         <div>
-          <label className="block text-lg font-bold text-gray-700 mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {t('categories.buildingCondition')}
           </label>
           <select
             value={anganwadiFormData.building_condition}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_condition: e.target.value}))}
-            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             disabled={isViewMode}
           >
             <option value="">{t('categories.selectCondition')}</option>
@@ -737,75 +735,80 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   );
 
   const renderLocationDetails = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {t('categories.locationInformation')}
-      </h3>
+    <div className="space-y-8">
+      <div className="bg-gradient-to-r from-indigo-500 to-blue-600 px-8 py-6 rounded-2xl">
+        <div className="flex items-center text-white">
+          <MapPin className="w-8 h-8 mr-4" />
+          <h3 className="text-2xl font-bold">{t('fims.locationDetails')}</h3>
+        </div>
+      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.locationName')} *
+          <label className="block text-lg font-bold text-gray-700 mb-4">
+            {t('fims.locationName')} *
           </label>
           <input
             type="text"
             value={inspectionData.location_name}
             onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder={t('categories.enterLocationName')}
-            disabled={isViewMode}
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+            placeholder={t('fims.enterLocationName')}
             required
+            disabled={isViewMode}
           />
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.address')}
+          <label className="block text-lg font-bold text-gray-700 mb-4">
+            {t('fims.address')}
           </label>
           <textarea
             value={inspectionData.address}
             onChange={(e) => setInspectionData(prev => ({...prev, address: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            rows={3}
-            placeholder={t('categories.enterFullAddress')}
             disabled={isViewMode}
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm resize-none"
+            rows={3}
+            placeholder={t('fims.enterFullAddress')}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.plannedDate')}
+          <label className="block text-lg font-bold text-gray-700 mb-4">
+            {t('fims.plannedDate')}
           </label>
           <input
             type="date"
             value={inspectionData.planned_date}
             onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
             disabled={isViewMode}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-lg font-bold text-gray-700 mb-4">
             GPS Location
           </label>
+          {!isViewMode && (
           <button
             type="button"
             onClick={getCurrentLocation}
-            disabled={isLoading || isViewMode}
-            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
+            disabled={isLoading}
+            className="w-full px-4 py-3 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white rounded-2xl transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
           >
             <MapPin className="h-4 w-4" />
-            <span>{isLoading ? t('categories.gettingLocation') : t('categories.getCurrentLocation')}</span>
+            <span>{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
           </button>
+          )}
           
           {inspectionData.latitude && inspectionData.longitude && (
-            <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-800 font-medium">{t('categories.locationCaptured')}</p>
+            <div className="mt-4 p-5 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl shadow-sm">
+              <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
               <p className="text-xs text-green-600">
-                {t('categories.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
-                {t('categories.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
-                {t('categories.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
+                {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
+                {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
               </p>
             </div>
           )}
