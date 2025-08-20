@@ -1231,7 +1231,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
+        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-4 md:p-6 mb-4 md:mb-6 transform hover:scale-[1.01] transition-transform duration-300">
           {isViewMode && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
               <p className="text-blue-800 text-sm font-medium">
