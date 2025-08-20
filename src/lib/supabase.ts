@@ -28,20 +28,53 @@ const isValidUrl = (url: string) => {
   }
 };
 
-if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
-  console.error('Missing Supabase environment variables. Please check your .env file.');
-  console.error('Required variables: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY');
-  if (supabaseUrl && !isValidUrl(supabaseUrl)) {
-    console.error('VITE_SUPABASE_URL must be a valid URL format: https://your-project-id.supabase.co');
+// Enhanced validation and error reporting
+const validateSupabaseConfig = () => {
+  const errors = [];
+  
+  if (!supabaseUrl) {
+    errors.push('VITE_SUPABASE_URL is missing from environment variables');
+  } else if (!isValidUrl(supabaseUrl)) {
+    errors.push('VITE_SUPABASE_URL must be a valid URL format (e.g., https://your-project-id.supabase.co)');
   }
+  
+  if (!supabaseAnonKey) {
+    errors.push('VITE_SUPABASE_ANON_KEY is missing from environment variables');
+  } else if (supabaseAnonKey.length < 100) {
+    errors.push('VITE_SUPABASE_ANON_KEY appears to be invalid (too short)');
+  }
+  
+  return errors;
+};
+
+const configErrors = validateSupabaseConfig();
+if (configErrors.length > 0) {
+  console.error('Missing Supabase environment variables. Please check your .env file.');
+  console.error('Configuration errors:');
+  configErrors.forEach(error => console.error(`- ${error}`));
+  console.error('\nTo fix this:');
+  console.error('1. Create a .env file in your project root');
+  console.error('2. Add the following variables:');
+  console.error('   VITE_SUPABASE_URL=https://your-project-id.supabase.co');
+  console.error('   VITE_SUPABASE_ANON_KEY=your-anon-key');
+  console.error('3. Get these values from your Supabase project dashboard');
+  console.error('4. Restart the development server');
 }
 
-// Create Supabase client only if environment variables are available
-export const supabase = supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl) ? createClient(supabaseUrl, supabaseAnonKey, {
+// Create Supabase client only if environment variables are valid
+export const supabase = configErrors.length === 0 ? createClient(supabaseUrl!, supabaseAnonKey!, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true
+  },
+  global: {
+    headers: {
+      'X-Client-Info': 'fims-app'
+    }
   }
 }) : null;
 
+// Export configuration status for components to check
+export const isSupabaseConfigured = configErrors.length === 0;
+export const supabaseConfigErrors = configErrors;
