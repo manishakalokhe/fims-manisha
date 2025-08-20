@@ -58,12 +58,29 @@ VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-To get these values:
+## How to Get Supabase Credentials:
+
 1. Go to your Supabase project dashboard
 2. Navigate to 'Project Settings' -> 'API'
 3. Copy your 'Project URL' and 'anon public' key
 4. Add them to your `.env` file
 5. Restart the development server
+
+## Troubleshooting Connection Issues:
+
+If you see "Failed to fetch" errors:
+
+1. **Check your .env file exists** in the root directory (same level as package.json)
+2. **Verify credentials** - Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are correct
+3. **Restart development server** - Run `npm run dev` again after changing .env
+4. **Check browser console** - Look for detailed error messages about missing variables
+5. **Verify Supabase project** - Ensure your Supabase project is active and accessible
+
+Example .env file:
+```
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your-long-anon-key-here
+```
 
 ## Deployment
 
