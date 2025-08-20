@@ -1376,10 +1376,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                     className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
                   >
                     ×
-                    <option value="excellent">उत्कृष्ट</option>
-                    <option value="good">चांगली</option>
-                    <option value="average">सरासरी</option>
-                    <option value="poor">खराब</option>
+                  </button>
+                )}
+                <p className="text-xs text-gray-600 mt-1 truncate">
+                  {photo.name}
                 </p>
               </div>
             ))}
