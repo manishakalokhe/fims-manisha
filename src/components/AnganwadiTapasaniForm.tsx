@@ -1510,7 +1510,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                     className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
                   >
                     <Camera className="h-4 w-4 mr-2" />
-                    पूर्वशाले शिक्षण - नोंदणीकृत मुले
+                    {t('fims.selectPhotos')}
                   </label>
                 </>
               )}
@@ -1549,114 +1549,114 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                 </div>
               </div>
             )}
-                  समुदायिक सहभाग
+
             {/* Display existing photos when viewing */}
             {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
               <div>
                 <h4 className="text-md font-medium text-gray-900 mb-3">
                   Inspection Photos ({editingInspection.fims_inspection_photos.length})
                 </h4>
-                  placeholder="समुदायिक सहभागाचे वर्णन करा"
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
                     <div key={photo.id} className="relative">
                       <img
                         src={photo.photo_url}
                         alt={photo.description || `Anganwadi photo ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg"
-                  समिती सदस्यांचा सहभाग
+                      />
                       <p className="text-xs text-gray-600 mt-1 truncate">
                         {photo.photo_name || `Photo ${index + 1}`}
                       </p>
                       {photo.description && (
                         <p className="text-xs text-gray-500 truncate">
                           {photo.description}
-                  placeholder="समिती सदस्यांच्या सहभागाचे वर्णन करा"
+                        </p>
                       )}
                     </div>
                   ))}
                 </div>
               </div>
             )}
-                  घर भेटी आणि मार्गदर्शन
+
             {/* Show message when no photos in view mode */}
             {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
               <div className="text-center py-8 text-gray-500">
                 <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
                 <p>{t('fims.noPhotosFound')}</p>
               </div>
-                  placeholder="घर भेटी आणि दिलेल्या मार्गदर्शनाचे वर्णन करा"
+            )}
 
             {isUploading && (
               <div className="text-center py-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
                 <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
               </div>
-                  सुधारणेसाठी लोकमत
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 
-                  placeholder="सुधारणेसाठी लोकमताचे वर्णन करा"
+  const renderStepContent = () => {
     switch (currentStep) {
       case 1:
         return renderBasicDetailsAndLocation();
       case 2:
         return renderAnganwadiInspectionForm();
       case 3:
-                  सूचना
+        return renderPhotoUpload();
       default:
         return null;
     }
   };
 
   const canProceedToNext = () => {
-                  placeholder="सूचना प्रविष्ट करा"
-                    placeholder="एकूण नोंदणीकृत मुलांची संख्या प्रविष्ट करा"
+    switch (currentStep) {
+      case 1:
         return anganwadiFormData.anganwadi_name;
       case 2:
         return inspectionData.location_name;
       default:
         return true;
     }
-                    भेटीची तारीख
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 md:p-6">
       <section className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-6 md:mb-8 overflow-hidden">
-                    placeholder="भेटीची तारीख प्रविष्ट करा"
+          <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 px-6 md:px-8 py-8 md:py-12 text-white relative">
             <div className="absolute inset-0 bg-black/10"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
                 <button
                   onClick={onBack}
-                    निरीक्षकाचे पदनाम
+                  className="flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200"
                 >
                   <ArrowLeft className="h-5 w-5" />
                   <span>Back</span>
                 </button>
                 <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center">
                   {editingInspection?.mode === 'view' ? t('fims.viewInspection') : 
-                    placeholder="निरीक्षकाचे पदनाम प्रविष्ट करा"
+                   editingInspection?.mode === 'edit' ? t('fims.editInspection') : 
                    t('fims.newInspection')} - अंगणवाडी केंद्र तपासणी
                 </h1>
                 <div className="w-20"></div>
               </div>
 
               {renderStepIndicator()}
-                    निरीक्षकाचे नाव
-                  आयोजित पूर्वशाले कार्यक्रम
+
+              <div className="flex justify-center space-x-8 text-sm">
                 <div className={`${currentStep === 1 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
                   मूलभूत माहिती
                 </div>
                 <div className={`${currentStep === 2 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
                   अंगणवाडी तपासणी
-                    placeholder="निरीक्षकाचे नाव प्रविष्ट करा"
-                  placeholder="आयोजित पूर्वशाले कार्यक्रमांचे वर्णन करा"
+                </div>
+                <div className={`${currentStep === 3 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
                   {t('fims.photosSubmit')}
                 </div>
               </div>
