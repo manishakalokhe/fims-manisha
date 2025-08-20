@@ -1486,14 +1486,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
           <div className="flex items-center text-white">
             <Camera className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">{t('fims.uploadPhotos')}</h3>
+            <h3 className="text-2xl font-bold">{t('fims.photosAndDocuments')}</h3>
           </div>
         </div>
         <div className="p-10">
           <div className="space-y-6">
             <div>
               <h4 className="text-md font-medium text-gray-900 mb-3">
-                {t('fims.addPhotos')}
+                {t('fims.uploadPhotos')}
               </h4>
               {!isViewMode && (
                 <>
@@ -1614,29 +1614,27 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const canProceedToNext = () => {
     switch (currentStep) {
       case 1:
-        return anganwadiFormData.anganwadi_name.trim() !== '' && inspectionData.location_name.trim() !== '';
+        return anganwadiFormData.anganwadi_name;
       case 2:
-        return true;
-      case 3:
-        return true;
+        return inspectionData.location_name;
       default:
-        return false;
+        return true;
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 md:p-6">
-      <section className="max-w-7xl mx-auto">
+      <section className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-6 md:mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-700 px-6 md:px-8 py-8 md:py-12 text-white relative">
+          <div className="bg-gradient-to-r from-purple-600 via-indigo-700 to-blue-800 px-6 md:px-8 py-8 md:py-12 text-white relative">
             <div className="absolute inset-0 bg-black/10"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
                 <button
                   onClick={onBack}
-                  className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors duration-200"
+                  className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors duration-200"
                 >
                   <ArrowLeft className="h-5 w-5" />
                   <span>Back</span>
@@ -1653,7 +1651,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
               <div className="flex justify-center space-x-4 md:space-x-8 text-xs md:text-sm">
                 <div className={`${currentStep === 1 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-                  मूलभूत माहिती आणि स्थान
+                  मूलभूत माहिती
                 </div>
                 <div className={`${currentStep === 2 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
                   अंगणवाडी तपासणी
@@ -1664,56 +1662,56 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Form Content */}
-          <div className="bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/30 rounded-xl shadow-lg border-2 border-blue-200 p-4 md:p-6 mb-4 md:mb-6">
-            {renderStepContent()}
-          </div>
+        {/* Form Content */}
+        <div className="bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/30 rounded-xl shadow-lg border-2 border-blue-200 p-4 md:p-6 mb-4 md:mb-6">
+          {renderStepContent()}
+        </div>
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between items-center">
-            <button
-              onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-              disabled={currentStep === 1}
-              className="px-4 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
-            >
-              {t('common.previous')}
-            </button>
+        {/* Navigation Buttons */}
+        <div className="flex justify-between items-center">
+          <button
+            onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+            disabled={currentStep === 1}
+            className="px-4 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
+          >
+            {t('common.previous')}
+          </button>
 
-            <div className="flex space-x-2 md:space-x-3">
-              {currentStep === 3 ? (
-                <>
-                  {!isViewMode && (
-                    <button
-                      onClick={() => handleSubmit(true)}
-                      disabled={isLoading || isUploading}
-                      className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                    >
-                      <Save className="h-4 w-4" />
-                      <span>{t('fims.saveAsDraft')}</span>
-                    </button>
-                  )}
-                  {!isViewMode && (
-                    <button
-                      onClick={() => handleSubmit(false)}
-                      disabled={isLoading || isUploading}
-                      className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                    >
-                      <Send className="h-4 w-4" />
-                      <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
-                    </button>
-                  )}
-                </>
-              ) : (
-                <button
-                  onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
-                  disabled={!canProceedToNext()}
-                  className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
-                >
-                  {t('common.next')}
-                </button>
-              )}
-            </div>
+          <div className="flex space-x-2 md:space-x-3">
+            {currentStep === 3 ? (
+              <>
+                {!isViewMode && (
+                  <button
+                    onClick={() => handleSubmit(true)}
+                    disabled={isLoading || isUploading}
+                    className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
+                  >
+                    <Save className="h-4 w-4" />
+                    <span>{t('fims.saveAsDraft')}</span>
+                  </button>
+                )}
+                {!isViewMode && (
+                  <button
+                    onClick={() => handleSubmit(false)}
+                    disabled={isLoading || isUploading}
+                    className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
+                  >
+                    <Send className="h-4 w-4" />
+                    <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
+                  </button>
+                )}
+              </>
+            ) : (
+              <button
+                onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
+                disabled={!canProceedToNext()}
+                className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
+              >
+                {t('common.next')}
+              </button>
+            )}
           </div>
         </div>
       </section>
