@@ -158,7 +158,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [inspectionData, setInspectionData] = useState({
     category_id: '',
     location_name: '',
-    address: '',
     planned_date: '',
     latitude: null as number | null,
     longitude: null as number | null,
@@ -172,7 +171,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     supervisor_name: '',
     helper_name: '',
     village_name: '',
-    building_type: '',
     building_condition: '',
     room_availability: false,
     toilet_facility: false,
@@ -265,7 +263,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       setInspectionData({
         category_id: editingInspection.category_id || '',
         location_name: editingInspection.location_name || '',
-        address: editingInspection.address || '',
         planned_date: editingInspection.planned_date ? editingInspection.planned_date.split('T')[0] : '',
         latitude: editingInspection.latitude,
         longitude: editingInspection.longitude,
@@ -281,7 +278,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         console.log('Loading from fims_anganwadi_forms:', formDataToLoad);
       }
       // Fallback to form_data JSON field
-      else if (editingInspection.form_data) {
         formDataToLoad = editingInspection.form_data;
         console.log('Loading from form_data JSON:', formDataToLoad);
       }
