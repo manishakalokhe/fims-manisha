@@ -556,7 +556,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
   const renderStepIndicator = () => (
     <div className="flex items-center justify-center mb-8">
-      {[1, 2, 3, 4].map((step) => (
+      {[1, 2, 3].map((step) => (
         <div key={step} className="flex items-center">
           <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
             currentStep >= step 
@@ -565,7 +565,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           }`}>
             {step}
           </div>
-          {step < 4 && (
+          {step < 3 && (
             <div className={`w-16 h-1 mx-2 ${
               currentStep > step ? 'bg-purple-600' : 'bg-gray-200'
             }`} />
@@ -612,84 +612,108 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     </div>
   );
 
-  const renderBasicInformation = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-        <Building2 className="h-5 w-5 mr-2 text-purple-600" />
-        {t('categories.basicInformation')}
-      </h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.anganwadiName')} *
-          </label>
-          <input
-            type="text"
-            value={anganwadiFormData.anganwadi_name}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_name: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder={t('categories.enterAnganwadiName')}
-            required
-            disabled={isViewMode}
-          />
+  const renderBasicDetailsAndLocation = () => (
+    <div className="space-y-8">
+      {/* Basic Information Section */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Building2 className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">मूलभूत माहिती (Basic Information)</h3>
+          </div>
         </div>
+        <div className="p-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.anganwadiName')} *
+              </label>
+              <input
+                type="text"
+                value={anganwadiFormData.anganwadi_name}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder={t('fims.enterAnganwadiName')}
+                required
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.anganwadiNumber')}
+              </label>
+              <input
+                type="text"
+                value={anganwadiFormData.anganwadi_number}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_number: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder={t('fims.enterAnganwadiNumber')}
+                disabled={isViewMode}
+              />
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.anganwadiNumber')}
-          </label>
-          <input
-            type="text"
-            value={anganwadiFormData.anganwadi_number}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_number: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder={t('categories.enterAnganwadiNumber')}
-            disabled={isViewMode}
-          />
-        </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.supervisorName')}
+              </label>
+              <input
+                type="text"
+                value={anganwadiFormData.supervisor_name}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, supervisor_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder={t('fims.enterSupervisorName')}
+                disabled={isViewMode}
+              />
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.supervisorName')}
-          </label>
-          <input
-            type="text"
-            value={anganwadiFormData.supervisor_name}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, supervisor_name: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder={t('categories.enterSupervisorName')}
-            disabled={isViewMode}
-          />
-        </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.helperName')}
+              </label>
+              <input
+                type="text"
+                value={anganwadiFormData.helper_name}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, helper_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder={t('fims.enterHelperName')}
+                disabled={isViewMode}
+              />
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.helperName')}
-          </label>
-          <input
-            type="text"
-            value={anganwadiFormData.helper_name}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, helper_name: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder={t('categories.enterHelperName')}
-            disabled={isViewMode}
-          />
-        </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.villageName')}
+              </label>
+              <input
+                type="text"
+                value={anganwadiFormData.village_name}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder={t('fims.enterVillageName')}
+                disabled={isViewMode}
+              />
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.villageName')}
-          </label>
-          <input
-            type="text"
-            value={anganwadiFormData.village_name}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_name: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder={t('categories.enterVillageName')}
-            disabled={isViewMode}
-          />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                इमारतीचा प्रकार
+              </label>
+              <select
+                value={anganwadiFormData.building_type}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_type: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                disabled={isViewMode}
+              >
+                <option value="">प्रकार निवडा</option>
+                <option value="own">स्वतःची</option>
+                <option value="rented">भाड्याची</option>
+                <option value="free">मोफत</option>
+                <option value="no_building">इमारत नाही</option>
+              </select>
+            </div>
+          </div>
         </div>
+      </section>
       </div>
     </div>
   );
@@ -753,27 +777,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               onClick={getCurrentLocation}
               disabled={isLoading}
               className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-            >
-              <MapPin className="h-4 w-4" />
-              <span>{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
-            </button>
-          )}
-          
-          {inspectionData.latitude && inspectionData.longitude && (
-            <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
-              <p className="text-xs text-green-600">
-                {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
-                {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
-                {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
-              </p>
-            </div>
-          )}
+      {/* Location Information Section */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <MapPin className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">स्थान माहिती (Location Information)</h3>
+          </div>
         </div>
-      </div>
-    </div>
-  );
-
   const renderAnganwadiInspectionForm = () => (
     <div className="space-y-8">
       <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-10 overflow-hidden">
@@ -1440,46 +1451,36 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                GPS Location
+        <div className="p-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.locationName')} *
               </label>
-              {!isViewMode && (
-                <button
-                  type="button"
-                  onClick={getCurrentLocation}
-                  disabled={isLoading}
-                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-                >
-                  <MapPin className="h-4 w-4" />
-                  <span>{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
-                </button>
-              )}
-              
-              {inspectionData.latitude && inspectionData.longitude && (
-                <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
-                  <p className="text-xs text-green-600">
-                    {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
-                    {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
-                    {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
-                  </p>
-                </div>
-              )}
+              <input
+                type="text"
+                value={inspectionData.location_name}
+                onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={t('fims.enterLocationName')}
+                required
+                disabled={isViewMode}
+              />
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        <div className="text-center">
-          <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h4 className="text-lg font-medium text-gray-900 mb-2">
-            Upload Anganwadi Photos
+                  </p>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.plannedDate')}
+              </label>
+              <input
+                type="date"
+                value={inspectionData.planned_date}
+                onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={isViewMode}
+              />
+            </div>
           </h4>
-          <p className="text-gray-600 mb-4">
-            Upload photos of the anganwadi center for documentation and record keeping
-          </p>
-          
-          {!isViewMode && (
             <>
               <input
                 type="file"
@@ -1583,12 +1584,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return renderBasicInformation();
+        return renderBasicDetailsAndLocation();
       case 2:
-        return renderLocationDetails();
-      case 3:
         return renderAnganwadiInspectionForm();
-      case 4:
+      case 3:
         return renderPhotoUpload();
       default:
         return null;
@@ -1598,30 +1597,35 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const canProceedToNext = () => {
     switch (currentStep) {
       case 1:
-        return anganwadiFormData.anganwadi_name;
+        return anganwadiFormData.anganwadi_name.trim() !== '' && inspectionData.location_name.trim() !== '';
       case 2:
-        return inspectionData.location_name;
+              <label className="block text-sm font-medium text-gray-700 mb-2">
       case 3:
-        return true; // Form is optional, can proceed
-      case 4:
-        return true; // Photos are optional
-      default:
-        return false;
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
-          {editingInspection?.mode === 'view' && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-              <p className="text-blue-800 text-sm font-medium">
-                {t('fims.viewMode')} - {t('fims.formReadOnly')}
-              </p>
+              </label>
+              {!isViewMode && (
+                <button
+                  type="button"
+                  onClick={getCurrentLocation}
+                  disabled={isLoading}
+                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+                >
+                  <MapPin className="h-4 w-4" />
+                  <span>{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
+                </button>
+              )}
+              
+              {inspectionData.latitude && inspectionData.longitude && (
+                <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
+                  <p className="text-xs text-green-600">
+                    {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
+                    {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
+                    {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                  </p>
+                </div>
+              )}
             </div>
-          )}
+          </div>
           
           <div className="flex items-center justify-between mb-4">
             <button
@@ -1643,15 +1647,12 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
           <div className="flex justify-center space-x-4 md:space-x-8 text-xs md:text-sm">
             <div className={`${currentStep === 1 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              मूलभूत माहिती
+              मूलभूत माहिती आणि स्थान
             </div>
             <div className={`${currentStep === 2 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              {t('fims.locationDetails')}
-            </div>
-            <div className={`${currentStep === 3 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
               अंगणवाडी तपासणी
             </div>
-            <div className={`${currentStep === 4 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
+            <div className={`${currentStep === 3 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
               {t('fims.photosSubmit')}
             </div>
           </div>
@@ -1673,7 +1674,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </button>
 
           <div className="flex space-x-2 md:space-x-3">
-            {currentStep === 4 ? (
+            {currentStep === 3 ? (
               <>
                 {!isViewMode && (
                 <button
@@ -1698,7 +1699,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               </>
             ) : (
               <button
-                onClick={() => setCurrentStep(prev => Math.min(4, prev + 1))}
+                onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
                 disabled={!canProceedToNext()}
                 className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
               >
@@ -1707,7 +1708,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             )}
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
