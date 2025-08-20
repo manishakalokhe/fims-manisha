@@ -332,6 +332,12 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
     try {
       setIsLoading(true);
 
+      // Convert empty date strings to null for database compatibility
+      const sanitizedInspectionData = {
+        ...inspectionData,
+        planned_date: inspectionData.planned_date || null
+      };
+
       let inspectionResult;
 
       if (editingInspection && editingInspection.id) {
@@ -339,12 +345,12 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
         const { data: updateResult, error: updateError } = await supabase
           .from('fims_inspections')
           .update({
-            location_name: inspectionData.location_name,
-            latitude: inspectionData.latitude,
-            longitude: inspectionData.longitude,
-            location_accuracy: inspectionData.location_accuracy,
-            address: inspectionData.address,
-            planned_date: inspectionData.planned_date,
+            location_name: sanitizedInspectionData.location_name,
+            latitude: sanitizedInspectionData.latitude,
+            longitude: sanitizedInspectionData.longitude,
+            location_accuracy: sanitizedInspectionData.location_accuracy,
+            address: sanitizedInspectionData.address,
+            planned_date: sanitizedInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
             form_data: officeFormData
@@ -373,14 +379,14 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
           .from('fims_inspections')
           .insert({
             inspection_number: inspectionNumber,
-            category_id: inspectionData.category_id,
+            category_id: sanitizedInspectionData.category_id,
             inspector_id: user.id,
-            location_name: inspectionData.location_name,
-            latitude: inspectionData.latitude,
-            longitude: inspectionData.longitude,
-            location_accuracy: inspectionData.location_accuracy,
-            address: inspectionData.address,
-            planned_date: inspectionData.planned_date,
+            location_name: sanitizedInspectionData.location_name,
+            latitude: sanitizedInspectionData.latitude,
+            longitude: sanitizedInspectionData.longitude,
+            location_accuracy: sanitizedInspectionData.location_accuracy,
+            address: sanitizedInspectionData.address,
+            planned_date: sanitizedInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
             form_data: officeFormData
