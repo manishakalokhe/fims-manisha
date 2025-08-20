@@ -1452,7 +1452,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-blue-700 mb-2">
-                {t('categories.gpsLocationCapture')}
+                {t('categories.gpsLocation')}
               </label>
               {!isViewMode && (
                 <button
@@ -1461,8 +1461,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   disabled={isLoading}
                   className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
                 >
-                <span>{isLoading ? t('categories.gettingLocation') : t('categories.getCurrentLocation')}</span>
-                  <span>{isLoading ? 'स्थान मिळवत आहे...' : 'सध्याचे स्थान मिळवा'}</span>
+                  <MapPin className="h-4 w-4" />
+                  <span>{isLoading ? t('categories.gettingLocation') : t('categories.getCurrentLocation')}</span>
                 </button>
               )}
               
@@ -1510,7 +1510,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                     className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
                   >
                     <Camera className="h-4 w-4 mr-2" />
-                    पूर्वशाले शिक्षण - नोंदणीकृत मुले
+                    <span>पूर्वशाले शिक्षण - नोंदणीकृत मुले</span>
                   </label>
                 </>
               )}
@@ -1526,14 +1526,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   {t('fims.uploadedPhotos')} ({uploadedPhotos.length}/5)
                 </h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {t('categories.locationName')} *
+                  {uploadedPhotos.map((photo, index) => (
                     <div key={index} className="relative">
                       <img
                         src={URL.createObjectURL(photo)}
                         alt={`Anganwadi photo ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg"
                       />
-              placeholder={t('categories.enterLocationName')}
+                      {!isViewMode && (
                         <button
                           onClick={() => removePhoto(index)}
                           className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
@@ -1541,21 +1541,21 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                           ×
                         </button>
                       )}
-              {t('categories.address')}
+                      <p className="text-xs text-gray-600 mt-1 truncate">
                         {photo.name}
                       </p>
                     </div>
                   ))}
                 </div>
               </div>
-              placeholder={t('categories.enterFullAddress')}
+            )}
 
             {/* Display existing photos when viewing */}
             {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
               <div>
                 <h4 className="text-md font-medium text-gray-900 mb-3">
                   Inspection Photos ({editingInspection.fims_inspection_photos.length})
-              {t('categories.plannedDate')}
+                </h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
                     <div key={photo.id} className="relative">
@@ -1568,7 +1568,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                         {photo.photo_name || `Photo ${index + 1}`}
                       </p>
                       {photo.description && (
-              {t('categories.gpsLocation')}
+                        <p className="text-xs text-gray-500 truncate">
                           {photo.description}
                         </p>
                       )}
@@ -1578,18 +1578,16 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               </div>
             )}
 
-              <span>{isLoading ? t('categories.gettingLocation') : t('categories.getCurrentLocation')}</span>
+            {isUploading && (
+              <div className="text-center py-4">
+                <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
+              </div>
+            )}
+
             {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
               <div className="text-center py-8 text-gray-500">
                 <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
                 <p>{t('fims.noPhotosFound')}</p>
-              </div>
-                <p className="text-sm text-green-800 font-medium">{t('categories.locationCaptured')}</p>
-
-                  {t('categories.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
-                  {t('categories.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
-                  {t('categories.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
-                <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
               </div>
             )}
           </div>
