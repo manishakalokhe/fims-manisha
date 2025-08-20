@@ -28,9 +28,20 @@ const isValidUrl = (url: string) => {
   }
 };
 
-if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
+// Enhanced error logging for debugging
+if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase environment variables. Please check your .env file.');
   console.error('Required variables: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY');
+  console.error('Current VITE_SUPABASE_URL:', supabaseUrl);
+  console.error('Current VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? '[PRESENT]' : '[MISSING]');
+  console.error('Make sure to:');
+  console.error('1. Create a .env file in the root directory');
+  console.error('2. Add your Supabase credentials');
+  console.error('3. Restart the development server');
+}
+
+if (supabaseUrl && !isValidUrl(supabaseUrl)) {
+  console.error('Invalid Supabase URL format:', supabaseUrl);
   if (supabaseUrl && !isValidUrl(supabaseUrl)) {
     console.error('VITE_SUPABASE_URL must be a valid URL format: https://your-project-id.supabase.co');
   }
