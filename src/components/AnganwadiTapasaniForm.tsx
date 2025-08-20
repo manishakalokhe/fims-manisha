@@ -635,22 +635,24 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   );
 
   const renderBasicInformation = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-        <Building2 className="h-5 w-5 mr-2 text-purple-600" />
-        {t('categories.basicInformation')}
-      </h3>
+    <div className="space-y-8">
+      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6 rounded-2xl">
+        <div className="flex items-center text-white">
+          <Building2 className="w-8 h-8 mr-4" />
+          <h3 className="text-2xl font-bold">{t('categories.basicInformation')}</h3>
+        </div>
+      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-lg font-bold text-gray-700 mb-4">
             {t('categories.anganwadiName')} *
           </label>
           <input
             type="text"
             value={anganwadiFormData.anganwadi_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_name: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
             placeholder={t('categories.enterAnganwadiName')}
             disabled={isViewMode}
             required
@@ -658,69 +660,69 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-lg font-bold text-gray-700 mb-4">
             {t('categories.anganwadiNumber')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.anganwadi_number}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_number: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
             placeholder={t('categories.enterAnganwadiNumber')}
             disabled={isViewMode}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-lg font-bold text-gray-700 mb-4">
             {t('categories.supervisorName')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.supervisor_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, supervisor_name: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
             placeholder={t('categories.enterSupervisorName')}
             disabled={isViewMode}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-lg font-bold text-gray-700 mb-4">
             {t('categories.helperName')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.helper_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, helper_name: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
             placeholder={t('categories.enterHelperName')}
             disabled={isViewMode}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-lg font-bold text-gray-700 mb-4">
             {t('categories.villageName')}
           </label>
           <input
             type="text"
             value={anganwadiFormData.village_name}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_name: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
             placeholder={t('categories.enterVillageName')}
             disabled={isViewMode}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-lg font-bold text-gray-700 mb-4">
             {t('categories.buildingCondition')}
           </label>
           <select
             value={anganwadiFormData.building_condition}
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_condition: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
             disabled={isViewMode}
           >
             <option value="">{t('categories.selectCondition')}</option>
