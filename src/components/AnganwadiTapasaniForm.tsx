@@ -1030,21 +1030,21 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       </div>
 
       {/* Section F: Observations & Recommendations */}
-      <div className="bg-gradient-to-br from-pink-50 to-rose-50 p-8 rounded-3xl border-2 border-pink-200 shadow-lg">
-        <h4 className="text-xl font-bold text-pink-800 mb-6 flex items-center">
-          <BookOpen className="h-6 w-6 mr-3 text-pink-600" />
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center">
+          <BookOpen className="h-5 w-5 mr-2 text-purple-600" />
           {t('categories.sectionF')}
         </h4>
         
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div>
-            <label className="block text-lg font-bold text-pink-700 mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               {t('categories.generalObservations')}
             </label>
             <textarea
               value={anganwadiFormData.general_observations}
               onChange={(e) => setAnganwadiFormData(prev => ({...prev, general_observations: e.target.value}))}
-              className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               rows={4}
               placeholder={t('categories.enterGeneralObservations')}
               disabled={isViewMode}
@@ -1052,13 +1052,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-lg font-bold text-pink-700 mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               {t('categories.recommendations')}
             </label>
             <textarea
               value={anganwadiFormData.recommendations}
               onChange={(e) => setAnganwadiFormData(prev => ({...prev, recommendations: e.target.value}))}
-              className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               rows={4}
               placeholder={t('categories.enterRecommendations')}
               disabled={isViewMode}
@@ -1066,13 +1066,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-lg font-bold text-pink-700 mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               {t('categories.actionRequired')}
             </label>
             <textarea
               value={anganwadiFormData.action_required}
               onChange={(e) => setAnganwadiFormData(prev => ({...prev, action_required: e.target.value}))}
-              className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               rows={4}
               placeholder={t('categories.enterActionRequired')}
               disabled={isViewMode}
@@ -1084,19 +1084,22 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   );
 
   const renderPhotoUpload = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {t('categories.photoDocumentation')}
-      </h3>
+    <div className="space-y-8">
+      <div className="bg-gradient-to-r from-amber-500 to-yellow-600 px-8 py-6 rounded-2xl">
+        <div className="flex items-center text-white">
+          <Camera className="w-8 h-8 mr-4" />
+          <h3 className="text-2xl font-bold">{t('fims.photoDocumentation')}</h3>
+        </div>
+      </div>
       
       {!isViewMode && (
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+        <div className="border-2 border-dashed border-amber-300 rounded-3xl p-10 text-center bg-gradient-to-br from-amber-50 to-yellow-50 hover:from-amber-100 hover:to-yellow-100 transition-all duration-300">
           <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h4 className="text-lg font-medium text-gray-900 mb-2">
-            {t('categories.uploadInspectionPhotos')}
+          <h4 className="text-xl font-bold text-amber-800 mb-4">
+            {t('fims.uploadInspectionPhotos')}
           </h4>
-          <p className="text-gray-600 mb-4">
-            {t('categories.uploadPhotosToDocument')}
+          <p className="text-amber-700 mb-6 text-lg">
+            {t('fims.uploadPhotosToDocument')}
           </p>
           
           <input
@@ -1110,40 +1113,40 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           />
           <label
             htmlFor="photo-upload"
-            className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
+            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white rounded-2xl cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl font-semibold text-lg"
           >
             <Camera className="h-4 w-4 mr-2" />
-            {t('categories.chooseFiles')}
+            {t('fims.chooseFiles')}
           </label>
           
-          <p className="text-xs text-gray-500 mt-2">
-            Maximum 5 photos allowed
+          <p className="text-sm text-amber-600 mt-4 font-medium">
+            {t('fims.maxPhotosAllowed')}
           </p>
         </div>
       )}
 
       {uploadedPhotos.length > 0 && (
         <div>
-          <h4 className="text-md font-medium text-gray-900 mb-3">
-            {t('categories.uploadedPhotos')} ({uploadedPhotos.length}/5)
+          <h4 className="text-xl font-bold text-amber-800 mb-4">
+            {t('fims.uploadedPhotos')} ({uploadedPhotos.length}/5)
           </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {uploadedPhotos.map((photo, index) => (
-              <div key={index} className="relative">
+              <div key={index} className="relative group">
                 <img
                   src={URL.createObjectURL(photo)}
                   alt={`Anganwadi photo ${index + 1}`}
-                  className="w-full h-32 object-cover rounded-lg"
+                  className="w-full h-40 object-cover rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300"
                 />
                 {!isViewMode && (
                   <button
                     onClick={() => removePhoto(index)}
-                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 group-hover:opacity-100"
                   >
-                    ×
+                    <span className="text-sm font-bold">×</span>
                   </button>
                 )}
-                <p className="text-xs text-gray-600 mt-1 truncate">
+                <p className="text-sm text-amber-700 mt-2 truncate font-medium">
                   {photo.name}
                 </p>
               </div>
@@ -1155,22 +1158,22 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       {/* Display existing photos when viewing */}
       {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
         <div>
-          <h4 className="text-md font-medium text-gray-900 mb-3">
+          <h4 className="text-xl font-bold text-amber-800 mb-4">
             Inspection Photos ({editingInspection.fims_inspection_photos.length})
           </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
-              <div key={photo.id} className="relative">
+              <div key={photo.id} className="relative group">
                 <img
                   src={photo.photo_url}
                   alt={photo.description || `Anganwadi photo ${index + 1}`}
-                  className="w-full h-32 object-cover rounded-lg"
+                  className="w-full h-40 object-cover rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300"
                 />
-                <p className="text-xs text-gray-600 mt-1 truncate">
+                <p className="text-sm text-amber-700 mt-2 truncate font-medium">
                   {photo.photo_name || `Photo ${index + 1}`}
                 </p>
                 {photo.description && (
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="text-sm text-amber-600 truncate">
                     {photo.description}
                   </p>
                 )}
@@ -1182,16 +1185,16 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
       {/* Show message when no photos in view mode */}
       {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-12 text-amber-600 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-3xl border-2 border-amber-200">
           <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-          <p>No photos found for this inspection</p>
+          <p>{t('fims.noPhotosFound')}</p>
         </div>
       )}
 
       {isUploading && (
-        <div className="text-center py-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
-          <p className="text-gray-600">{t('categories.uploadingPhotos')}</p>
+        <div className="text-center py-8 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-3xl border-2 border-amber-200">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-4 border-amber-600 mx-auto mb-4"></div>
+          <p className="text-amber-700 font-semibold text-lg">{t('fims.uploadingPhotos')}</p>
         </div>
       )}
     </div>
