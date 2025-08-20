@@ -714,69 +714,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
         </div>
       </section>
-      </div>
-    </div>
-  );
 
-  const renderLocationDetails = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {t('fims.locationDetails')}
-      </h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('fims.locationName')} *
-          </label>
-          <input
-            type="text"
-            value={inspectionData.location_name}
-            onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder={t('fims.enterLocationName')}
-            required
-            disabled={isViewMode}
-          />
-        </div>
-
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('fims.address')}
-          </label>
-          <textarea
-            value={inspectionData.address}
-            onChange={(e) => setInspectionData(prev => ({...prev, address: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            rows={3}
-            placeholder={t('fims.enterFullAddress')}
-            disabled={isViewMode}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('fims.plannedDate')}
-          </label>
-          <input
-            type="date"
-            value={inspectionData.planned_date}
-            onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            disabled={isViewMode}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            GPS Location
-          </label>
-          {!isViewMode && (
-            <button
-              type="button"
-              onClick={getCurrentLocation}
-              disabled={isLoading}
-              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
       {/* Location Information Section */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
@@ -785,6 +723,69 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             <h3 className="text-2xl font-bold">स्थान माहिती (Location Information)</h3>
           </div>
         </div>
+        <div className="p-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.locationName')} *
+              </label>
+              <input
+                type="text"
+                value={inspectionData.location_name}
+                onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={t('fims.enterLocationName')}
+                required
+                disabled={isViewMode}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.plannedDate')}
+              </label>
+              <input
+                type="date"
+                value={inspectionData.planned_date}
+                onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={isViewMode}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                GPS Location
+              </label>
+              {!isViewMode && (
+                <button
+                  type="button"
+                  onClick={getCurrentLocation}
+                  disabled={isLoading}
+                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+                >
+                  <MapPin className="h-4 w-4" />
+                  <span>{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
+                </button>
+              )}
+              
+              {inspectionData.latitude && inspectionData.longitude && (
+                <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
+                  <p className="text-xs text-green-600">
+                    {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
+                    {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
+                    {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+
   const renderAnganwadiInspectionForm = () => (
     <div className="space-y-8">
       <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-10 overflow-hidden">
@@ -1451,156 +1452,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-        <div className="p-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('fims.locationName')} *
-              </label>
-              <input
-                type="text"
-                value={inspectionData.location_name}
-                onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder={t('fims.enterLocationName')}
-                required
-                disabled={isViewMode}
-              />
-            </div>
-                  </p>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('fims.plannedDate')}
-              </label>
-              <input
-                type="date"
-                value={inspectionData.planned_date}
-                onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={isViewMode}
-              />
-            </div>
-          </h4>
-            <>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handlePhotoUpload}
-                className="hidden"
-                id="photo-upload"
-              />
-              <label
-                htmlFor="photo-upload"
-                className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
-              >
-                <Camera className="h-4 w-4 mr-2" />
-                {t('fims.chooseFiles')}
-              </label>
-            </>
-          )}
-          
-          <p className="text-xs text-gray-500 mt-2">
-            Maximum 5 photos allowed
-          </p>
-        </div>
-
-        {uploadedPhotos.length > 0 && (
-          <div>
-            <h4 className="text-md font-medium text-gray-900 mb-3">
-              {t('fims.uploadedPhotos')} ({uploadedPhotos.length}/5)
-            </h4>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {uploadedPhotos.map((photo, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={URL.createObjectURL(photo)}
-                    alt={`Anganwadi photo ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
-                  {!isViewMode && (
-                    <button
-                      onClick={() => removePhoto(index)}
-                      className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
-                    >
-                      ×
-                    </button>
-                  )}
-                  <p className="text-xs text-gray-600 mt-1 truncate">
-                    {photo.name}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Display existing photos when viewing */}
-        {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
-          <div>
-            <h4 className="text-md font-medium text-gray-900 mb-3">
-              Inspection Photos ({editingInspection.fims_inspection_photos.length})
-            </h4>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
-                <div key={photo.id} className="relative">
-                  <img
-                    src={photo.photo_url}
-                    alt={photo.description || `Anganwadi photo ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
-                  <p className="text-xs text-gray-600 mt-1 truncate">
-                    {photo.photo_name || `Photo ${index + 1}`}
-                  </p>
-                  {photo.description && (
-                    <p className="text-xs text-gray-500 truncate">
-                      {photo.description}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Show message when no photos in view mode */}
-        {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
-          <div className="text-center py-8 text-gray-500">
-            <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-            <p>{t('fims.noPhotosFound')}</p>
-          </div>
-        )}
-
-        {isUploading && (
-          <div className="text-center py-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
-            <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 1:
-        return renderBasicDetailsAndLocation();
-      case 2:
-        return renderAnganwadiInspectionForm();
-      case 3:
-        return renderPhotoUpload();
-      default:
-        return null;
-    }
-  };
-
-  const canProceedToNext = () => {
-    switch (currentStep) {
-      case 1:
-        return anganwadiFormData.anganwadi_name.trim() !== '' && inspectionData.location_name.trim() !== '';
-      case 2:
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-      case 3:
+                GPS Location
               </label>
               {!isViewMode && (
                 <button
@@ -1626,86 +1478,242 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               )}
             </div>
           </div>
-          
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
-            >
-              <ArrowLeft className="h-5 w-5" />
-              <span>Back</span>
-            </button>
-            <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center">
-              {editingInspection?.mode === 'view' ? t('fims.viewInspection') : 
-               editingInspection?.mode === 'edit' ? t('fims.editInspection') : 
-               t('fims.newInspection')} - अंगणवाडी केंद्र तपासणी
-            </h1>
-            <div className="w-20"></div>
-          </div>
+        </div>
+      </div>
 
-          {renderStepIndicator()}
-
-          <div className="flex justify-center space-x-4 md:space-x-8 text-xs md:text-sm">
-            <div className={`${currentStep === 1 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              मूलभूत माहिती आणि स्थान
-            </div>
-            <div className={`${currentStep === 2 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              अंगणवाडी तपासणी
-            </div>
-            <div className={`${currentStep === 3 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              {t('fims.photosSubmit')}
-            </div>
+      {/* Photo Upload Section */}
+      <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Camera className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">{t('fims.uploadPhotos')}</h3>
           </div>
         </div>
+        <div className="p-10">
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-md font-medium text-gray-900 mb-3">
+                {t('fims.addPhotos')}
+              </h4>
+              {!isViewMode && (
+                <>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                    id="photo-upload"
+                  />
+                  <label
+                    htmlFor="photo-upload"
+                    className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    {t('fims.chooseFiles')}
+                  </label>
+                </>
+              )}
+              
+              <p className="text-xs text-gray-500 mt-2">
+                Maximum 5 photos allowed
+              </p>
+            </div>
 
-        {/* Form Content */}
-        <div className="bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/30 rounded-xl shadow-lg border-2 border-blue-200 p-4 md:p-6 mb-4 md:mb-6">
-          {renderStepContent()}
-        </div>
-
-        {/* Navigation Buttons */}
-        <div className="flex justify-between items-center">
-          <button
-            onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-            disabled={currentStep === 1}
-            className="px-4 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
-          >
-            {t('common.previous')}
-          </button>
-
-          <div className="flex space-x-2 md:space-x-3">
-            {currentStep === 3 ? (
-              <>
-                {!isViewMode && (
-                <button
-                  onClick={() => handleSubmit(true)}
-                  disabled={isLoading || isUploading}
-                  className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                >
-                  <Save className="h-4 w-4" />
-                  <span>{t('fims.saveAsDraft')}</span>
-                </button>
-                )}
-                {!isViewMode && (
-                <button
-                  onClick={() => handleSubmit(false)}
-                  disabled={isLoading || isUploading}
-                  className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                >
-                  <Send className="h-4 w-4" />
-                  <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
-                </button>
-                )}
-              </>
-            ) : (
-              <button
-                onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
-                disabled={!canProceedToNext()}
-                className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
-              >
-                {t('common.next')}
-              </button>
+            {uploadedPhotos.length > 0 && (
+              <div>
+                <h4 className="text-md font-medium text-gray-900 mb-3">
+                  {t('fims.uploadedPhotos')} ({uploadedPhotos.length}/5)
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {uploadedPhotos.map((photo, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={URL.createObjectURL(photo)}
+                        alt={`Anganwadi photo ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      {!isViewMode && (
+                        <button
+                          onClick={() => removePhoto(index)}
+                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
+                        >
+                          ×
+                        </button>
+                      )}
+                      <p className="text-xs text-gray-600 mt-1 truncate">
+                        {photo.name}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
+
+            {/* Display existing photos when viewing */}
+            {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
+              <div>
+                <h4 className="text-md font-medium text-gray-900 mb-3">
+                  Inspection Photos ({editingInspection.fims_inspection_photos.length})
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
+                    <div key={photo.id} className="relative">
+                      <img
+                        src={photo.photo_url}
+                        alt={photo.description || `Anganwadi photo ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <p className="text-xs text-gray-600 mt-1 truncate">
+                        {photo.photo_name || `Photo ${index + 1}`}
+                      </p>
+                      {photo.description && (
+                        <p className="text-xs text-gray-500 truncate">
+                          {photo.description}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Show message when no photos in view mode */}
+            {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
+              <div className="text-center py-8 text-gray-500">
+                <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+                <p>{t('fims.noPhotosFound')}</p>
+              </div>
+            )}
+
+            {isUploading && (
+              <div className="text-center py-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
+                <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return renderBasicDetailsAndLocation();
+      case 2:
+        return renderAnganwadiInspectionForm();
+      case 3:
+        return renderPhotoUpload();
+      default:
+        return null;
+    }
+  };
+
+  const canProceedToNext = () => {
+    switch (currentStep) {
+      case 1:
+        return anganwadiFormData.anganwadi_name.trim() !== '' && inspectionData.location_name.trim() !== '';
+      case 2:
+        return true;
+      case 3:
+        return true;
+      default:
+        return false;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 md:p-6">
+      <section className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-6 md:mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-700 px-6 md:px-8 py-8 md:py-12 text-white relative">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <button
+                  onClick={onBack}
+                  className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors duration-200"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                  <span>Back</span>
+                </button>
+                <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center">
+                  {editingInspection?.mode === 'view' ? t('fims.viewInspection') : 
+                   editingInspection?.mode === 'edit' ? t('fims.editInspection') : 
+                   t('fims.newInspection')} - अंगणवाडी केंद्र तपासणी
+                </h1>
+                <div className="w-20"></div>
+              </div>
+
+              {renderStepIndicator()}
+
+              <div className="flex justify-center space-x-4 md:space-x-8 text-xs md:text-sm">
+                <div className={`${currentStep === 1 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
+                  मूलभूत माहिती आणि स्थान
+                </div>
+                <div className={`${currentStep === 2 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
+                  अंगणवाडी तपासणी
+                </div>
+                <div className={`${currentStep === 3 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
+                  {t('fims.photosSubmit')}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Form Content */}
+          <div className="bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/30 rounded-xl shadow-lg border-2 border-blue-200 p-4 md:p-6 mb-4 md:mb-6">
+            {renderStepContent()}
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-between items-center">
+            <button
+              onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+              disabled={currentStep === 1}
+              className="px-4 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
+            >
+              {t('common.previous')}
+            </button>
+
+            <div className="flex space-x-2 md:space-x-3">
+              {currentStep === 3 ? (
+                <>
+                  {!isViewMode && (
+                    <button
+                      onClick={() => handleSubmit(true)}
+                      disabled={isLoading || isUploading}
+                      className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
+                    >
+                      <Save className="h-4 w-4" />
+                      <span>{t('fims.saveAsDraft')}</span>
+                    </button>
+                  )}
+                  {!isViewMode && (
+                    <button
+                      onClick={() => handleSubmit(false)}
+                      disabled={isLoading || isUploading}
+                      className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
+                    >
+                      <Send className="h-4 w-4" />
+                      <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
+                    </button>
+                  )}
+                </>
+              ) : (
+                <button
+                  onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
+                  disabled={!canProceedToNext()}
+                  className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
+                >
+                  {t('common.next')}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </section>
