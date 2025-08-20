@@ -2,19 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   ArrowLeft,
-  Building2,
-  MapPin,
+  Plus,
+  FileText,
   Camera,
+  MapPin,
+  Building2,
   Save,
   Send,
   CheckCircle,
   AlertCircle,
   Calendar,
+  Building,
   Users,
-  Heart,
   BookOpen,
-  Eye,
-  EyeOff
+  FolderOpen,
+  Search,
+  Home,
+  Heart,
+  Scale,
+  Utensils,
+  Clock,
+  Baby,
+  Stethoscope,
+  UserCheck,
+  Phone,
+  Lightbulb,
+  MessageSquare
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
@@ -34,10 +47,10 @@ interface AnganwadiFormData {
   supervisor_name: string;
   helper_name: string;
   village_name: string;
-  building_condition: string;
-  building_type: string;
   
-  // Facilities
+  // Building and Facilities
+  building_type: string;
+  building_condition: string;
   room_availability: boolean;
   toilet_facility: boolean;
   drinking_water: boolean;
@@ -46,29 +59,32 @@ interface AnganwadiFormData {
   independent_kitchen: boolean;
   women_health_checkup_space: boolean;
   
-  // Equipment
+  // Equipment and Materials
   weighing_machine: boolean;
   baby_weighing_scale: boolean;
   hammock_weighing_scale: boolean;
   adult_weighing_scale: boolean;
   height_measuring_scale: boolean;
   first_aid_kit: boolean;
+  teaching_materials: boolean;
+  toys_available: boolean;
   cooking_utensils: boolean;
   water_storage_containers: boolean;
   medicine_kits: boolean;
-  teaching_materials: boolean;
   pre_school_kit: boolean;
-  toys_available: boolean;
   
-  // Records
+  // Records and Documentation
   attendance_register: boolean;
-  all_registers: boolean;
   growth_chart_updated: boolean;
   vaccination_records: boolean;
   nutrition_records: boolean;
+  all_registers: boolean;
   monthly_progress_reports: boolean;
+  
+  // Schedule and Operations
   timetable_available: boolean;
   timetable_followed: boolean;
+  supervisor_regular_attendance: boolean;
   
   // Children Information
   total_registered_children: number;
@@ -78,11 +94,10 @@ interface AnganwadiFormData {
   preschool_education_registered: number;
   preschool_education_present: number;
   
-  // Nutrition & Health
+  // Nutrition and Health Services
   hot_meal_served: boolean;
   meal_quality: string;
   take_home_ration: boolean;
-  supervisor_regular_attendance: boolean;
   monthly_25_days_meals: boolean;
   thr_provided_regularly: boolean;
   food_provider: string;
@@ -92,16 +107,18 @@ interface AnganwadiFormData {
   prescribed_protein_calories: boolean;
   prescribed_weight_food: boolean;
   lab_sample_date: string;
+  
+  // Health Services
   health_checkup_conducted: boolean;
-  regular_weighing: boolean;
-  growth_chart_accuracy: boolean;
   immunization_updated: boolean;
-  vaccination_health_checkup_regular: boolean;
-  vaccination_schedule_awareness: boolean;
   vitamin_a_given: boolean;
   iron_tablets_given: boolean;
+  regular_weighing: boolean;
+  growth_chart_accuracy: boolean;
+  vaccination_health_checkup_regular: boolean;
+  vaccination_schedule_awareness: boolean;
   
-  // Community & Programs
+  // Community Participation
   village_health_nutrition_planning: string;
   children_attendance_comparison: string;
   preschool_programs_conducted: string;
@@ -155,8 +172,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     supervisor_name: '',
     helper_name: '',
     village_name: '',
-    building_condition: '',
     building_type: '',
+    building_condition: '',
     room_availability: false,
     toilet_facility: false,
     drinking_water: false,
@@ -170,20 +187,21 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     adult_weighing_scale: false,
     height_measuring_scale: false,
     first_aid_kit: false,
+    teaching_materials: false,
+    toys_available: false,
     cooking_utensils: false,
     water_storage_containers: false,
     medicine_kits: false,
-    teaching_materials: false,
     pre_school_kit: false,
-    toys_available: false,
     attendance_register: false,
-    all_registers: false,
     growth_chart_updated: false,
     vaccination_records: false,
     nutrition_records: false,
+    all_registers: false,
     monthly_progress_reports: false,
     timetable_available: false,
     timetable_followed: false,
+    supervisor_regular_attendance: false,
     total_registered_children: 0,
     children_present_today: 0,
     children_0_3_years: 0,
@@ -193,7 +211,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     hot_meal_served: false,
     meal_quality: '',
     take_home_ration: false,
-    supervisor_regular_attendance: false,
     monthly_25_days_meals: false,
     thr_provided_regularly: false,
     food_provider: '',
@@ -204,13 +221,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     prescribed_weight_food: false,
     lab_sample_date: '',
     health_checkup_conducted: false,
-    regular_weighing: false,
-    growth_chart_accuracy: false,
     immunization_updated: false,
-    vaccination_health_checkup_regular: false,
-    vaccination_schedule_awareness: false,
     vitamin_a_given: false,
     iron_tablets_given: false,
+    regular_weighing: false,
+    growth_chart_accuracy: false,
+    vaccination_health_checkup_regular: false,
+    vaccination_schedule_awareness: false,
     village_health_nutrition_planning: '',
     children_attendance_comparison: '',
     preschool_programs_conducted: '',
@@ -242,7 +259,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   // Load existing inspection data when editing
   useEffect(() => {
     if (editingInspection && editingInspection.id) {
-      console.log('Loading inspection data:', editingInspection);
+      console.log('Loading existing inspection data:', editingInspection);
       
       // Load basic inspection data
       setInspectionData({
@@ -256,170 +273,97 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       });
 
       // Load anganwadi form data if it exists
+      let formDataToLoad = null;
+      
+      // Try to get data from fims_anganwadi_forms table first
       if (editingInspection.fims_anganwadi_forms && editingInspection.fims_anganwadi_forms.length > 0) {
-        const formData = editingInspection.fims_anganwadi_forms[0];
-        console.log('Loading form data:', formData);
+        formDataToLoad = editingInspection.fims_anganwadi_forms[0];
+        console.log('Loading from fims_anganwadi_forms:', formDataToLoad);
+      }
+      // Fallback to form_data JSON field
+      else if (editingInspection.form_data) {
+        formDataToLoad = editingInspection.form_data;
+        console.log('Loading from form_data JSON:', formDataToLoad);
+      }
+
+      if (formDataToLoad) {
         setAnganwadiFormData({
-          anganwadi_name: formData.anganwadi_name || '',
-          anganwadi_number: formData.anganwadi_number || '',
-          supervisor_name: formData.supervisor_name || '',
-          helper_name: formData.helper_name || '',
-          village_name: formData.village_name || '',
-          building_condition: formData.building_condition || '',
-          building_type: formData.building_type || '',
-          room_availability: formData.room_availability || false,
-          toilet_facility: formData.toilet_facility || false,
-          drinking_water: formData.drinking_water || false,
-          electricity: formData.electricity || false,
-          kitchen_garden: formData.kitchen_garden || false,
-          independent_kitchen: formData.independent_kitchen || false,
-          women_health_checkup_space: formData.women_health_checkup_space || false,
-          weighing_machine: formData.weighing_machine || false,
-          baby_weighing_scale: formData.baby_weighing_scale || false,
-          hammock_weighing_scale: formData.hammock_weighing_scale || false,
-          adult_weighing_scale: formData.adult_weighing_scale || false,
-          height_measuring_scale: formData.height_measuring_scale || false,
-          first_aid_kit: formData.first_aid_kit || false,
-          cooking_utensils: formData.cooking_utensils || false,
-          water_storage_containers: formData.water_storage_containers || false,
-          medicine_kits: formData.medicine_kits || false,
-          teaching_materials: formData.teaching_materials || false,
-          pre_school_kit: formData.pre_school_kit || false,
-          toys_available: formData.toys_available || false,
-          attendance_register: formData.attendance_register || false,
-          all_registers: formData.all_registers || false,
-          growth_chart_updated: formData.growth_chart_updated || false,
-          vaccination_records: formData.vaccination_records || false,
-          nutrition_records: formData.nutrition_records || false,
-          monthly_progress_reports: formData.monthly_progress_reports || false,
-          timetable_available: formData.timetable_available || false,
-          timetable_followed: formData.timetable_followed || false,
-          total_registered_children: formData.total_registered_children || 0,
-          children_present_today: formData.children_present_today || 0,
-          children_0_3_years: formData.children_0_3_years || 0,
-          children_3_6_years: formData.children_3_6_years || 0,
-          preschool_education_registered: formData.preschool_education_registered || 0,
-          preschool_education_present: formData.preschool_education_present || 0,
-          hot_meal_served: formData.hot_meal_served || false,
-          meal_quality: formData.meal_quality || '',
-          take_home_ration: formData.take_home_ration || false,
-          supervisor_regular_attendance: formData.supervisor_regular_attendance || false,
-          monthly_25_days_meals: formData.monthly_25_days_meals || false,
-          thr_provided_regularly: formData.thr_provided_regularly || false,
-          food_provider: formData.food_provider || '',
-          supervisor_participation: formData.supervisor_participation || '',
-          food_distribution_decentralized: formData.food_distribution_decentralized || false,
-          children_food_taste_preference: formData.children_food_taste_preference || '',
-          prescribed_protein_calories: formData.prescribed_protein_calories || false,
-          prescribed_weight_food: formData.prescribed_weight_food || false,
-          lab_sample_date: formData.lab_sample_date || '',
-          health_checkup_conducted: formData.health_checkup_conducted || false,
-          regular_weighing: formData.regular_weighing || false,
-          growth_chart_accuracy: formData.growth_chart_accuracy || false,
-          immunization_updated: formData.immunization_updated || false,
-          vaccination_health_checkup_regular: formData.vaccination_health_checkup_regular || false,
-          vaccination_schedule_awareness: formData.vaccination_schedule_awareness || false,
-          vitamin_a_given: formData.vitamin_a_given || false,
-          iron_tablets_given: formData.iron_tablets_given || false,
-          village_health_nutrition_planning: formData.village_health_nutrition_planning || '',
-          children_attendance_comparison: formData.children_attendance_comparison || '',
-          preschool_programs_conducted: formData.preschool_programs_conducted || '',
-          community_participation: formData.community_participation || '',
-          committee_member_participation: formData.committee_member_participation || '',
-          home_visits_guidance: formData.home_visits_guidance || '',
-          public_opinion_improvement: formData.public_opinion_improvement || '',
-          general_observations: formData.general_observations || '',
-          recommendations: formData.recommendations || '',
-          action_required: formData.action_required || '',
-          suggestions: formData.suggestions || '',
-          visit_date: formData.visit_date || '',
-          inspector_designation: formData.inspector_designation || '',
-          inspector_name: formData.inspector_name || ''
+          anganwadi_name: formDataToLoad.anganwadi_name || '',
+          anganwadi_number: formDataToLoad.anganwadi_number || '',
+          supervisor_name: formDataToLoad.supervisor_name || '',
+          helper_name: formDataToLoad.helper_name || '',
+          village_name: formDataToLoad.village_name || '',
+          building_type: formDataToLoad.building_type || '',
+          building_condition: formDataToLoad.building_condition || '',
+          room_availability: formDataToLoad.room_availability || false,
+          toilet_facility: formDataToLoad.toilet_facility || false,
+          drinking_water: formDataToLoad.drinking_water || false,
+          electricity: formDataToLoad.electricity || false,
+          kitchen_garden: formDataToLoad.kitchen_garden || false,
+          independent_kitchen: formDataToLoad.independent_kitchen || false,
+          women_health_checkup_space: formDataToLoad.women_health_checkup_space || false,
+          weighing_machine: formDataToLoad.weighing_machine || false,
+          baby_weighing_scale: formDataToLoad.baby_weighing_scale || false,
+          hammock_weighing_scale: formDataToLoad.hammock_weighing_scale || false,
+          adult_weighing_scale: formDataToLoad.adult_weighing_scale || false,
+          height_measuring_scale: formDataToLoad.height_measuring_scale || false,
+          first_aid_kit: formDataToLoad.first_aid_kit || false,
+          teaching_materials: formDataToLoad.teaching_materials || false,
+          toys_available: formDataToLoad.toys_available || false,
+          cooking_utensils: formDataToLoad.cooking_utensils || false,
+          water_storage_containers: formDataToLoad.water_storage_containers || false,
+          medicine_kits: formDataToLoad.medicine_kits || false,
+          pre_school_kit: formDataToLoad.pre_school_kit || false,
+          attendance_register: formDataToLoad.attendance_register || false,
+          growth_chart_updated: formDataToLoad.growth_chart_updated || false,
+          vaccination_records: formDataToLoad.vaccination_records || false,
+          nutrition_records: formDataToLoad.nutrition_records || false,
+          all_registers: formDataToLoad.all_registers || false,
+          monthly_progress_reports: formDataToLoad.monthly_progress_reports || false,
+          timetable_available: formDataToLoad.timetable_available || false,
+          timetable_followed: formDataToLoad.timetable_followed || false,
+          supervisor_regular_attendance: formDataToLoad.supervisor_regular_attendance || false,
+          total_registered_children: formDataToLoad.total_registered_children || 0,
+          children_present_today: formDataToLoad.children_present_today || 0,
+          children_0_3_years: formDataToLoad.children_0_3_years || 0,
+          children_3_6_years: formDataToLoad.children_3_6_years || 0,
+          preschool_education_registered: formDataToLoad.preschool_education_registered || 0,
+          preschool_education_present: formDataToLoad.preschool_education_present || 0,
+          hot_meal_served: formDataToLoad.hot_meal_served || false,
+          meal_quality: formDataToLoad.meal_quality || '',
+          take_home_ration: formDataToLoad.take_home_ration || false,
+          monthly_25_days_meals: formDataToLoad.monthly_25_days_meals || false,
+          thr_provided_regularly: formDataToLoad.thr_provided_regularly || false,
+          food_provider: formDataToLoad.food_provider || '',
+          supervisor_participation: formDataToLoad.supervisor_participation || '',
+          food_distribution_decentralized: formDataToLoad.food_distribution_decentralized || false,
+          children_food_taste_preference: formDataToLoad.children_food_taste_preference || '',
+          prescribed_protein_calories: formDataToLoad.prescribed_protein_calories || false,
+          prescribed_weight_food: formDataToLoad.prescribed_weight_food || false,
+          lab_sample_date: formDataToLoad.lab_sample_date || '',
+          health_checkup_conducted: formDataToLoad.health_checkup_conducted || false,
+          immunization_updated: formDataToLoad.immunization_updated || false,
+          vitamin_a_given: formDataToLoad.vitamin_a_given || false,
+          iron_tablets_given: formDataToLoad.iron_tablets_given || false,
+          regular_weighing: formDataToLoad.regular_weighing || false,
+          growth_chart_accuracy: formDataToLoad.growth_chart_accuracy || false,
+          vaccination_health_checkup_regular: formDataToLoad.vaccination_health_checkup_regular || false,
+          vaccination_schedule_awareness: formDataToLoad.vaccination_schedule_awareness || false,
+          village_health_nutrition_planning: formDataToLoad.village_health_nutrition_planning || '',
+          children_attendance_comparison: formDataToLoad.children_attendance_comparison || '',
+          preschool_programs_conducted: formDataToLoad.preschool_programs_conducted || '',
+          community_participation: formDataToLoad.community_participation || '',
+          committee_member_participation: formDataToLoad.committee_member_participation || '',
+          home_visits_guidance: formDataToLoad.home_visits_guidance || '',
+          public_opinion_improvement: formDataToLoad.public_opinion_improvement || '',
+          general_observations: formDataToLoad.general_observations || '',
+          recommendations: formDataToLoad.recommendations || '',
+          action_required: formDataToLoad.action_required || '',
+          suggestions: formDataToLoad.suggestions || '',
+          visit_date: formDataToLoad.visit_date || '',
+          inspector_designation: formDataToLoad.inspector_designation || '',
+          inspector_name: formDataToLoad.inspector_name || ''
         });
-      } else {
-        console.log('No anganwadi form data found, checking form_data field');
-        // Try to load from form_data field if fims_anganwadi_forms is empty
-        if (editingInspection.form_data) {
-          const formData = editingInspection.form_data;
-          console.log('Loading from form_data:', formData);
-          setAnganwadiFormData({
-            anganwadi_name: formData.anganwadi_name || '',
-            anganwadi_number: formData.anganwadi_number || '',
-            supervisor_name: formData.supervisor_name || '',
-            helper_name: formData.helper_name || '',
-            village_name: formData.village_name || '',
-            building_condition: formData.building_condition || '',
-            building_type: formData.building_type || '',
-            room_availability: formData.room_availability || false,
-            toilet_facility: formData.toilet_facility || false,
-            drinking_water: formData.drinking_water || false,
-            electricity: formData.electricity || false,
-            kitchen_garden: formData.kitchen_garden || false,
-            independent_kitchen: formData.independent_kitchen || false,
-            women_health_checkup_space: formData.women_health_checkup_space || false,
-            weighing_machine: formData.weighing_machine || false,
-            baby_weighing_scale: formData.baby_weighing_scale || false,
-            hammock_weighing_scale: formData.hammock_weighing_scale || false,
-            adult_weighing_scale: formData.adult_weighing_scale || false,
-            height_measuring_scale: formData.height_measuring_scale || false,
-            first_aid_kit: formData.first_aid_kit || false,
-            cooking_utensils: formData.cooking_utensils || false,
-            water_storage_containers: formData.water_storage_containers || false,
-            medicine_kits: formData.medicine_kits || false,
-            teaching_materials: formData.teaching_materials || false,
-            pre_school_kit: formData.pre_school_kit || false,
-            toys_available: formData.toys_available || false,
-            attendance_register: formData.attendance_register || false,
-            all_registers: formData.all_registers || false,
-            growth_chart_updated: formData.growth_chart_updated || false,
-            vaccination_records: formData.vaccination_records || false,
-            nutrition_records: formData.nutrition_records || false,
-            monthly_progress_reports: formData.monthly_progress_reports || false,
-            timetable_available: formData.timetable_available || false,
-            timetable_followed: formData.timetable_followed || false,
-            total_registered_children: formData.total_registered_children || 0,
-            children_present_today: formData.children_present_today || 0,
-            children_0_3_years: formData.children_0_3_years || 0,
-            children_3_6_years: formData.children_3_6_years || 0,
-            preschool_education_registered: formData.preschool_education_registered || 0,
-            preschool_education_present: formData.preschool_education_present || 0,
-            hot_meal_served: formData.hot_meal_served || false,
-            meal_quality: formData.meal_quality || '',
-            take_home_ration: formData.take_home_ration || false,
-            supervisor_regular_attendance: formData.supervisor_regular_attendance || false,
-            monthly_25_days_meals: formData.monthly_25_days_meals || false,
-            thr_provided_regularly: formData.thr_provided_regularly || false,
-            food_provider: formData.food_provider || '',
-            supervisor_participation: formData.supervisor_participation || '',
-            food_distribution_decentralized: formData.food_distribution_decentralized || false,
-            children_food_taste_preference: formData.children_food_taste_preference || '',
-            prescribed_protein_calories: formData.prescribed_protein_calories || false,
-            prescribed_weight_food: formData.prescribed_weight_food || false,
-            lab_sample_date: formData.lab_sample_date || '',
-            health_checkup_conducted: formData.health_checkup_conducted || false,
-            regular_weighing: formData.regular_weighing || false,
-            growth_chart_accuracy: formData.growth_chart_accuracy || false,
-            immunization_updated: formData.immunization_updated || false,
-            vaccination_health_checkup_regular: formData.vaccination_health_checkup_regular || false,
-            vaccination_schedule_awareness: formData.vaccination_schedule_awareness || false,
-            vitamin_a_given: formData.vitamin_a_given || false,
-            iron_tablets_given: formData.iron_tablets_given || false,
-            village_health_nutrition_planning: formData.village_health_nutrition_planning || '',
-            children_attendance_comparison: formData.children_attendance_comparison || '',
-            preschool_programs_conducted: formData.preschool_programs_conducted || '',
-            community_participation: formData.community_participation || '',
-            committee_member_participation: formData.committee_member_participation || '',
-            home_visits_guidance: formData.home_visits_guidance || '',
-            public_opinion_improvement: formData.public_opinion_improvement || '',
-            general_observations: formData.general_observations || '',
-            recommendations: formData.recommendations || '',
-            action_required: formData.action_required || '',
-            suggestions: formData.suggestions || '',
-            visit_date: formData.visit_date || '',
-            inspector_designation: formData.inspector_designation || '',
-            inspector_name: formData.inspector_name || ''
-          });
-        }
       }
     }
   }, [editingInspection]);
@@ -598,8 +542,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
       const isUpdate = editingInspection && editingInspection.id;
       const message = isDraft 
-        ? (isUpdate ? 'Inspection updated as draft successfully!' : 'Inspection saved as draft successfully!')
-        : (isUpdate ? 'Inspection updated successfully!' : 'Inspection submitted successfully!');
+        ? (isUpdate ? t('fims.inspectionUpdatedAsDraft') : t('fims.inspectionSavedAsDraft'))
+        : (isUpdate ? t('fims.inspectionUpdatedSuccessfully') : t('fims.inspectionSubmittedSuccessfully'));
       
       alert(message);
       onInspectionCreated();
@@ -634,6 +578,43 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     </div>
   );
 
+  const YesNoRadio = ({ name, value, onChange, question }: { 
+    name: string; 
+    value: string; 
+    onChange: (value: string) => void;
+    question: string;
+  }) => (
+    <div className="mb-6 p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300">
+      <p className="mb-4 text-gray-800 font-medium leading-relaxed text-lg">{question}</p>
+      <div className="flex gap-8 pl-4">
+        <label className="flex items-center cursor-pointer group">
+          <input
+            type="radio"
+            name={name}
+            value="होय"
+            checked={value === 'होय'}
+            onChange={(e) => onChange(e.target.value)}
+            disabled={isViewMode}
+            className="mr-3 w-5 h-5 text-green-600 border-2 border-gray-300 focus:ring-green-500 focus:ring-2 group-hover:border-green-400 transition-colors"
+          />
+          <span className="text-green-700 font-semibold group-hover:text-green-800 transition-colors text-lg">होय</span>
+        </label>
+        <label className="flex items-center cursor-pointer group">
+          <input
+            type="radio"
+            name={name}
+            value="नाही"
+            checked={value === 'नाही'}
+            onChange={(e) => onChange(e.target.value)}
+            disabled={isViewMode}
+            className="mr-3 w-5 h-5 text-red-600 border-2 border-gray-300 focus:ring-red-500 focus:ring-2 group-hover:border-red-400 transition-colors"
+          />
+          <span className="text-red-700 font-semibold group-hover:text-red-800 transition-colors text-lg">नाही</span>
+        </label>
+      </div>
+    </div>
+  );
+
   const renderBasicInformation = () => (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -652,8 +633,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_name: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             placeholder={t('categories.enterAnganwadiName')}
-            disabled={isViewMode}
             required
+            disabled={isViewMode}
           />
         </div>
 
@@ -737,42 +718,42 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const renderLocationDetails = () => (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {t('categories.locationInformation')}
+        {t('fims.locationDetails')}
       </h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.locationName')} *
+            {t('fims.locationName')} *
           </label>
           <input
             type="text"
             value={inspectionData.location_name}
             onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder={t('categories.enterLocationName')}
-            disabled={isViewMode}
+            placeholder={t('fims.enterLocationName')}
             required
+            disabled={isViewMode}
           />
         </div>
 
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.address')}
+            {t('fims.address')}
           </label>
           <textarea
             value={inspectionData.address}
             onChange={(e) => setInspectionData(prev => ({...prev, address: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             rows={3}
-            placeholder={t('categories.enterFullAddress')}
+            placeholder={t('fims.enterFullAddress')}
             disabled={isViewMode}
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.plannedDate')}
+            {t('fims.plannedDate')}
           </label>
           <input
             type="date"
@@ -787,23 +768,25 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           <label className="block text-sm font-medium text-gray-700 mb-2">
             GPS Location
           </label>
-          <button
-            type="button"
-            onClick={getCurrentLocation}
-            disabled={isLoading || isViewMode}
-            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
-          >
-            <MapPin className="h-4 w-4" />
-            <span>{isLoading ? t('categories.gettingLocation') : t('categories.getCurrentLocation')}</span>
-          </button>
+          {!isViewMode && (
+            <button
+              type="button"
+              onClick={getCurrentLocation}
+              disabled={isLoading}
+              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+            >
+              <MapPin className="h-4 w-4" />
+              <span>{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
+            </button>
+          )}
           
           {inspectionData.latitude && inspectionData.longitude && (
             <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-800 font-medium">{t('categories.locationCaptured')}</p>
+              <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
               <p className="text-xs text-green-600">
-                {t('categories.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
-                {t('categories.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
-                {t('categories.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
+                {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
+                {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
               </p>
             </div>
           )}
@@ -812,320 +795,572 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     </div>
   );
 
-  const renderInspectionForm = () => (
+  const renderAnganwadiInspectionForm = () => (
     <div className="space-y-8">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {t('categories.inspectionForm')}
-      </h3>
-
-      {/* Section A: Infrastructure and Basic Facilities */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h4 className="text-md font-semibold text-gray-800 mb-4">
-          {t('categories.sectionA')}
-        </h4>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            { key: 'room_availability', label: t('categories.roomAvailability') },
-            { key: 'toilet_facility', label: t('categories.toiletFacility') },
-            { key: 'drinking_water', label: t('categories.drinkingWater') },
-            { key: 'electricity', label: t('categories.electricity') },
-            { key: 'kitchen_garden', label: t('categories.kitchenGarden') }
-          ].map((field) => (
-            <div key={field.key} className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id={field.key}
-                checked={anganwadiFormData[field.key as keyof AnganwadiFormData] as boolean}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-                disabled={isViewMode}
-              />
-              <label htmlFor={field.key} className="text-sm text-gray-700">
-                {field.label}
-              </label>
+      <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-10 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 px-8 py-16 text-white relative">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+          <div className="relative z-10 text-center">
+            <div className="flex justify-center mb-8">
+              <div className="bg-white/20 backdrop-blur-sm rounded-full p-6 shadow-lg">
+                <FileText className="w-16 h-16 text-white" />
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Section B: Equipment and Materials */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h4 className="text-md font-semibold text-gray-800 mb-4">
-          {t('categories.sectionB')}
-        </h4>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            { key: 'weighing_machine', label: t('categories.weighingMachine') },
-            { key: 'height_measuring_scale', label: t('categories.heightMeasuringScale') },
-            { key: 'first_aid_kit', label: t('categories.firstAidKit') },
-            { key: 'teaching_materials', label: t('categories.teachingMaterials') },
-            { key: 'toys_available', label: t('categories.toysAvailable') }
-          ].map((field) => (
-            <div key={field.key} className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id={field.key}
-                checked={anganwadiFormData[field.key as keyof AnganwadiFormData] as boolean}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-                disabled={isViewMode}
-              />
-              <label htmlFor={field.key} className="text-sm text-gray-700">
-                {field.label}
-              </label>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">
+              अंगणवाडी केंद्र तपासणी अहवाल (नमुना)
+            </h1>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 inline-block shadow-lg border border-white/30">
+              <p className="text-sm font-medium">
+                (केंद्र शासनाचे पत्र क्र. F.No.१६-३/२००४-ME (P+) दि. २२ ऑक्टोबर२०१०.)
+              </p>
             </div>
-          ))}
+          </div>
         </div>
       </div>
 
-      {/* Section C: Records and Documentation */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h4 className="text-md font-semibold text-gray-800 mb-4">
-          {t('categories.sectionC')}
-        </h4>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            { key: 'attendance_register', label: t('categories.attendanceRegister') },
-            { key: 'growth_chart_updated', label: t('categories.growthChartUpdated') },
-            { key: 'vaccination_records', label: t('categories.vaccinationRecords') },
-            { key: 'nutrition_records', label: t('categories.nutritionRecords') }
-          ].map((field) => (
-            <div key={field.key} className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id={field.key}
-                checked={anganwadiFormData[field.key as keyof AnganwadiFormData] as boolean}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+      {/* Section 1 - Facilities */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Home className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">१. अंगणवाडी केंद्रातील उपलब्ध सुविधा:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="space-y-8">
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">अंगणवाडी इमारत [स्वतःची/ भाड्याची/ मोफत/ इमारत नाही]</label>
+              <select
+                value={anganwadiFormData.building_type}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_type: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
                 disabled={isViewMode}
-              />
-              <label htmlFor={field.key} className="text-sm text-gray-700">
-                {field.label}
-              </label>
+              >
+                <option value="">निवडा</option>
+                <option value="स्वतःची">स्वतःची</option>
+                <option value="भाड्याची">भाड्याची</option>
+                <option value="मोफत">मोफत</option>
+                <option value="इमारत नाही">इमारत नाही</option>
+              </select>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Section D: Children Information */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center">
-          <Users className="h-5 w-5 mr-2 text-purple-600" />
-          {t('categories.sectionD')}
-        </h4>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('categories.totalRegistered')}
-            </label>
-            <input
-              type="number"
-              value={anganwadiFormData.total_registered_children}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, total_registered_children: parseInt(e.target.value) || 0}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              min="0"
-              disabled={isViewMode}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('categories.presentToday')}
-            </label>
-            <input
-              type="number"
-              value={anganwadiFormData.children_present_today}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_present_today: parseInt(e.target.value) || 0}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              min="0"
-              disabled={isViewMode}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('categories.age0to3Years')}
-            </label>
-            <input
-              type="number"
-              value={anganwadiFormData.children_0_3_years}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_0_3_years: parseInt(e.target.value) || 0}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              min="0"
-              disabled={isViewMode}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('categories.age3to6Years')}
-            </label>
-            <input
-              type="number"
-              value={anganwadiFormData.children_3_6_years}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_3_6_years: parseInt(e.target.value) || 0}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              min="0"
-              disabled={isViewMode}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                { key: 'toilet_facility', label: 'शौचालय' },
+                { key: 'independent_kitchen', label: 'स्वतंत्र बंदिस्त किचन व्यवस्था' },
+                { key: 'women_health_checkup_space', label: 'महिलांच्या आरोग्य तपासणीसाठी जागा' },
+                { key: 'electricity', label: 'विद्युत पुरवठा' },
+                { key: 'drinking_water', label: 'पिण्याचे पाणी' },
+              ].map(({ key, label }) => (
+                <label key={key} className="flex items-center p-6 bg-gradient-to-r from-gray-50 to-emerald-50 rounded-2xl hover:from-emerald-50 hover:to-emerald-100 transition-all duration-300 cursor-pointer group border border-gray-200 hover:border-emerald-300 shadow-sm hover:shadow-md">
+                  <input
+                    type="checkbox"
+                    checked={anganwadiFormData[key as keyof AnganwadiFormData] as boolean}
+                    onChange={(e) => setAnganwadiFormData(prev => ({...prev, [key]: e.target.checked}))}
+                    className="mr-5 w-6 h-6 text-emerald-600 border-2 border-gray-300 rounded-lg focus:ring-emerald-500 focus:ring-2 group-hover:border-emerald-400 transition-colors"
+                    disabled={isViewMode}
+                  />
+                  <span className="text-gray-700 group-hover:text-emerald-800 font-semibold text-lg">{label}</span>
+                </label>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Section E: Nutrition & Health Services */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center">
-          <Heart className="h-5 w-5 mr-2 text-purple-600" />
-          {t('categories.sectionE')}
-        </h4>
-        
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Section 2 - Weighing Scales */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Scale className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">२. वजनकाटे उपलब्ध:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { key: 'hot_meal_served', label: t('categories.hotMealServed') },
-              { key: 'take_home_ration', label: t('categories.takeHomeRation') },
-              { key: 'health_checkup_conducted', label: t('categories.healthCheckupConducted') },
-              { key: 'immunization_updated', label: t('categories.immunizationUpdated') },
-              { key: 'vitamin_a_given', label: t('categories.vitaminAGiven') },
-              { key: 'iron_tablets_given', label: t('categories.ironTabletsGiven') }
-            ].map((field) => (
-              <div key={field.key} className="flex items-center space-x-3">
+              { key: 'baby_weighing_scale', label: 'बेबी वजनकाटे' },
+              { key: 'hammock_weighing_scale', label: 'हॅमॉक [झोळीचे] वजनकाटे' },
+              { key: 'adult_weighing_scale', label: 'प्रौढांसाठीचे वजनकाटे' },
+            ].map(({ key, label }) => (
+              <label key={key} className="flex items-center p-6 bg-gradient-to-r from-gray-50 to-purple-50 rounded-2xl hover:from-purple-50 hover:to-purple-100 transition-all duration-300 cursor-pointer group border border-gray-200 hover:border-purple-300 shadow-sm hover:shadow-md">
                 <input
                   type="checkbox"
-                  id={field.key}
-                  checked={anganwadiFormData[field.key as keyof AnganwadiFormData] as boolean}
-                  onChange={(e) => setAnganwadiFormData(prev => ({...prev, [field.key]: e.target.checked}))}
-                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                  checked={anganwadiFormData[key as keyof AnganwadiFormData] as boolean}
+                  onChange={(e) => setAnganwadiFormData(prev => ({...prev, [key]: e.target.checked}))}
+                  className="mr-5 w-6 h-6 text-purple-600 border-2 border-gray-300 rounded-lg focus:ring-purple-500 focus:ring-2 group-hover:border-purple-400 transition-colors"
                   disabled={isViewMode}
                 />
-                <label htmlFor={field.key} className="text-sm text-gray-700">
-                  {field.label}
-                </label>
-              </div>
+                <span className="text-gray-700 group-hover:text-purple-800 font-semibold text-lg">{label}</span>
+              </label>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('categories.mealQuality')}
-            </label>
-            <select
-              value={anganwadiFormData.meal_quality}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, meal_quality: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              disabled={isViewMode}
-            >
-              <option value="">{t('categories.selectQuality')}</option>
-              <option value="excellent">{t('categories.excellent')}</option>
-              <option value="good">{t('categories.good')}</option>
-              <option value="average">{t('categories.average')}</option>
-              <option value="poor">{t('categories.poor')}</option>
-            </select>
+      {/* Section 3 - Materials */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-orange-500 to-red-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <BookOpen className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">३. अंगणवाडीतील साहित्य उपलब्धता:</h3>
           </div>
         </div>
-      </div>
-
-      {/* Section F: Observations & Recommendations */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center">
-          <BookOpen className="h-5 w-5 mr-2 text-purple-600" />
-          {t('categories.sectionF')}
-        </h4>
-        
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('categories.generalObservations')}
-            </label>
-            <textarea
-              value={anganwadiFormData.general_observations}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, general_observations: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              rows={4}
-              placeholder={t('categories.enterGeneralObservations')}
-              disabled={isViewMode}
-            />
+        <div className="p-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { key: 'cooking_utensils', label: 'स्वयंपाकाची भांडी' },
+              { key: 'water_storage_containers', label: 'पिण्याचे पाणी ठेवण्यासाठी भांडी' },
+              { key: 'medicine_kits', label: 'मेडिसिन किट्स' },
+              { key: 'pre_school_kit', label: 'पूर्व शाले संच' },
+              { key: 'all_registers', label: 'विविध नमुन्यातील रजिस्टर (सर्व)' },
+              { key: 'monthly_progress_reports', label: 'छापील मासिक प्रगती अहवाल' },
+            ].map(({ key, label }) => (
+              <label key={key} className="flex items-center p-6 bg-gradient-to-r from-gray-50 to-orange-50 rounded-2xl hover:from-orange-50 hover:to-orange-100 transition-all duration-300 cursor-pointer group border border-gray-200 hover:border-orange-300 shadow-sm hover:shadow-md">
+                <input
+                  type="checkbox"
+                  checked={anganwadiFormData[key as keyof AnganwadiFormData] as boolean}
+                  onChange={(e) => setAnganwadiFormData(prev => ({...prev, [key]: e.target.checked}))}
+                  className="mr-5 w-6 h-6 text-orange-600 border-2 border-gray-300 rounded-lg focus:ring-orange-500 focus:ring-2 group-hover:border-orange-400 transition-colors"
+                  disabled={isViewMode}
+                />
+                <span className="text-gray-700 group-hover:text-orange-800 font-semibold text-lg">{label}</span>
+              </label>
+            ))}
           </div>
+        </div>
+      </section>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('categories.recommendations')}
-            </label>
-            <textarea
-              value={anganwadiFormData.recommendations}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, recommendations: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              rows={4}
-              placeholder={t('categories.enterRecommendations')}
-              disabled={isViewMode}
-            />
+      {/* Section 4 - Schedule */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-indigo-500 to-blue-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Calendar className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">४. अंगणवाडी केंद्राचे वेळापत्रक:</h3>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('categories.actionRequired')}
-            </label>
-            <textarea
-              value={anganwadiFormData.action_required}
-              onChange={(e) => setAnganwadiFormData(prev => ({...prev, action_required: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              rows={4}
-              placeholder={t('categories.enterActionRequired')}
-              disabled={isViewMode}
+        </div>
+        <div className="p-10">
+          <div className="space-y-6">
+            <YesNoRadio
+              name="timetable_available"
+              value={anganwadiFormData.timetable_available ? 'होय' : anganwadiFormData.timetable_available === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, timetable_available: value === 'होय'}))}
+              question="१] अंगणवाडी केंद्राचे वेळापत्रक आहे काय?"
+            />
+            <YesNoRadio
+              name="timetable_followed"
+              value={anganwadiFormData.timetable_followed ? 'होय' : anganwadiFormData.timetable_followed === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, timetable_followed: value === 'होय'}))}
+              question="२] वेळापत्रक पाळले जाते काय?"
+            />
+            <YesNoRadio
+              name="supervisor_regular_attendance"
+              value={anganwadiFormData.supervisor_regular_attendance ? 'होय' : anganwadiFormData.supervisor_regular_attendance === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, supervisor_regular_attendance: value === 'होय'}))}
+              question="३] सेविका नियमितपणे हजर राहते काय?"
             />
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Section 5 - Food */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Heart className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">५. आहाराविषयी:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="space-y-6">
+            <YesNoRadio
+              name="monthly_25_days_meals"
+              value={anganwadiFormData.monthly_25_days_meals ? 'होय' : anganwadiFormData.monthly_25_days_meals === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, monthly_25_days_meals: value === 'होय'}))}
+              question="१] अंगणवाडी केंद्रात प्रत्येक महिन्याला २५ दिवस सकाळचा नाश्ता व पूरक पोषण आहार पुरविण्यात येतो काय?"
+            />
+            <YesNoRadio
+              name="thr_provided_regularly"
+              value={anganwadiFormData.thr_provided_regularly ? 'होय' : anganwadiFormData.thr_provided_regularly === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, thr_provided_regularly: value === 'होय'}))}
+              question="२] ०–३ वर्षांची बालके, गर्भवती-स्तनदा माता, व तीव्र कमी वजनाच्या बालकांना THR नियमितपणे दिला जातो काय?"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Section 6 - Self-help Groups */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-teal-500 to-cyan-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Users className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">६. स्वयंसहाय्यता बचत गटांच्या/महिला मंडळाबाबत:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="space-y-8">
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">१] अंगणवाडीतील आहार कोणाकडून दिला जातो?</label>
+              <input
+                type="text"
+                value={anganwadiFormData.food_provider}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, food_provider: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">२] यातील अंगणवाडी सेविकेच्या असलेला सहभाग.</label>
+              <input
+                type="text"
+                value={anganwadiFormData.supervisor_participation}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, supervisor_participation: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+            <YesNoRadio
+              name="food_distribution_decentralized"
+              value={anganwadiFormData.food_distribution_decentralized ? 'होय' : anganwadiFormData.food_distribution_decentralized === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, food_distribution_decentralized: value === 'होय'}))}
+              question="३] आहार वाटपाचे काम विकेंद्रित केले आहे काय?"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Section 7 - Food Taste */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-pink-500 to-rose-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <MessageSquare className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">७. मुलांना आहाराची चव व दर्जा आवडतो की कसे?</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <input
+            type="text"
+            value={anganwadiFormData.children_food_taste_preference}
+            onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_food_taste_preference: e.target.value}))}
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+            disabled={isViewMode}
+          />
+        </div>
+      </section>
+
+      {/* Section 8 - Food Quality */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-amber-500 to-yellow-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <CheckCircle className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">८. आहार दर्जा:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="space-y-6">
+            <YesNoRadio
+              name="prescribed_protein_calories"
+              value={anganwadiFormData.prescribed_protein_calories ? 'होय' : anganwadiFormData.prescribed_protein_calories === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, prescribed_protein_calories: value === 'होय'}))}
+              question="१] निर्धारीत प्रथीणे व उष्मांक असलेला आहार मिळतो काय?"
+            />
+            <YesNoRadio
+              name="prescribed_weight_food"
+              value={anganwadiFormData.prescribed_weight_food ? 'होय' : anganwadiFormData.prescribed_weight_food === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, prescribed_weight_food: value === 'होय'}))}
+              question="२] निर्धारीत वजनाचा आहार मिळतो काय?"
+            />
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">३] आहार नमुने प्रयोगशाळेत पृथ:करणाकरिता केव्हा पाठविले होते?</label>
+              <input
+                type="date"
+                value={anganwadiFormData.lab_sample_date}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, lab_sample_date: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 9 - Weight Monitoring */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-violet-500 to-purple-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <CheckCircle className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">९. बालकांचे वजन तपासणी:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="space-y-6">
+            <YesNoRadio
+              name="regular_weighing"
+              value={anganwadiFormData.regular_weighing ? 'होय' : anganwadiFormData.regular_weighing === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, regular_weighing: value === 'होय'}))}
+              question="१] बालकांचे वजने नियमित वजने घेतली जातात किंवा कसे?"
+            />
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">२] (वृद्धिपत्रक तपासून) वय व वजन यांची नोंद तपासून पोषण श्रेणी योग्य प्रमाणे दर्शविलेली आहे काय? काही मुलांची प्रत्यक्ष वजने घेऊन तपासणी व खात्री करावी. तसेच वृद्धिपत्रकातील नोंद तपासावी.</label>
+              <textarea
+                value={anganwadiFormData.children_attendance_comparison}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_attendance_comparison: e.target.value}))}
+                rows={4}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 10 - Vaccination */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-red-500 to-pink-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Heart className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">१०. लसीकरण:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="space-y-6">
+            <YesNoRadio
+              name="vaccination_health_checkup_regular"
+              value={anganwadiFormData.vaccination_health_checkup_regular ? 'होय' : anganwadiFormData.vaccination_health_checkup_regular === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, vaccination_health_checkup_regular: value === 'होय'}))}
+              question="१] लसीकरण व आरोग्य तपासणी नियमितपणे होते काय? (मागील दोन महिन्याचे रेकॉर्ड तपासावे.)"
+            />
+            <YesNoRadio
+              name="vaccination_schedule_awareness"
+              value={anganwadiFormData.vaccination_schedule_awareness ? 'होय' : anganwadiFormData.vaccination_schedule_awareness === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, vaccination_schedule_awareness: value === 'होय'}))}
+              question="२] लसीकरण दिवसाची माहिती लाभार्थी पालकांना आहे काय? (एक-दोन घरी जाऊन तपासावे)"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Remaining Sections 11-17 */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Calendar className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">११. ग्राम आरोग्य व पोषण दिवसाचे गावनिहाय सूक्ष्म नियोजन केले आहे काय?</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <input
+            type="text"
+            value={anganwadiFormData.village_health_nutrition_planning}
+            onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_health_nutrition_planning: e.target.value}))}
+            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+            disabled={isViewMode}
+          />
+        </div>
+      </section>
+
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-lime-500 to-green-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Users className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">१२. भेटीच्या दिवशी प्रत्यक्ष उपस्थित असलेली बालके व नोंदविलेल्या बालकांपैकी त्या दिवशी प्रत्यक्ष हजर असलेली बालके. (मागील आठवड्यातील सरासरी आकडेवारीची ही संख्या पडताळून पहावी.):</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">एकूण नोंदणीकृत मुले</label>
+              <input
+                type="number"
+                value={anganwadiFormData.total_registered_children}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, total_registered_children: parseInt(e.target.value) || 0}))}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">आज उपस्थित मुले</label>
+              <input
+                type="number"
+                value={anganwadiFormData.children_present_today}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_present_today: parseInt(e.target.value) || 0}))}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">०-३ वर्षे मुले</label>
+              <input
+                type="number"
+                value={anganwadiFormData.children_0_3_years}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_0_3_years: parseInt(e.target.value) || 0}))}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">३-६ वर्षे मुले</label>
+              <input
+                type="number"
+                value={anganwadiFormData.children_3_6_years}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_3_6_years: parseInt(e.target.value) || 0}))}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
+                disabled={isViewMode}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final sections for observations and recommendations */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <MessageSquare className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">निरीक्षणे आणि शिफारसी</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="space-y-6">
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">सामान्य निरीक्षणे</label>
+              <textarea
+                value={anganwadiFormData.general_observations}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, general_observations: e.target.value}))}
+                rows={4}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
+                placeholder="अंगणवाडी केंद्राबद्दल सामान्य निरीक्षणे टाका"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">शिफारसी</label>
+              <textarea
+                value={anganwadiFormData.recommendations}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, recommendations: e.target.value}))}
+                rows={4}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
+                placeholder="सुधारणेसाठी शिफारसी टाका"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">आवश्यक कृती</label>
+              <textarea
+                value={anganwadiFormData.action_required}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, action_required: e.target.value}))}
+                rows={4}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
+                placeholder="घ्यावयाच्या विशिष्ट कृती टाका"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">सूचना</label>
+              <textarea
+                value={anganwadiFormData.suggestions}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, suggestions: e.target.value}))}
+                rows={4}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
+                placeholder="अतिरिक्त सूचना टाका"
+                disabled={isViewMode}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Inspector Details */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-gray-600 to-gray-800 px-8 py-6">
+          <div className="flex items-center text-white">
+            <UserCheck className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">तपासणीकर्त्याची माहिती</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">तपासणीकर्त्याचे नाव</label>
+              <input
+                type="text"
+                value={anganwadiFormData.inspector_name}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, inspector_name: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">पदनाम</label>
+              <input
+                type="text"
+                value={anganwadiFormData.inspector_designation}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, inspector_designation: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">भेटीची तारीख</label>
+              <input
+                type="date"
+                value={anganwadiFormData.visit_date}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, visit_date: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 
   const renderPhotoUpload = () => (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {t('categories.photoDocumentation')}
+        {t('fims.photoDocumentation')}
       </h3>
       
-      {!isViewMode && (
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-          <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h4 className="text-lg font-medium text-gray-900 mb-2">
-            {t('categories.uploadInspectionPhotos')}
-          </h4>
-          <p className="text-gray-600 mb-4">
-            {t('categories.uploadPhotosToDocument')}
-          </p>
-          
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handlePhotoUpload}
-            className="hidden"
-            id="photo-upload"
-            disabled={isViewMode}
-          />
-          <label
-            htmlFor="photo-upload"
-            className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
-          >
-            <Camera className="h-4 w-4 mr-2" />
-            {t('categories.chooseFiles')}
-          </label>
-          
-          <p className="text-xs text-gray-500 mt-2">
-            Maximum 5 photos allowed
-          </p>
-        </div>
-      )}
+      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+        <h4 className="text-lg font-medium text-gray-900 mb-2">
+          Upload Anganwadi Photos
+        </h4>
+        <p className="text-gray-600 mb-4">
+          Upload photos of the anganwadi center for documentation and record keeping
+        </p>
+        
+        {!isViewMode && (
+          <>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handlePhotoUpload}
+              className="hidden"
+              id="photo-upload"
+            />
+            <label
+              htmlFor="photo-upload"
+              className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
+            >
+              <Camera className="h-4 w-4 mr-2" />
+              {t('fims.chooseFiles')}
+            </label>
+          </>
+        )}
+        
+        <p className="text-xs text-gray-500 mt-2">
+          Maximum 5 photos allowed
+        </p>
+      </div>
 
       {uploadedPhotos.length > 0 && (
         <div>
           <h4 className="text-md font-medium text-gray-900 mb-3">
-            {t('categories.uploadedPhotos')} ({uploadedPhotos.length}/5)
+            {t('fims.uploadedPhotos')} ({uploadedPhotos.length}/5)
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {uploadedPhotos.map((photo, index) => (
@@ -1184,14 +1419,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
         <div className="text-center py-8 text-gray-500">
           <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-          <p>No photos found for this inspection</p>
+          <p>{t('fims.noPhotosFound')}</p>
         </div>
       )}
 
       {isUploading && (
         <div className="text-center py-4">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
-          <p className="text-gray-600">{t('categories.uploadingPhotos')}</p>
+          <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
         </div>
       )}
     </div>
@@ -1204,7 +1439,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       case 2:
         return renderLocationDetails();
       case 3:
-        return renderInspectionForm();
+        return renderAnganwadiInspectionForm();
       case 4:
         return renderPhotoUpload();
       default:
@@ -1228,14 +1463,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4 md:p-6">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
-          {isViewMode && (
+          {editingInspection?.mode === 'view' && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
               <p className="text-blue-800 text-sm font-medium">
-                View Mode - This form is read-only
+                {t('fims.viewMode')} - {t('fims.formReadOnly')}
               </p>
             </div>
           )}
@@ -1249,9 +1484,9 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               <span>Back</span>
             </button>
             <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center">
-              {isViewMode ? 'View Inspection' : 
-               isEditMode ? 'Edit Inspection' : 
-               'New Inspection'} - अंगणवाडी केंद्र तपासणी
+              {editingInspection?.mode === 'view' ? t('fims.viewInspection') : 
+               editingInspection?.mode === 'edit' ? t('fims.editInspection') : 
+               t('fims.newInspection')} - अंगणवाडी केंद्र तपासणी
             </h1>
             <div className="w-20"></div>
           </div>
@@ -1263,19 +1498,19 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               मूलभूत माहिती
             </div>
             <div className={`${currentStep === 2 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              स्थान तपशील
+              {t('fims.locationDetails')}
             </div>
             <div className={`${currentStep === 3 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              तपासणी फॉर्म
+              अंगणवाडी तपासणी
             </div>
             <div className={`${currentStep === 4 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              फोटो आणि सबमिट
+              {t('fims.photosSubmit')}
             </div>
           </div>
         </div>
 
         {/* Form Content */}
-        <div className="bg-gradient-to-br from-white via-purple-50/30 to-pink-50/30 rounded-xl shadow-lg border-2 border-purple-200 p-4 md:p-6 mb-4 md:mb-6">
+        <div className="bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/30 rounded-xl shadow-lg border-2 border-blue-200 p-4 md:p-6 mb-4 md:mb-6">
           {renderStepContent()}
         </div>
 
@@ -1299,7 +1534,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
                 >
                   <Save className="h-4 w-4" />
-                  <span>{t('categories.saveAsDraft')}</span>
+                  <span>{t('fims.saveAsDraft')}</span>
                 </button>
                 )}
                 {!isViewMode && (
@@ -1309,14 +1544,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
                 >
                   <Send className="h-4 w-4" />
-                  <span>{isEditMode ? 'Update Inspection' : t('categories.submitInspection')}</span>
+                  <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
                 </button>
                 )}
               </>
             ) : (
               <button
                 onClick={() => setCurrentStep(prev => Math.min(4, prev + 1))}
-                disabled={!canProceedToNext() && !isViewMode}
+                disabled={!canProceedToNext()}
                 className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
               >
                 {t('common.next')}
