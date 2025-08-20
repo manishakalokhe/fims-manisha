@@ -1322,14 +1322,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-emerald-700 mb-2">
-                अंगणवाडी नाव *
+                {t('categories.anganwadiName')} *
               </label>
               <input
                 type="text"
                 value={anganwadiFormData.anganwadi_name}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_name: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                placeholder="अंगणवाडी नाव प्रविष्ट करा"
+                placeholder={t('categories.enterAnganwadiName')}
                 required
                 disabled={isViewMode}
               />
@@ -1337,63 +1337,63 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-emerald-700 mb-2">
-                अंगणवाडी क्रमांक
+                {t('categories.anganwadiNumber')}
               </label>
               <input
                 type="text"
                 value={anganwadiFormData.anganwadi_number}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_number: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                placeholder="अंगणवाडी क्रमांक प्रविष्ट करा"
+                placeholder={t('categories.enterAnganwadiNumber')}
                 disabled={isViewMode}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-emerald-700 mb-2">
-                पर्यवेक्षक नाव
+                {t('categories.supervisorName')}
               </label>
               <input
                 type="text"
                 value={anganwadiFormData.supervisor_name}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, supervisor_name: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                placeholder="पर्यवेक्षक नाव प्रविष्ट करा"
+                placeholder={t('categories.enterSupervisorName')}
                 disabled={isViewMode}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-emerald-700 mb-2">
-                सहायक नाव
+                {t('categories.helperName')}
               </label>
               <input
                 type="text"
                 value={anganwadiFormData.helper_name}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, helper_name: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                placeholder="सहायक नाव प्रविष्ट करा"
+                placeholder={t('categories.enterHelperName')}
                 disabled={isViewMode}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-emerald-700 mb-2">
-                गावाचे नाव
+                {t('categories.villageName')}
               </label>
               <input
                 type="text"
                 value={anganwadiFormData.village_name}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_name: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                placeholder="गावाचे नाव प्रविष्ट करा"
+                placeholder={t('categories.enterVillageName')}
                 disabled={isViewMode}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-emerald-700 mb-2">
-                इमारतीचा प्रकार
+                {t('categories.buildingType')}
               </label>
               <select
                 value={anganwadiFormData.building_type}
@@ -1401,11 +1401,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 disabled={isViewMode}
               >
-                <option value="">प्रकार निवडा</option>
-                <option value="own">स्वतःची</option>
-                <option value="rented">भाड्याची</option>
-                <option value="free">मोफत</option>
-                <option value="no_building">इमारत नाही</option>
+                <option value="">{t('categories.selectBuildingType')}</option>
+                <option value="own">{t('categories.ownBuilding')}</option>
+                <option value="rented">{t('categories.rentedBuilding')}</option>
+                <option value="free">{t('categories.freeBuilding')}</option>
+                <option value="no_building">{t('categories.noBuilding')}</option>
               </select>
             </div>
           </div>
@@ -1424,14 +1424,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-blue-700 mb-2">
-                स्थानाचे नाव *
+                {t('categories.locationName')} *
               </label>
               <input
                 type="text"
                 value={inspectionData.location_name}
                 onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="स्थानाचे नाव प्रविष्ट करा"
+                placeholder={t('categories.enterLocationName')}
                 required
                 disabled={isViewMode}
               />
@@ -1439,7 +1439,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-blue-700 mb-2">
-                नियोजित तारीख
+                {t('categories.plannedDate')}
               </label>
               <input
                 type="date"
@@ -1452,7 +1452,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-blue-700 mb-2">
-                GPS स्थान
+                {t('categories.gpsLocationCapture')}
               </label>
               {!isViewMode && (
                 <button
@@ -1461,18 +1461,18 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   disabled={isLoading}
                   className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
                 >
-                  <MapPin className="h-4 w-4" />
+                <span>{isLoading ? t('categories.gettingLocation') : t('categories.getCurrentLocation')}</span>
                   <span>{isLoading ? 'स्थान मिळवत आहे...' : 'सध्याचे स्थान मिळवा'}</span>
                 </button>
               )}
               
               {inspectionData.latitude && inspectionData.longitude && (
                 <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm text-green-800 font-medium">स्थान कॅप्चर केले</p>
+                  <p className="text-sm text-green-800 font-medium">{t('categories.locationCaptured')}</p>
                   <p className="text-xs text-green-600">
-                    अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
-                    रेखांश: {inspectionData.longitude.toFixed(6)}<br />
-                    अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                    {t('categories.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
+                    {t('categories.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
+                    {t('categories.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
                   </p>
                 </div>
               )}
