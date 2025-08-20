@@ -277,7 +277,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       if (editingInspection.fims_anganwadi_forms && editingInspection.fims_anganwadi_forms.length > 0) {
         formDataToLoad = editingInspection.fims_anganwadi_forms[0];
         console.log('Loading from fims_anganwadi_forms:', formDataToLoad);
-      } else if (editingInspection.form_data) {
+      } else {
         // Fallback to form_data JSON field
         formDataToLoad = editingInspection.form_data;
         console.log('Loading from form_data JSON:', formDataToLoad);
@@ -689,24 +689,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             placeholder={t('categories.enterVillageName')}
             disabled={isViewMode}
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('categories.buildingCondition')}
-          </label>
-          <select
-            value={anganwadiFormData.building_condition}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_condition: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            disabled={isViewMode}
-          >
-            <option value="">{t('categories.selectCondition')}</option>
-            <option value="excellent">{t('categories.excellent')}</option>
-            <option value="good">{t('categories.good')}</option>
-            <option value="average">{t('categories.average')}</option>
-            <option value="poor">{t('categories.poor')}</option>
-          </select>
         </div>
       </div>
     </div>
@@ -1315,117 +1297,286 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   );
 
   const renderPhotoUpload = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {t('fims.photoDocumentation')}
-      </h3>
-      
-      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <h4 className="text-lg font-medium text-gray-900 mb-2">
-          Upload Anganwadi Photos
-        </h4>
-        <p className="text-gray-600 mb-4">
-          Upload photos of the anganwadi center for documentation and record keeping
-        </p>
-        
-        {!isViewMode && (
-          <>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handlePhotoUpload}
-              className="hidden"
-              id="photo-upload"
-            />
-            <label
-              htmlFor="photo-upload"
-              className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
-            >
-              <Camera className="h-4 w-4 mr-2" />
-              {t('fims.chooseFiles')}
-            </label>
-          </>
-        )}
-        
-        <p className="text-xs text-gray-500 mt-2">
-          Maximum 5 photos allowed
-        </p>
+    <div className="space-y-8">
+      {/* Basic Information Section */}
+      <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <FileText className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">मूलभूत माहिती (Basic Information)</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                अंगणवाडी नाव *
+              </label>
+              <input
+                type="text"
+                value={anganwadiFormData.anganwadi_name}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder="अंगणवाडी नाव प्रविष्ट करा"
+                required
+                disabled={isViewMode}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                अंगणवाडी क्रमांक
+              </label>
+              <input
+                type="text"
+                value={anganwadiFormData.anganwadi_number}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, anganwadi_number: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder="अंगणवाडी क्रमांक प्रविष्ट करा"
+                disabled={isViewMode}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                पर्यवेक्षक नाव
+              </label>
+              <input
+                type="text"
+                value={anganwadiFormData.supervisor_name}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, supervisor_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder="पर्यवेक्षक नाव प्रविष्ट करा"
+                disabled={isViewMode}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                सहायक नाव
+              </label>
+              <input
+                type="text"
+                value={anganwadiFormData.helper_name}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, helper_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder="सहायक नाव प्रविष्ट करा"
+                disabled={isViewMode}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                गावाचे नाव
+              </label>
+              <input
+                type="text"
+                value={anganwadiFormData.village_name}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder="गावाचे नाव प्रविष्ट करा"
+                disabled={isViewMode}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                अंगणवाडी इमारत प्रकार
+              </label>
+              <select
+                value={anganwadiFormData.building_type}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_type: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                disabled={isViewMode}
+              >
+                <option value="">प्रकार निवडा</option>
+                <option value="own">स्वतःची</option>
+                <option value="rented">भाड्याची</option>
+                <option value="free">मोफत</option>
+                <option value="no_building">इमारत नाही</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {uploadedPhotos.length > 0 && (
-        <div>
-          <h4 className="text-md font-medium text-gray-900 mb-3">
-            {t('fims.uploadedPhotos')} ({uploadedPhotos.length}/5)
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {uploadedPhotos.map((photo, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={URL.createObjectURL(photo)}
-                  alt={`Anganwadi photo ${index + 1}`}
-                  className="w-full h-32 object-cover rounded-lg"
-                />
-                {!isViewMode && (
-                  <button
-                    onClick={() => removePhoto(index)}
-                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
-                  >
-                    ×
-                  </button>
-                )}
-                <p className="text-xs text-gray-600 mt-1 truncate">
-                  {photo.name}
-                </p>
-              </div>
-            ))}
+      {/* Location Information Section */}
+      <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <MapPin className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">स्थान माहिती (Location Information)</h3>
           </div>
         </div>
-      )}
+        <div className="p-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.locationName')} *
+              </label>
+              <input
+                type="text"
+                value={inspectionData.location_name}
+                onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={t('fims.enterLocationName')}
+                required
+                disabled={isViewMode}
+              />
+            </div>
 
-      {/* Display existing photos when viewing */}
-      {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
-        <div>
-          <h4 className="text-md font-medium text-gray-900 mb-3">
-            Inspection Photos ({editingInspection.fims_inspection_photos.length})
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
-              <div key={photo.id} className="relative">
-                <img
-                  src={photo.photo_url}
-                  alt={photo.description || `Anganwadi photo ${index + 1}`}
-                  className="w-full h-32 object-cover rounded-lg"
-                />
-                <p className="text-xs text-gray-600 mt-1 truncate">
-                  {photo.photo_name || `Photo ${index + 1}`}
-                </p>
-                {photo.description && (
-                  <p className="text-xs text-gray-500 truncate">
-                    {photo.description}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.plannedDate')}
+              </label>
+              <input
+                type="date"
+                value={inspectionData.planned_date}
+                onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={isViewMode}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                GPS Location
+              </label>
+              {!isViewMode && (
+                <button
+                  type="button"
+                  onClick={getCurrentLocation}
+                  disabled={isLoading}
+                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+                >
+                  <MapPin className="h-4 w-4" />
+                  <span>{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
+                </button>
+              )}
+              
+              {inspectionData.latitude && inspectionData.longitude && (
+                <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
+                  <p className="text-xs text-green-600">
+                    {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
+                    {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
+                    {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
                   </p>
-                )}
-              </div>
-            ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Show message when no photos in view mode */}
-      {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
-        <div className="text-center py-8 text-gray-500">
-          <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-          <p>{t('fims.noPhotosFound')}</p>
+      <div className="space-y-6">
+        <div className="text-center">
+          <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h4 className="text-lg font-medium text-gray-900 mb-2">
+            Upload Anganwadi Photos
+          </h4>
+          <p className="text-gray-600 mb-4">
+            Upload photos of the anganwadi center for documentation and record keeping
+          </p>
+          
+          {!isViewMode && (
+            <>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handlePhotoUpload}
+                className="hidden"
+                id="photo-upload"
+              />
+              <label
+                htmlFor="photo-upload"
+                className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
+              >
+                <Camera className="h-4 w-4 mr-2" />
+                {t('fims.chooseFiles')}
+              </label>
+            </>
+          )}
+          
+          <p className="text-xs text-gray-500 mt-2">
+            Maximum 5 photos allowed
+          </p>
         </div>
-      )}
 
-      {isUploading && (
-        <div className="text-center py-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
-          <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
-        </div>
-      )}
+        {uploadedPhotos.length > 0 && (
+          <div>
+            <h4 className="text-md font-medium text-gray-900 mb-3">
+              {t('fims.uploadedPhotos')} ({uploadedPhotos.length}/5)
+            </h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {uploadedPhotos.map((photo, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={URL.createObjectURL(photo)}
+                    alt={`Anganwadi photo ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                  {!isViewMode && (
+                    <button
+                      onClick={() => removePhoto(index)}
+                      className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
+                    >
+                      ×
+                    </button>
+                  )}
+                  <p className="text-xs text-gray-600 mt-1 truncate">
+                    {photo.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Display existing photos when viewing */}
+        {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
+          <div>
+            <h4 className="text-md font-medium text-gray-900 mb-3">
+              Inspection Photos ({editingInspection.fims_inspection_photos.length})
+            </h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
+                <div key={photo.id} className="relative">
+                  <img
+                    src={photo.photo_url}
+                    alt={photo.description || `Anganwadi photo ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                  <p className="text-xs text-gray-600 mt-1 truncate">
+                    {photo.photo_name || `Photo ${index + 1}`}
+                  </p>
+                  {photo.description && (
+                    <p className="text-xs text-gray-500 truncate">
+                      {photo.description}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Show message when no photos in view mode */}
+        {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
+          <div className="text-center py-8 text-gray-500">
+            <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+            <p>{t('fims.noPhotosFound')}</p>
+          </div>
+        )}
+
+        {isUploading && (
+          <div className="text-center py-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
+            <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 
