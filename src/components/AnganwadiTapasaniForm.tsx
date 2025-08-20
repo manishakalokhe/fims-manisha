@@ -1510,7 +1510,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                     className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
                   >
                     <Camera className="h-4 w-4 mr-2" />
-                    {t('fims.selectPhotos')}
+                    पूर्वशाले शिक्षण - नोंदणीकृत मुले
                   </label>
                 </>
               )}
@@ -1649,7 +1649,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
               {renderStepIndicator()}
 
-              <div className="flex justify-center space-x-8 text-sm">
+              <div className="flex justify-center space-x-4 md:space-x-8 text-xs md:text-sm">
                 <div className={`${currentStep === 1 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
                   मूलभूत माहिती
                 </div>
