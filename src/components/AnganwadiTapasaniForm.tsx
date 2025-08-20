@@ -1309,8 +1309,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   );
 
   const renderPhotoUpload = () => (
-    <div className="space-y-8">      </div>
-
+    <div className="space-y-8">
       {/* Photo Upload Section */}
       <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
