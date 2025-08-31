@@ -134,7 +134,7 @@
     "admin": "Admin",
     "webApp": "Web App",
     "mobileApp": "Mobile App"
-  }
+  },
   "roles": {
     "developer": "Developer",
     "super_admin": "Super Admin",
