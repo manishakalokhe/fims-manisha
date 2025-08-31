@@ -115,8 +115,8 @@
       "webApplication": "वेब अनुप्रयोग"
     }
   },
-      "allStatuses": "सर्व स्थिती",
-  "profile": {
+    "allStatuses": "सर्व स्थिती",
+    "profile": {
     "userProfile": "वापरकर्ता प्रोफाइल",
     "accountDetails": "खाते तपशील",
     "systemAccess": "प्रणाली प्रवेश",
