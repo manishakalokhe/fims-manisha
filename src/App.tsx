@@ -25,6 +25,14 @@ function App() {
         setUser(user);
       } catch (error) {
         console.error('Error checking user:', error);
+        // Handle invalid refresh token by clearing stale auth data
+        if (error instanceof Error && error.message.includes('Invalid Refresh Token')) {
+          try {
+            await supabase.auth.signOut();
+          } catch (signOutError) {
+            console.error('Error signing out:', signOutError);
+          }
+        }
         setUser(null);
       } finally {
         setIsLoading(false);
