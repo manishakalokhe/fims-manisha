@@ -210,10 +210,10 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             </div>
             <div>
               <h4 className="text-base font-bold text-blue-900 mb-2">
-                {t('fims.photoDocumentationRequired')}
+                {t('erms.departments.photoDocumentationRequired')}
               </h4>
               <p className="text-sm text-blue-800 font-medium">
-                {t('fims.photoDocumentationRequiredDesc')}
+                {t('erms.departments.photoDocumentationRequiredDesc')}
               </p>
             </div>
           </div>
@@ -226,10 +226,10 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             </div>
             <div>
               <h4 className="text-base font-bold text-amber-900 mb-2">
-                {t('fims.gpsLocationCaptureRequired')}
+                {t('erms.departments.gpsLocationCaptureRequired')}
               </h4>
               <p className="text-sm text-amber-800 font-medium">
-                {t('fims.gpsLocationCaptureDesc')}
+                {t('erms.departments.gpsLocationCaptureDesc')}
               </p>
             </div>
           </div>
