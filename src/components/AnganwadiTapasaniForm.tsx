@@ -292,7 +292,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           helper_name: formDataToLoad.helper_name || '',
           village_name: formDataToLoad.village_name || '',
           building_type: formDataToLoad.building_type || '',
-          building_condition: formDataToLoad.building_condition || '',
           room_availability: formDataToLoad.room_availability || false,
           toilet_facility: formDataToLoad.toilet_facility || false,
           drinking_water: formDataToLoad.drinking_water || false,
