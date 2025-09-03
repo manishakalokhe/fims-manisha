@@ -1428,13 +1428,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             />
           </div>
           
+          {inspectionData.location_detected && (
+            <p className="text-sm text-green-700 mt-1">
+              <strong>स्थान:</strong> {inspectionData.location_detected}
+            </p>
+          )}
+          
           {currentStep < 3 && (
             <button
-              {inspectionData.location_detected && (
-                <p className="text-sm text-green-700 mt-1">
-                  <strong>स्थान:</strong> {inspectionData.location_detected}
-                </p>
-              )}
               type="button"
               onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
               className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200"
