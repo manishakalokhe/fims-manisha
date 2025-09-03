@@ -72,7 +72,13 @@
       "viewEmployees": "कर्मचारी पहा",
       "addEmployee": "कर्मचारी जोडा",
       "generateReport": "अहवाल तयार करा",
-      "webApplication": "वेब अनुप्रयोग"
+      "webApplication": "वेब अनुप्रयोग",
+      "departments": {
+        "photoDocumentationRequired": "फोटो दस्तऐवजीकरण आवश्यक",
+        "photoDocumentationRequiredDesc": "दोन्ही तपासणी प्रकारांसाठी फोटो दस्तऐवजीकरण आवश्यक आहे. योग्य रेकॉर्ड ठेवण्यासाठी आपण प्रति तपासणी 5 पर्यंत फोटो अपलोड करू शकता.",
+        "gpsLocationCaptureRequired": "GPS स्थान कॅप्चर आवश्यक",
+        "gpsLocationCaptureDesc": "अचूक रेकॉर्ड ठेवण्यासाठी तपासणी प्रक्रियेदरम्यान स्थान निर्देशांक आपोआप कॅप्चर केले जातील."
+      }
     },
     "estimate": {
       "name": "ई-अंदाजपत्रक",
@@ -136,7 +142,23 @@
       "photoDocumentationRequired": "फोटो दस्तऐवजीकरण आवश्यक",
       "photoDocumentationRequiredDesc": "दोन्ही तपासणी प्रकारांसाठी फोटो दस्तऐवजीकरण आवश्यक आहे. योग्य रेकॉर्ड ठेवण्यासाठी आपण प्रति तपासणी 5 पर्यंत फोटो अपलोड करू शकता.",
       "gpsLocationCaptureRequired": "GPS स्थान कॅप्चर आवश्यक",
-      "gpsLocationCaptureDesc": "अचूक रेकॉर्ड ठेवण्यासाठी तपासणी प्रक्रियेदरम्यान स्थान निर्देशांक आपोआप कॅप्चर केले जातील."
+      "gpsLocationCaptureDesc": "अचूक रेकॉर्ड ठेवण्यासाठी तपासणी प्रक्रियेदरम्यान स्थान निर्देशांक आपोआप कॅप्चर केले जातील.",
+      "locationDetails": "स्थान तपशील",
+      "photosSubmit": "फोटो आणि सबमिट",
+      "viewInspection": "तपासणी पहा",
+      "editInspection": "तपासणी संपादित करा",
+      "formReadOnly": "हा फॉर्म फक्त वाचण्यासाठी आहे",
+      "viewMode": "दृश्य मोड",
+      "updateInspection": "तपासणी अपडेट करा",
+      "inspectionSavedAsDraft": "तपासणी मसुदा म्हणून जतन केली",
+      "inspectionUpdatedAsDraft": "तपासणी मसुदा म्हणून अपडेट केली",
+      "inspectionSubmittedSuccessfully": "तपासणी यशस्वीरित्या सबमिट केली",
+      "inspectionUpdatedSuccessfully": "तपासणी यशस्वीरित्या अपडेट केली",
+      "chooseFiles": "फाइल निवडा",
+      "uploadedPhotos": "अपलोड केलेले फोटो",
+      "uploadingPhotos": "फोटो अपलोड करत आहे...",
+      "noPhotosFound": "कोणतेही फोटो सापडले नाहीत",
+      "maxPhotosAllowed": "जास्तीत जास्त 5 फोटो अनुमतीत आहेत"
     },
     "pesa": {
       "name": "PESA 5%",
@@ -152,7 +174,6 @@
       "webApplication": "वेब अनुप्रयोग"
     }
   },
-      "allStatuses": "सर्व स्थिती",
     "profile": {
     "userProfile": "वापरकर्ता प्रोफाइल",
     "accountDetails": "खाते तपशील",
