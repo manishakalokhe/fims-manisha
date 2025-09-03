@@ -1527,10 +1527,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           <button
             onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
             disabled={currentStep === 1}
-            disabled={isGettingLocation || isViewMode}
+            className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span>{isGettingLocation ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
+            <span>{t('common.previous')}</span>
           </button>
 
           <div className="flex space-x-2 md:space-x-3">
@@ -1544,16 +1544,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   >
                     <Save className="h-4 w-4" />
                     <span>{t('fims.saveAsDraft')}</span>
-                  </button>
-                )}
-                {!isViewMode && (
-                  <button
-                    onClick={() => handleSubmit(false)}
-                    disabled={isLoading || isUploading}
-                    className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                  >
-                    <Send className="h-4 w-4" />
-                    <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
                   </button>
                 )}
                 <button
@@ -1581,13 +1571,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   <button
                     onClick={() => handleSubmit(false)}
                     disabled={isLoading || isUploading}
-            <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-md">
+                    className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
                   >
-              {detectedLocationName && (
-                <p className="text-xs text-green-700 mt-1 font-medium">
-                  स्थान केंद्र केले: {detectedLocationName}
-                </p>
-              )}
                     <Send className="h-4 w-4" />
                     <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
                   </button>
@@ -1596,6 +1581,15 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             )}
           </div>
         </div>
+
+        {/* Location Detection Display */}
+        {detectedLocationName && (
+          <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-xs text-green-700 mt-1 font-medium">
+              स्थान केंद्र केले: {detectedLocationName}
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );
