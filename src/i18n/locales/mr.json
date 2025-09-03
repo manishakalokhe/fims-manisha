@@ -223,63 +223,8 @@
       "uploadedPhotos": "अपलोड केलेले फोटो",
       "uploadingPhotos": "फोटो अपलोड करत आहे...",
       "noPhotosFound": "कोणतेही फोटो सापडले नाहीत",
-      "maxPhotosAllowed": "जास्तीत जास्त 5 फोटो अनुमतीत आहेत"
-    },
-    "pesa": {
-      "name": "PESA 5%",
-      "fullName": "PESA 5% निधी व्यवस्थापन प्रणाली",
-      "description": "घटकांमध्ये PESA निधी वापराचा मागोवा आणि व्यवस्थापन करा",
-      "totalFund": "एकूण निधी",
-      "utilized": "वापरलेला",
-      "remaining": "उरलेला",
-      "villages": "गावे",
-      "addTransaction": "व्यवहार जोडा",
-      "viewFunds": "निधी पहा",
-      "compliance": "अनुपालन",
-      "webApplication": "वेब अनुप्रयोग"
-    }
-  },
-    "profile": {
-    "userProfile": "वापरकर्ता प्रोफाइल",
-    "accountDetails": "खाते तपशील",
-    "systemAccess": "प्रणाली प्रवेश",
-    "username": "वापरकर्तानाव",
-    "email": "ईमेल",
-    "role": "भूमिका",
-    "userId": "वापरकर्ता आयडी",
-    "memberSince": "सदस्य कधीपासून",
-    "lastSignIn": "शेवटचे साइन इन",
-    "permissions": "परवानग्या",
-    "read": "वाचा",
-    "write": "लिहा",
-    "delete": "हटवा",
-    "admin": "प्रशासक",
-    "webApp": "वेब अॅप",
-    "mobileApp": "मोबाइल अॅप"
-  },
-  "roles": {
-    "developer": "डेव्हलपर",
-    "super_admin": "सुपर प्रशासक",
-    "admin": "प्रशासक",
-    "officer": "अधिकारी",
-    "clerk": "लिपिक"
-  },
-  "permissions": {
-    "accessRestricted": "प्रवेश प्रतिबंधित",
-    "noAccess": "आपल्याकडे {{system}} प्रणालीसाठी {{permission}} प्रवेश नाही.",
-    "contactAdmin": "जर आपल्याला वाटत असेल की ही चूक आहे तर कृपया आपल्या प्रशासकाशी संपर्क साधा.",
-    "permissionError": "परवानगी त्रुटी"
-  },
-  "errors": {
-    "somethingWentWrong": "काहीतरी चूक झाली",
-    "tryAgain": "कृपया पुन्हा प्रयत्न करा",
-    "networkError": "नेटवर्क त्रुटी आली",
-    "unauthorized": "अनधिकृत प्रवेश",
-    "forbidden": "प्रवेश निषिद्ध",
-    "notFound": "पृष्ठ सापडले नाही"
-  },
-  "categories": {
-    "anganwadi": "अंगणवाडी केंद्र तपासणी",
+      "maxPhotosAllowed": "जास्तीत जास्त 5 फोटो अनुमतीत आहेत",
+      "anganwadi": "अंगणवाडी केंद्र तपासणी",
     "office": "दफ्तर निरीक्षण",
     "document": "दस्तऐवज तपासणी",
     "approved": "मंजूर",
@@ -453,5 +398,61 @@
     "enterVillageName": "गावाचे नाव प्रविष्ट करा",
     "viewMode": "दृश्य मोड - हा फॉर्म फक्त वाचण्यासाठी आहे",
     "noPhotosFound": "या तपासणीसाठी कोणतेही फोटो सापडले नाहीत"
+    },
+    "pesa": {
+      "name": "PESA 5%",
+      "fullName": "PESA 5% निधी व्यवस्थापन प्रणाली",
+      "description": "घटकांमध्ये PESA निधी वापराचा मागोवा आणि व्यवस्थापन करा",
+      "totalFund": "एकूण निधी",
+      "utilized": "वापरलेला",
+      "remaining": "उरलेला",
+      "villages": "गावे",
+      "addTransaction": "व्यवहार जोडा",
+      "viewFunds": "निधी पहा",
+      "compliance": "अनुपालन",
+      "webApplication": "वेब अनुप्रयोग"
+    }
+  },
+    "profile": {
+    "userProfile": "वापरकर्ता प्रोफाइल",
+    "accountDetails": "खाते तपशील",
+    "systemAccess": "प्रणाली प्रवेश",
+    "username": "वापरकर्तानाव",
+    "email": "ईमेल",
+    "role": "भूमिका",
+    "userId": "वापरकर्ता आयडी",
+    "memberSince": "सदस्य कधीपासून",
+    "lastSignIn": "शेवटचे साइन इन",
+    "permissions": "परवानग्या",
+    "read": "वाचा",
+    "write": "लिहा",
+    "delete": "हटवा",
+    "admin": "प्रशासक",
+    "webApp": "वेब अॅप",
+    "mobileApp": "मोबाइल अॅप"
+  },
+  "roles": {
+    "developer": "डेव्हलपर",
+    "super_admin": "सुपर प्रशासक",
+    "admin": "प्रशासक",
+    "officer": "अधिकारी",
+    "clerk": "लिपिक"
+  },
+  "permissions": {
+    "accessRestricted": "प्रवेश प्रतिबंधित",
+    "noAccess": "आपल्याकडे {{system}} प्रणालीसाठी {{permission}} प्रवेश नाही.",
+    "contactAdmin": "जर आपल्याला वाटत असेल की ही चूक आहे तर कृपया आपल्या प्रशासकाशी संपर्क साधा.",
+    "permissionError": "परवानगी त्रुटी"
+  },
+  "errors": {
+    "somethingWentWrong": "काहीतरी चूक झाली",
+    "tryAgain": "कृपया पुन्हा प्रयत्न करा",
+    "networkError": "नेटवर्क त्रुटी आली",
+    "unauthorized": "अनधिकृत प्रवेश",
+    "forbidden": "प्रवेश निषिद्ध",
+    "notFound": "पृष्ठ सापडले नाही"
+  },
+  "categories": {
+    
   }
 }
