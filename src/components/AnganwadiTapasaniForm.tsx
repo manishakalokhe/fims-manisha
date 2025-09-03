@@ -149,6 +149,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [detectedLocationName, setDetectedLocationName] = useState<string>('');
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -371,21 +373,45 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       return;
     }
 
-    setIsLoading(true);
+    setIsGettingLocation(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         setInspectionData(prev => ({
           ...prev,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           location_accuracy: position.coords.accuracy
         }));
-        setIsLoading(false);
+        
+        // Get location name using Google Maps API
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}&language=mr`
+          );
+          const data = await response.json();
+          
+          if (data.results && data.results.length > 0) {
+            const locationName = data.results[0].formatted_address;
+            setDetectedLocationName(locationName);
+            
+            // Auto-fill location name if it's empty
+            if (!inspectionData.location_name) {
+              setInspectionData(prev => ({
+                ...prev,
+                location_name: locationName
+              }));
+            }
+          }
+        } catch (error) {
+          console.error('Error getting location name:', error);
+        }
+        
+        setIsGettingLocation(false);
       },
       (error) => {
         console.error('Error getting location:', error);
         alert(t('fims.unableToGetLocation'));
-        setIsLoading(false);
+        setIsGettingLocation(false);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
@@ -1501,10 +1527,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           <button
             onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
             disabled={currentStep === 1}
-            className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
+            disabled={isGettingLocation || isViewMode}
           >
             <ArrowLeft className="h-4 w-4" />
-            <span>{t('common.previous')}</span>
+            <span>{isGettingLocation ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
           </button>
 
           <div className="flex space-x-2 md:space-x-3">
@@ -1555,8 +1581,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   <button
                     onClick={() => handleSubmit(false)}
                     disabled={isLoading || isUploading}
-                    className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
+            <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-md">
                   >
+              {detectedLocationName && (
+                <p className="text-xs text-green-700 mt-1 font-medium">
+                  स्थान केंद्र केले: {detectedLocationName}
+                </p>
+              )}
                     <Send className="h-4 w-4" />
                     <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
                   </button>
