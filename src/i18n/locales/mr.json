@@ -397,7 +397,8 @@
     "enterHelperName": "सहायक नाव प्रविष्ट करा",
     "enterVillageName": "गावाचे नाव प्रविष्ट करा",
     "viewMode": "दृश्य मोड - हा फॉर्म फक्त वाचण्यासाठी आहे",
-    "noPhotosFound": "या तपासणीसाठी कोणतेही फोटो सापडले नाहीत"
+    "noPhotosFound": "या तपासणीसाठी कोणतेही फोटो सापडले नाहीत",
+    "selectcategory" :"select Category"
     },
     "pesa": {
       "name": "PESA 5%",
