@@ -45,7 +45,7 @@
     "status": "Status",
     "date": "Date",
     "actions": "Actions",
-    "photosAndDocuments": "photos And Documents"
+    "photosAndDocuments": "photos And Documents",
     "locationAccuracy": "Location Accuracy",
     "viewAndManageInspections": "View and manage inspections",
     "createNewInspection": "Create new inspection",
