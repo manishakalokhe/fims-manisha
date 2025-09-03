@@ -406,13 +406,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             // Auto-fill location name if empty
             if (!prev.location_name) {
               setInspectionData(prevData => ({
-                ...prevData,
-                location_name: address
+          setInspectionData(prev => ({
+            ...prev,
               }));
             }
           }
         } catch (error) {
-          console.error('Error getting location name:', error);
+          }));
         }
         
         setIsGettingLocation(false);
