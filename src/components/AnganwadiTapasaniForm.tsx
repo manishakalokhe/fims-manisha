@@ -432,9 +432,17 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                location_detected: detectedLocation
              }));
            }
+         } catch (error) {
+           console.error('Error getting location name:', error);
          }
+       },
+       (error) => {
+         console.error('Error getting location:', error);
+         setIsGettingLocation(false);
+         alert(t('categories.geolocationError'));
        }
-     };
+     );
+   };
 
      // Handle place picker selection
      useEffect(() => {
@@ -1400,24 +1408,40 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           >
             <ArrowLeft className="h-5 w-5" />
             <span>{t('common.back')}</span>
-          <div style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px' }}>
-            <gmpx-place-picker 
-              placeholder="पत्ता किंवा स्थान शोधा"
-            ></gmpx-place-picker>
-          </div>
+          </button>
+          <h1 className="text-2xl font-bold text-gray-800">
+            {isViewMode ? t('fims.viewInspection') : isEditMode ? t('fims.editInspection') : t('fims.newInspection')}
+          </h1>
+        </div>
+
+        {/* Step Indicator */}
+        {renderStepIndicator()}
+
+        {/* Form Content */}
+        <div className="max-w-6xl mx-auto">
+          {currentStep === 1 && renderBasicDetailsAndLocation()}
+          {currentStep === 2 && renderAnganwadiInspectionForm()}
+          {currentStep === 3 && renderPhotosAndSubmit()}
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-8 max-w-6xl mx-auto">
+          <button
+            type="button"
+            onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
+            disabled={currentStep === 1}
+            className="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {t('common.previous')}
+          </button>
           
-          {inspectionData.location_detected && (
-            <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-800 font-medium">स्थान कॅप्चर केले</p>
-              <p className="text-sm text-green-700">
-                <strong>स्थान:</strong> {inspectionData.location_detected}
-              </p>
-              {inspectionData.latitude && inspectionData.longitude && (
-                <p className="text-xs text-green-600 mt-1">
-                  अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
-                  रेखांश: {inspectionData.longitude.toFixed(6)}
-                </p>
-              )}
+          {currentStep < 3 && (
+            <button
+              type="button"
+              onClick={() => setCurrentStep(Math.min(3, currentStep + 1))}
+              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
+            >
+              {t('common.next')}
             </button>
           )}
         </div>
