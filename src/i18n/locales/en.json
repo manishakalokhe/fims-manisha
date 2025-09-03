@@ -224,7 +224,11 @@
       "uploadedPhotos": "Uploaded Photos",
       "uploadingPhotos": "Uploading photos...",
       "noPhotosFound": "No photos found",
-      "maxPhotosAllowed": "Maximum 5 photos allowed"
+      "maxPhotosAllowed": "Maximum 5 photos allowed",
+      "photoDocumentationRequired": "Photo Documentation Required",
+      "photoDocumentationRequiredDesc": "Both inspection types require photo documentation. You can upload up to 5 photos per inspection for proper record keeping.",
+      "gpsLocationCaptureRequired": "GPS Location Capture Required",
+      "gpsLocationCaptureDesc": "Location coordinates will be automatically captured during the inspection process for accurate record keeping."
     },
     "pesa": {
       "name": "PESA 5%",
