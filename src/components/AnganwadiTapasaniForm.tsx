@@ -810,7 +810,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       <div className="bg-gray-50 p-6 rounded-lg">
         <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center">
           <CheckCircle className="h-5 w-5 mr-2 text-purple-600" />
-          {t('fims.sectionE')}
+          {t('fims.sectionB')}
         </h4>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -854,6 +854,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
+            { key: 'all_registers', label: 'सर्व नोंदवह्या' },
             { key: 'attendance_register', label: t('fims.attendanceRegister') },
             { key: 'growth_chart_updated', label: t('fims.growthChartUpdated') },
             { key: 'vaccination_records', label: t('fims.vaccinationRecords') },
@@ -985,7 +986,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
               { key: 'hot_meal_served', label: t('fims.hotMealServed') },
+              { key: 'monthly_25_days_meals', label: 'मासिक 25 दिवस जेवण' },
               { key: 'take_home_ration', label: t('fims.takeHomeRation') },
+              { key: 'thr_provided_regularly', label: 'THR नियमित प्रदान' },
+              { key: 'food_distribution_decentralized', label: 'अन्न वितरण विकेंद्रीकृत' },
+              { key: 'prescribed_protein_calories', label: 'निर्धारित प्रथिने कॅलरी' },
               { key: 'prescribed_weight_food', label: 'निर्धारित वजन अन्न' },
               { key: 'health_checkup_conducted', label: t('fims.healthCheckupConducted') },
               { key: 'regular_weighing', label: 'नियमित वजन' },
@@ -1175,7 +1180,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
         <div>
           <h4 className="text-md font-medium text-gray-900 mb-3">
-            {t('fims.inspectionPhotos')} ({editingInspection.fims_inspection_photos.length})
+            Inspection Photos ({editingInspection.fims_inspection_photos.length})
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
@@ -1201,9 +1206,16 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
       {/* Show message when no photos in view mode */}
       {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
-        <div className="text-center py-8">
-          <Camera className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">{t('fims.noPhotosUploaded')}</p>
+        <div className="text-center py-8 text-gray-500">
+          <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+          <p>{t('fims.noPhotosFound')}</p>
+        </div>
+      )}
+
+      {isUploading && (
+        <div className="text-center py-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
+          <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
         </div>
       )}
     </div>
@@ -1239,6 +1251,27 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         return false;
     }
   };
+
+  const handleLanguageChange = (languageCode: string) => {
+    i18n.changeLanguage(languageCode);
+    localStorage.setItem('i18nextLng', languageCode);
+    setIsLanguageDropdownOpen(false);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.language-switcher')) {
+        setIsLanguageDropdownOpen(false);
+      }
+    };
+
+    if (isLanguageDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isLanguageDropdownOpen]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
@@ -1316,61 +1349,72 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             <div className="w-20"></div>
           </div>
 
-          {/* Step Indicator */}
           {renderStepIndicator()}
+
+          <div className="flex justify-center space-x-4 md:space-x-8 text-xs md:text-sm">
+            <div className={`${currentStep === 1 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
+              {t('fims.basicDetails')}
+            </div>
+            <div className={`${currentStep === 2 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
+              {t('fims.locationDetails')}
+            </div>
+            <div className={`${currentStep === 3 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
+              {t('fims.inspectionDetails')}
+            </div>
+            <div className={`${currentStep === 4 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
+              {t('fims.photosSubmit')}
+            </div>
+          </div>
         </div>
 
         {/* Form Content */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
+        <div className="bg-gradient-to-br from-white via-purple-50/30 to-pink-50/30 rounded-xl shadow-lg border-2 border-purple-200 p-4 md:p-6 mb-4 md:mb-6">
           {renderStepContent()}
         </div>
 
         {/* Navigation Buttons */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
-          <div className="flex justify-between items-center">
-            <button
-              onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-              disabled={currentStep === 1}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-            >
-              {t('common.previous')}
-            </button>
+        <div className="flex justify-between items-center">
+          <button
+            onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+            disabled={currentStep === 1}
+            className="px-4 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
+          >
+            {t('common.previous')}
+          </button>
 
-            <div className="flex space-x-3">
-              {currentStep < 4 ? (
+          <div className="flex space-x-2 md:space-x-3">
+            {currentStep === 4 ? (
+              <>
+                {!isViewMode && (
                 <button
-                  onClick={() => setCurrentStep(prev => Math.min(4, prev + 1))}
-                  disabled={!canProceedToNext()}
-                  className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                  onClick={() => handleSubmit(true)}
+                  disabled={isLoading || isUploading}
+                  className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
                 >
-                  {t('common.next')}
+                  <Save className="h-4 w-4" />
+                  <span>{t('fims.saveAsDraft')}</span>
                 </button>
-              ) : (
-                <div className="flex space-x-3">
-                  {!isViewMode && (
-                    <>
-                      <button
-                        onClick={() => handleSubmit(true)}
-                        disabled={isLoading || isUploading}
-                        className="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center space-x-2"
-                      >
-                        <Save className="h-4 w-4" />
-                        <span>{isLoading ? t('common.saving') : t('fims.saveAsDraft')}</span>
-                      </button>
-                      
-                      <button
-                        onClick={() => handleSubmit(false)}
-                        disabled={isLoading || isUploading}
-                        className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center space-x-2"
-                      >
-                        <Send className="h-4 w-4" />
-                        <span>{isLoading ? t('common.submitting') : t('fims.submitInspection')}</span>
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
+                )}
+                {!isViewMode && (
+                <button
+                  onClick={() => handleSubmit(false)}
+                  disabled={isLoading || isUploading}
+                  className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
+                >
+                  <Send className="h-4 w-4" />
+                  <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
+                </button>
+                )}
+              </>
+            ) : (
+              <button
+                onClick={() => setCurrentStep(prev => Math.min(4, prev + 1))}
+                disabled={!canProceedToNext() || isViewMode}
+                className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
+              >
+                {t('common.next')}
+              </button>
+            )}
           </div>
         </div>
       </div>
