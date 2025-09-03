@@ -1450,10 +1450,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               स्थान शोधा (Search Location)
             </label>
             <div className="w-full">
-              <gmpx-place-picker 
-                placeholder="पत्ता किंवा स्थान शोधा"
-                style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px;"
-              ></gmpx-place-picker>
+              <div style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px' }}>
+                <gmpx-place-picker 
+                  placeholder="पत्ता किंवा स्थान शोधा"
+                ></gmpx-place-picker>
+              </div>
             </div>
           </div>
         </div>
