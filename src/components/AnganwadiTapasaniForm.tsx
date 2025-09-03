@@ -327,7 +327,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           preschool_education_registered: formDataToLoad.preschool_education_registered || 0,
           preschool_education_present: formDataToLoad.preschool_education_present || 0,
           hot_meal_served: formDataToLoad.hot_meal_served || false,
-          meal_quality: formDataToLoad.meal_quality || '',
+          //meal_quality: formDataToLoad.meal_quality || '',
           take_home_ration: formDataToLoad.take_home_ration || false,
           monthly_25_days_meals: formDataToLoad.monthly_25_days_meals || false,
           thr_provided_regularly: formDataToLoad.thr_provided_regularly || false,
