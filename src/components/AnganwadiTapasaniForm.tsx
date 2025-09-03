@@ -655,11 +655,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_type: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             disabled={isViewMode}
+          >
             <option value="">{t('fims.selectBuildingType')}</option>
             <option value="own">{t('fims.ownBuilding')}</option>
             <option value="rented">{t('fims.rentedBuilding')}</option>
             <option value="free">{t('fims.freeBuilding')}</option>
             <option value="no_building">{t('fims.noBuilding')}</option>
+          </select>
             <option value="no_building">{t('fims.noBuilding')}</option>
           </select>
         </div>
