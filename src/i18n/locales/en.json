@@ -339,20 +339,8 @@
     "uploadedPhotos": "Uploaded Photos",
     "uploadingPhotos": "Uploading photos...",
     "noPhotosFound": "No photos found",
-    "maxPhotosAllowed": "Maximum 5 photos allowed"
-  },
-  "statuses": {
-    "planned": "Planned",
-    "in_progress": "In Progress", 
-    "draft": "Draft",
-    "submitted": "Submitted",
-    "under_review": "Under Review",
-    "approved": "Approved",
-    "rejected": "Rejected",
-    "reassigned": "Reassigned"
-  },
-  "categories": {
-    "anganwadi": "Anganwadi Center Inspection",
+    "maxPhotosAllowed": "Maximum 5 photos allowed",
+     "anganwadi": "Anganwadi Center Inspection",
     "office": "Office Inspection",
     "document": "Document Inspection",
     "inspectionCategory": "Inspection Category",
@@ -544,5 +532,18 @@
     "uploadingPhotos": "Uploading photos...",
     "noPhotosFound": "No photos found",
     "maxPhotosAllowed": "Maximum 5 photos allowed"
+  },
+  "statuses": {
+    "planned": "Planned",
+    "in_progress": "In Progress", 
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "under_review": "Under Review",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "reassigned": "Reassigned"
+  },
+  "categories": {
+   
   }
 }
