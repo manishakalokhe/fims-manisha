@@ -151,7 +151,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [detectedLocationName, setDetectedLocationName] = useState<string>('');
-  const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
