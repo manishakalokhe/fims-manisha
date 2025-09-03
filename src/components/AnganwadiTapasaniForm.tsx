@@ -869,8 +869,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   ></gmpx-place-picker>
                 </div>
               </div>
-                )}
-      </section>
+            )}
           </div>
         </div>
       </section>
@@ -1368,6 +1367,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               ))}
             </div>
           )}
+        </div>
+      </section>
 
       {/* Submit Buttons */}
       {!isViewMode && (
