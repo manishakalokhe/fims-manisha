@@ -456,7 +456,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           latitude: lat,
           longitude: lng,
           location_accuracy: null,
-          location_detected: place.formatted_address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+          location_detected: place.formatted_address || place.name || '',
           address: place.formatted_address || prev.address
         }));
       }
