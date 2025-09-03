@@ -801,10 +801,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
                 >
                   <MapPin className="h-4 w-4" />
-                  <span>{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
-                </button>
-              )}
-              
+                  <option value="excellent">उत्कृष्ट</option>
+                  <option value="good">चांगली</option>
+                  <option value="average">सरासरी</option>
+                  <option value="poor">खराब</option>
               {inspectionData.latitude && inspectionData.longitude && (
                 <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
