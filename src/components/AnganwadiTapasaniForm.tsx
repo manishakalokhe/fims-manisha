@@ -661,7 +661,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             <option value="rented">{t('fims.rentedBuilding')}</option>
             <option value="free">{t('fims.freeBuilding')}</option>
             <option value="no_building">{t('fims.noBuilding')}</option>
-          </select>
             <option value="no_building">{t('fims.noBuilding')}</option>
           </select>
         </div>
