@@ -149,6 +149,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [detectedLocationName, setDetectedLocationName] = useState<string>('');
   const [isGettingLocation, setIsGettingLocation] = useState(false);
 
@@ -378,14 +379,45 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     setIsGettingLocation(true);
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+        
         setInspectionData(prev => ({
           ...prev,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          location_accuracy: position.coords.accuracy,
+          latitude: lat,
+          longitude: lng,
+          location_accuracy: accuracy
           location_detected: ''
         }));
         
+        // Get location name using Google Maps Geocoding API
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE&language=mr`
+          );
+          const data = await response.json();
+          
+          if (data.results && data.results.length > 0) {
+            const address = data.results[0].formatted_address;
+            setInspectionData(prev => ({
+              ...prev,
+              location_detected: address
+            }));
+            
+            // Auto-fill location name if empty
+            if (!prev.location_name) {
+              setInspectionData(prevData => ({
+                ...prevData,
+                location_name: address
+              }));
+            }
+          }
+        } catch (error) {
+          console.error('Error getting location name:', error);
+        }
+        
+        setIsGettingLocation(false);
         // Get location name using Google Maps API
         try {
           const response = await fetch(
@@ -1376,14 +1408,34 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           <button
             type="button"
             onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-            disabled={currentStep === 1}
+            disabled={isGettingLocation || isViewMode}
             className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {t('common.previous')}
+            <span>{isGettingLocation ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
           </button>
+          
+          {/* Location Detected Field */}
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              शोधलेले स्थान (Location Detected)
+            </label>
+            <input
+              type="text"
+              value={inspectionData.location_detected || ''}
+              onChange={(e) => setInspectionData(prev => ({...prev, location_detected: e.target.value}))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="GPS द्वारे शोधलेले स्थान"
+              disabled={isViewMode}
+            />
+          </div>
           
           {currentStep < 3 && (
             <button
+              {inspectionData.location_detected && (
+                <p className="text-sm text-green-700 mt-1">
+                  <strong>स्थान:</strong> {inspectionData.location_detected}
+                </p>
+              )}
               type="button"
               onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
               className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200"
@@ -1391,6 +1443,19 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               {t('common.next')}
             </button>
           )}
+          
+          {/* Google Maps Place Picker for manual location selection */}
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              स्थान शोधा (Search Location)
+            </label>
+            <div className="w-full">
+              <gmpx-place-picker 
+                placeholder="पत्ता किंवा स्थान शोधा"
+                style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px;"
+              ></gmpx-place-picker>
+            </div>
+          </div>
         </div>
       </div>
     </div>
