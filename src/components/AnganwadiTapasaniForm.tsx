@@ -1273,3 +1273,145 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       </section>
     </div>
   );
+
+  const renderPhotosAndSubmit = () => (
+    <div className="space-y-8">
+      {/* Photo Upload Section */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Camera className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">{t('fims.uploadPhotos')}</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          {!isViewMode && (
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('fims.selectPhotos')} (Max 5)
+              </label>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handlePhotoUpload}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              />
+            </div>
+          )}
+
+          {uploadedPhotos.length > 0 && (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {uploadedPhotos.map((photo, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={URL.createObjectURL(photo)}
+                    alt={`Upload ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                  {!isViewMode && (
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(index)}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Submit Section */}
+      {!isViewMode && (
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <Send className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">{t('fims.submitInspection')}</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                type="button"
+                onClick={() => handleSubmit(true)}
+                disabled={isLoading || isUploading}
+                className="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
+              >
+                <Save className="h-5 w-5" />
+                <span>{isLoading ? t('fims.saving') : t('fims.saveAsDraft')}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSubmit(false)}
+                disabled={isLoading || isUploading}
+                className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
+              >
+                <Send className="h-5 w-5" />
+                <span>{isLoading ? t('fims.submitting') : t('fims.submitInspection')}</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <button
+            onClick={onBack}
+            className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+            <span>{t('common.back')}</span>
+          </button>
+          <h1 className="text-3xl font-bold text-gray-800">
+            {isViewMode ? 'View Anganwadi Inspection' : 
+             isEditMode ? 'Edit Anganwadi Inspection' : 
+             'New Anganwadi Inspection'}
+          </h1>
+        </div>
+
+        {/* Step Indicator */}
+        {renderStepIndicator()}
+
+        {/* Form Content */}
+        <div className="max-w-6xl mx-auto">
+          {currentStep === 1 && renderBasicDetailsAndLocation()}
+          {currentStep === 2 && renderAnganwadiInspectionForm()}
+          {currentStep === 3 && renderPhotosAndSubmit()}
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-12 max-w-6xl mx-auto">
+          <button
+            type="button"
+            onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+            disabled={currentStep === 1}
+            className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {t('common.previous')}
+          </button>
+          
+          {currentStep < 3 && (
+            <button
+              type="button"
+              onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200"
+            >
+              {t('common.next')}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
