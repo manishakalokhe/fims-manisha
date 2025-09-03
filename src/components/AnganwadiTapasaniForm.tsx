@@ -428,8 +428,16 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             
             // Update the location_detected field
             setInspectionData(prev => ({
-  // Handle place picker selection
-  useEffect(() => {
+               ...prev,
+               location_detected: detectedLocation
+             }));
+           }
+         }
+       }
+     };
+
+     // Handle place picker selection
+     useEffect(() => {
     const handlePlaceChange = (event: any) => {
       const place = event.detail.place;
       if (place && place.geometry && place.geometry.location) {
