@@ -15,6 +15,9 @@ import {
   Utensils,
   Heart,
   FileText,
+  Globe,
+  ChevronDown,
+  Check
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
@@ -122,6 +125,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -661,7 +665,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             <option value="rented">{t('fims.rentedBuilding')}</option>
             <option value="free">{t('fims.freeBuilding')}</option>
             <option value="no_building">{t('fims.noBuilding')}</option>
-            <option value="no_building">{t('fims.noBuilding')}</option>
           </select>
         </div>
 
@@ -854,7 +857,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             { key: 'attendance_register', label: t('fims.attendanceRegister') },
             { key: 'growth_chart_updated', label: t('fims.growthChartUpdated') },
             { key: 'vaccination_records', label: t('fims.vaccinationRecords') },
-            { key: 'nutrition_records', label: t('fims.nutritionRecords') }
             { key: 'nutrition_records', label: t('fims.nutritionRecords') },
             { key: 'monthly_progress_reports', label: 'मासिक प्रगती अहवाल' },
             { key: 'timetable_available', label: 'वेळापत्रक उपलब्ध' },
@@ -984,10 +986,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             {[
               { key: 'hot_meal_served', label: t('fims.hotMealServed') },
               { key: 'take_home_ration', label: t('fims.takeHomeRation') },
-              { key: 'health_checkup_conducted', label: t('fims.healthCheckupConducted') },
-              { key: 'immunization_updated', label: t('fims.immunizationUpdated') },
-              { key: 'vitamin_a_given', label: t('fims.vitaminAGiven') },
-              { key: 'iron_tablets_given', label: t('fims.ironTabletsGiven') }
               { key: 'prescribed_weight_food', label: 'निर्धारित वजन अन्न' },
               { key: 'health_checkup_conducted', label: t('fims.healthCheckupConducted') },
               { key: 'regular_weighing', label: 'नियमित वजन' },
@@ -1035,13 +1033,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('fims.basicDetails')}
+                अन्न पुरवठादार
               </label>
               <input
                 type="text"
                 value={anganwadiFormData.food_provider}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, food_provider: e.target.value}))}
-              {t('fims.inspectionDetails')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 placeholder="अन्न पुरवठादाराचे नाव"
                 disabled={isViewMode}
               />
@@ -1135,7 +1133,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           >
             <Camera className="h-4 w-4 mr-2" />
             {t('fims.chooseFiles')}
-          {t('fims.chooseFiles')}
+          </label>
         )}
         
         <p className="text-xs text-gray-500 mt-2">
@@ -1203,6 +1201,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
       {/* Show message when no photos in view mode */}
       {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
+        <div className="text-center py-8">
+          <Camera className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-500">{t('fims.noPhotosUploaded')}</p>
+        </div>
+      )}
+    </div>
+  );
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -1234,21 +1240,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     }
   };
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest('.language-switcher')) {
-        setIsLanguageDropdownOpen(false);
-      }
-    };
-
-    if (isLanguageDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isLanguageDropdownOpen]);
-
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
       <div className="max-w-4xl mx-auto">
@@ -1260,7 +1251,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                 {t('fims.viewMode')} - {t('fims.formReadOnly')}
               </p>
             </div>
-              {t('fims.mealQuality')}
+          )}
           
           <div className="flex items-center justify-between mb-4">
             <button
@@ -1323,13 +1314,72 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                t('fims.newInspection')} - {t('fims.anganwadiCenterInspection')}
             </h1>
             <div className="w-20"></div>
-                onClick={() => setCurrentStep(prev => Math.min(4, prev + 1))}
-              <option value="">{t('fims.selectQuality')}</option>
-              <option value="excellent">{t('fims.excellent')}</option>
-              <option value="good">{t('fims.good')}</option>
-              <option value="average">{t('fims.average')}</option>
-              <option value="poor">{t('fims.poor')}</option>
-            )}
+          </div>
+
+          {!isViewMode && renderStepIndicator()}
+        </div>
+
+        {/* Form Content */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+          {renderStepContent()}
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+            <div className="flex space-x-3">
+              {currentStep > 1 && !isViewMode && (
+                <button
+                  onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
+                >
+                  {t('common.previous')}
+                </button>
+              )}
+            </div>
+
+            <div className="flex space-x-3">
+              {currentStep < 4 && !isViewMode && (
+                <button
+                  onClick={() => setCurrentStep(prev => Math.min(4, prev + 1))}
+                  disabled={!canProceedToNext()}
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {t('common.next')}
+                </button>
+              )}
+
+              {currentStep === 4 && !isViewMode && (
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => handleSubmit(true)}
+                    disabled={isLoading || isUploading}
+                    className="flex items-center space-x-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50"
+                  >
+                    <Save className="h-4 w-4" />
+                    <span>{isLoading ? t('common.saving') : t('fims.saveAsDraft')}</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleSubmit(false)}
+                    disabled={isLoading || isUploading}
+                    className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50"
+                  >
+                    <Send className="h-4 w-4" />
+                    <span>{isLoading ? t('common.submitting') : t('fims.submitInspection')}</span>
+                  </button>
+                </div>
+              )}
+
+              {isViewMode && (
+                <button
+                  onClick={onBack}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200"
+                >
+                  {t('common.close')}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
