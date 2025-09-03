@@ -367,7 +367,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert(t('fims.geolocationNotSupported'));
+      alert(t('categories.geolocationNotSupported'));
       return;
     }
 
