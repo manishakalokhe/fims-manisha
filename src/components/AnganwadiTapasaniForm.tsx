@@ -150,7 +150,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [detectedLocationName, setDetectedLocationName] = useState<string>('');
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -429,32 +428,32 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             
             // Update the location_detected field
             setInspectionData(prev => ({
-              ...prev,
-              location_detected: detectedLocation
-            }));
-            
-            // Auto-fill location name if empty
-            if (!prev.location_name) {
-              setInspectionData(prev => ({
-                ...prev,
-                location_name: detectedLocation
-              }));
-            }
-          }
-        } catch (error) {
-          console.error('Error getting location name:', error);
-        }
-        
-        setIsGettingLocation(false);
-      },
-      (error) => {
-        console.error('Error getting location:', error);
-        alert(t('fims.unableToGetLocation'));
-        setIsGettingLocation(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-    );
-  };
+  // Handle place picker selection
+  useEffect(() => {
+    const handlePlaceChange = (event: any) => {
+      const place = event.detail.place;
+      if (place && place.geometry && place.geometry.location) {
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+        setInspectionData(prev => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng,
+          location_accuracy: null,
+          location_detected: place.formatted_address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+          address: place.formatted_address || prev.address
+        }));
+      }
+    };
+
+    const placePicker = document.querySelector('gmpx-place-picker');
+    if (placePicker) {
+      placePicker.addEventListener('gmpx-placechange', handlePlaceChange);
+      return () => {
+        placePicker.removeEventListener('gmpx-placechange', handlePlaceChange);
+      };
+    }
+  }, []);
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -1393,42 +1392,24 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           >
             <ArrowLeft className="h-5 w-5" />
             <span>{t('common.back')}</span>
-          </button>
-          <h1 className="text-3xl font-bold text-gray-800">
-            {isViewMode ? 'View Anganwadi Inspection' : 
-             isEditMode ? 'Edit Anganwadi Inspection' : 
-             'New Anganwadi Inspection'}
-          </h1>
-        </div>
-
-        {/* Step Indicator */}
-        {renderStepIndicator()}
-
-        {/* Form Content */}
-        <div className="max-w-6xl mx-auto">
-          {currentStep === 1 && renderBasicDetailsAndLocation()}
-          {currentStep === 2 && renderAnganwadiInspectionForm()}
-          {currentStep === 3 && renderPhotosAndSubmit()}
-        </div>
-
-        {/* Navigation Buttons */}
-        <div className="flex justify-between mt-12 max-w-6xl mx-auto">
-          <button
-            type="button"
-            onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-            disabled={currentStep === 1 || isLoading}
-            className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {t('common.previous')}
-          </button>
+          <div style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px' }}>
+            <gmpx-place-picker 
+              placeholder="पत्ता किंवा स्थान शोधा"
+            ></gmpx-place-picker>
+          </div>
           
-          {currentStep < 3 && (
-            <button
-              type="button"
-              onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200"
-            >
-              {t('common.next')}
+          {inspectionData.location_detected && (
+            <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-sm text-green-800 font-medium">स्थान कॅप्चर केले</p>
+              <p className="text-sm text-green-700">
+                <strong>स्थान:</strong> {inspectionData.location_detected}
+              </p>
+              {inspectionData.latitude && inspectionData.longitude && (
+                <p className="text-xs text-green-600 mt-1">
+                  अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
+                  रेखांश: {inspectionData.longitude.toFixed(6)}
+                </p>
+              )}
             </button>
           )}
         </div>
