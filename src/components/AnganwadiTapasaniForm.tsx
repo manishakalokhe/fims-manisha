@@ -1113,4 +1113,163 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               question="२] निर्धारीत वजनाचा आहार मिळतो काय?"
             />
             <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">३] आहार नमुने प्रयोगशाळेत प
+              <label className="block mb-4 text-lg font-bold text-gray-700">३] आहार नमुने प्रयोगशाळेत पाठवले जातात काय?</label>
+              <input
+                type="text"
+                value={anganwadiFormData.lab_sample_date}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, lab_sample_date: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 9 - Health Services */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-red-500 to-pink-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Stethoscope className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">९. आरोग्य सेवा:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="space-y-6">
+            <YesNoRadio
+              name="regular_weighing"
+              value={anganwadiFormData.regular_weighing ? 'होय' : anganwadiFormData.regular_weighing === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, regular_weighing: value === 'होय'}))}
+              question="१] मुलांचे नियमित वजन केले जाते काय?"
+            />
+            <YesNoRadio
+              name="growth_chart_accuracy"
+              value={anganwadiFormData.growth_chart_accuracy ? 'होय' : anganwadiFormData.growth_chart_accuracy === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, growth_chart_accuracy: value === 'होय'}))}
+              question="२] वाढीचा तक्ता अचूकपणे भरला जातो काय?"
+            />
+            <YesNoRadio
+              name="vaccination_health_checkup_regular"
+              value={anganwadiFormData.vaccination_health_checkup_regular ? 'होय' : anganwadiFormData.vaccination_health_checkup_regular === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, vaccination_health_checkup_regular: value === 'होय'}))}
+              question="३] लसीकरण व आरोग्य तपासणी नियमितपणे केली जाते काय?"
+            />
+            <YesNoRadio
+              name="vaccination_schedule_awareness"
+              value={anganwadiFormData.vaccination_schedule_awareness ? 'होय' : anganwadiFormData.vaccination_schedule_awareness === false ? 'नाही' : ''}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, vaccination_schedule_awareness: value === 'होय'}))}
+              question="४] लसीकरणाचे वेळापत्रक माहित आहे काय?"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Section 10 - Community Participation */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-violet-500 to-purple-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <UserCheck className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">१०. समुदायिक सहभाग:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="space-y-8">
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">१] गावातील आरोग्य व पोषण नियोजनात सहभाग</label>
+              <input
+                type="text"
+                value={anganwadiFormData.village_health_nutrition_planning}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_health_nutrition_planning: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">२] मुलांच्या उपस्थितीची तुलना</label>
+              <input
+                type="text"
+                value={anganwadiFormData.children_attendance_comparison}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_attendance_comparison: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final Section - Inspector Details */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-gray-600 to-gray-800 px-8 py-6">
+          <div className="flex items-center text-white">
+            <FileText className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">तपासणी अधिकारी माहिती:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">भेटीची तारीख</label>
+              <input
+                type="text"
+                value={anganwadiFormData.visit_date}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, visit_date: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+            <div>
+              <label className="block mb-4 text-lg font-bold text-gray-700">तपासणी अधिकारीचे नाव</label>
+              <input
+                type="text"
+                value={anganwadiFormData.inspector_name}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, inspector_name: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block mb-4 text-lg font-bold text-gray-700">तपासणी अधिकारीचे पदनाम</label>
+              <input
+                type="text"
+                value={anganwadiFormData.inspector_designation}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, inspector_designation: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                disabled={isViewMode}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block mb-4 text-lg font-bold text-gray-700">सामान्य निरीक्षणे</label>
+              <textarea
+                value={anganwadiFormData.general_observations}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, general_observations: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                rows={3}
+                disabled={isViewMode}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block mb-4 text-lg font-bold text-gray-700">शिफारसी</label>
+              <textarea
+                value={anganwadiFormData.recommendations}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, recommendations: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                rows={3}
+                disabled={isViewMode}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block mb-4 text-lg font-bold text-gray-700">सूचना</label>
+              <textarea
+                value={anganwadiFormData.suggestions}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, suggestions: e.target.value}))}
+                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+                rows={3}
+                disabled={isViewMode}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
