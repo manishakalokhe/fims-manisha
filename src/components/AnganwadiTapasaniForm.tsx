@@ -95,7 +95,6 @@ interface AnganwadiFormData {
   
   // Nutrition and Health Services
   hot_meal_served: boolean;
- // meal_quality: string;
   take_home_ration: boolean;
   monthly_25_days_meals: boolean;
   thr_provided_regularly: boolean;
@@ -208,7 +207,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     preschool_education_registered: 0,
     preschool_education_present: 0,
     hot_meal_served: false,
-    //meal_quality: '',
     take_home_ration: false,
     monthly_25_days_meals: false,
     thr_provided_regularly: false,
@@ -327,7 +325,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           preschool_education_registered: formDataToLoad.preschool_education_registered || 0,
           preschool_education_present: formDataToLoad.preschool_education_present || 0,
           hot_meal_served: formDataToLoad.hot_meal_served || false,
-          //meal_quality: formDataToLoad.meal_quality || '',
           take_home_ration: formDataToLoad.take_home_ration || false,
           monthly_25_days_meals: formDataToLoad.monthly_25_days_meals || false,
           thr_provided_regularly: formDataToLoad.thr_provided_regularly || false,
@@ -539,6 +536,12 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     try {
       setIsLoading(true);
 
+      // Convert empty date strings to null for database compatibility
+      const sanitizedInspectionData = {
+        ...inspectionData,
+        planned_date: inspectionData.planned_date || null
+      };
+
       let inspectionResult;
 
       if (editingInspection && editingInspection.id) {
@@ -546,13 +549,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         const { data: updateResult, error: updateError } = await supabase
           .from('fims_inspections')
           .update({
-            location_name: inspectionData.location_name,
-            latitude: inspectionData.latitude,
-            longitude: inspectionData.longitude,
-            location_accuracy: inspectionData.location_accuracy,
-            location_detected: inspectionData.location_detected,
-            address: inspectionData.address,
-            planned_date: inspectionData.planned_date,
+            location_name: sanitizedInspectionData.location_name,
+            latitude: sanitizedInspectionData.latitude,
+            longitude: sanitizedInspectionData.longitude,
+            location_accuracy: sanitizedInspectionData.location_accuracy,
+            location_detected: sanitizedInspectionData.location_detected,
+            address: sanitizedInspectionData.address,
+            planned_date: sanitizedInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
             form_data: anganwadiFormData
@@ -581,15 +584,15 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           .from('fims_inspections')
           .insert({
             inspection_number: inspectionNumber,
-            category_id: inspectionData.category_id,
+            category_id: sanitizedInspectionData.category_id,
             inspector_id: user.id,
-            location_name: inspectionData.location_name,
-            latitude: inspectionData.latitude,
-            longitude: inspectionData.longitude,
-            location_accuracy: inspectionData.location_accuracy,
-            location_detected: inspectionData.location_detected,
-            address: inspectionData.address,
-            planned_date: inspectionData.planned_date,
+            location_name: sanitizedInspectionData.location_name,
+            latitude: sanitizedInspectionData.latitude,
+            longitude: sanitizedInspectionData.longitude,
+            location_accuracy: sanitizedInspectionData.location_accuracy,
+            location_detected: sanitizedInspectionData.location_detected,
+            address: sanitizedInspectionData.address,
+            planned_date: sanitizedInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
             form_data: anganwadiFormData
