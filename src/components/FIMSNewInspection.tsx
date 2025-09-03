@@ -210,7 +210,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             </div>
             <div>
               <h4 className="text-base font-bold text-blue-900 mb-2">
-                {t('erms.departments.photoDocumentationRequired')}
+                {t('fims.photoDocumentationRequired')}
               </h4>
               <p className="text-sm text-blue-800 font-medium">
                 {t('fims.photoDocumentationRequiredDesc')}
