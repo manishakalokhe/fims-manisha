@@ -150,6 +150,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [detectedLocationName, setDetectedLocationName] = useState<string>('');
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -428,48 +429,32 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             
             // Update the location_detected field
             setInspectionData(prev => ({
-               ...prev,
-               location_detected: detectedLocation
-             }));
-           }
-         } catch (error) {
-           console.error('Error getting location name:', error);
-         }
-       },
-       (error) => {
-         console.error('Error getting location:', error);
-         setIsGettingLocation(false);
-         alert(t('categories.geolocationError'));
-       }
-     );
-   };
-
-     // Handle place picker selection
-     useEffect(() => {
-    const handlePlaceChange = (event: any) => {
-      const place = event.detail.place;
-      if (place && place.geometry && place.geometry.location) {
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
-        setInspectionData(prev => ({
-          ...prev,
-          latitude: lat,
-          longitude: lng,
-          location_accuracy: null,
-          location_detected: place.formatted_address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
-          address: place.formatted_address || prev.address
-        }));
-      }
-    };
-
-    const placePicker = document.querySelector('gmpx-place-picker');
-    if (placePicker) {
-      placePicker.addEventListener('gmpx-placechange', handlePlaceChange);
-      return () => {
-        placePicker.removeEventListener('gmpx-placechange', handlePlaceChange);
-      };
-    }
-  }, []);
+              ...prev,
+              location_detected: detectedLocation
+            }));
+            
+            // Auto-fill location name if empty
+            if (!prev.location_name) {
+              setInspectionData(prev => ({
+                ...prev,
+                location_name: detectedLocation
+              }));
+            }
+          }
+        } catch (error) {
+          console.error('Error getting location name:', error);
+        }
+        
+        setIsGettingLocation(false);
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        alert(t('fims.unableToGetLocation'));
+        setIsGettingLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -1368,31 +1353,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               </div>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Submit Buttons */}
-      {!isViewMode && (
-        <div className="flex justify-center space-x-4">
-          <button
-            type="button"
-            onClick={() => handleSubmit(true)}
-            disabled={isLoading || isUploading}
-            className="px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Save className="h-5 w-5" />
-            <span>{isLoading ? t('common.saving') : t('fims.saveAsDraft')}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSubmit(false)}
-            disabled={isLoading || isUploading}
-            className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Send className="h-5 w-5" />
-            <span>{isLoading ? t('common.submitting') : t('fims.submitInspection')}</span>
-          </button>
-        </div>
+          </div>
+        </section>
       )}
     </div>
   );
@@ -1409,8 +1371,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             <ArrowLeft className="h-5 w-5" />
             <span>{t('common.back')}</span>
           </button>
-          <h1 className="text-2xl font-bold text-gray-800">
-            {isViewMode ? t('fims.viewInspection') : isEditMode ? t('fims.editInspection') : t('fims.newInspection')}
+          <h1 className="text-3xl font-bold text-gray-800">
+            {isViewMode ? 'View Anganwadi Inspection' : 
+             isEditMode ? 'Edit Anganwadi Inspection' : 
+             'New Anganwadi Inspection'}
           </h1>
         </div>
 
@@ -1425,25 +1389,60 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between mt-8 max-w-6xl mx-auto">
+        <div className="flex justify-between mt-12 max-w-6xl mx-auto">
           <button
             type="button"
-            onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
-            disabled={currentStep === 1}
-            className="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+            disabled={isGettingLocation || isViewMode}
+            className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {t('common.previous')}
+            <span>{isGettingLocation ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
           </button>
+          
+          {/* Location Detected Field */}
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              शोधलेले स्थान (Location Detected)
+            </label>
+            <input
+              type="text"
+              value={inspectionData.location_detected || ''}
+              onChange={(e) => setInspectionData(prev => ({...prev, location_detected: e.target.value}))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="GPS द्वारे शोधलेले स्थान"
+              disabled={isViewMode}
+            />
+          </div>
+          
+          {inspectionData.location_detected && (
+            <p className="text-sm text-green-700 mt-1">
+              <strong>स्थान:</strong> {inspectionData.location_detected}
+            </p>
+          )}
           
           {currentStep < 3 && (
             <button
               type="button"
-              onClick={() => setCurrentStep(Math.min(3, currentStep + 1))}
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
+              onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200"
             >
               {t('common.next')}
             </button>
           )}
+          
+          {/* Google Maps Place Picker for manual location selection */}
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              स्थान शोधा (Search Location)
+            </label>
+            <div className="w-full">
+              <div style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px' }}>
+                <gmpx-place-picker 
+                  placeholder="पत्ता किंवा स्थान शोधा"
+                ></gmpx-place-picker>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
