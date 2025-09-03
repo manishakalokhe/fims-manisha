@@ -1353,12 +1353,33 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               </div>
             </div>
           )}
-          </div>
-        </section>
+        </div>
+      </section>
+
+      {/* Submit Buttons */}
+      {!isViewMode && (
+        <div className="flex justify-center space-x-4">
+          <button
+            type="button"
+            onClick={() => handleSubmit(true)}
+            disabled={isLoading || isUploading}
+            className="px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Save className="h-5 w-5" />
+            <span>{isLoading ? t('common.saving') : t('fims.saveAsDraft')}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSubmit(false)}
+            disabled={isLoading || isUploading}
+            className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Send className="h-5 w-5" />
+            <span>{isLoading ? t('common.submitting') : t('fims.submitInspection')}</span>
+          </button>
+        </div>
       )}
-      </div>
-    );
-  };
+    </div>
   );
 
   return (
@@ -1395,32 +1416,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           <button
             type="button"
             onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-            disabled={isGettingLocation || isViewMode}
+            disabled={currentStep === 1 || isLoading}
             className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span>{isGettingLocation ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
+            {t('common.previous')}
           </button>
-          
-          {/* Location Detected Field */}
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              शोधलेले स्थान (Location Detected)
-            </label>
-            <input
-              type="text"
-              value={inspectionData.location_detected || ''}
-              onChange={(e) => setInspectionData(prev => ({...prev, location_detected: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="GPS द्वारे शोधलेले स्थान"
-              disabled={isViewMode}
-            />
-          </div>
-          
-          {inspectionData.location_detected && (
-            <p className="text-sm text-green-700 mt-1">
-              <strong>स्थान:</strong> {inspectionData.location_detected}
-            </p>
-          )}
           
           {currentStep < 3 && (
             <button
@@ -1431,20 +1431,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               {t('common.next')}
             </button>
           )}
-          
-          {/* Google Maps Place Picker for manual location selection */}
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              स्थान शोधा (Search Location)
-            </label>
-            <div className="w-full">
-              <div style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px' }}>
-                <gmpx-place-picker 
-                  placeholder="पत्ता किंवा स्थान शोधा"
-                ></gmpx-place-picker>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
