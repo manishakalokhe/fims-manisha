@@ -15,9 +15,6 @@ import {
   Utensils,
   Heart,
   FileText,
-  Globe,
-  ChevronDown,
-  Check
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
@@ -125,7 +122,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -659,11 +655,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             onChange={(e) => setAnganwadiFormData(prev => ({...prev, building_type: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             disabled={isViewMode}
-          >
             <option value="">{t('fims.selectBuildingType')}</option>
             <option value="own">{t('fims.ownBuilding')}</option>
             <option value="rented">{t('fims.rentedBuilding')}</option>
             <option value="free">{t('fims.freeBuilding')}</option>
+            <option value="no_building">{t('fims.noBuilding')}</option>
             <option value="no_building">{t('fims.noBuilding')}</option>
           </select>
         </div>
@@ -810,7 +806,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       <div className="bg-gray-50 p-6 rounded-lg">
         <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center">
           <CheckCircle className="h-5 w-5 mr-2 text-purple-600" />
-          {t('fims.sectionB')}
+          {t('fims.sectionE')}
         </h4>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -854,10 +850,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { key: 'all_registers', label: 'सर्व नोंदवह्या' },
             { key: 'attendance_register', label: t('fims.attendanceRegister') },
             { key: 'growth_chart_updated', label: t('fims.growthChartUpdated') },
             { key: 'vaccination_records', label: t('fims.vaccinationRecords') },
+            { key: 'nutrition_records', label: t('fims.nutritionRecords') }
             { key: 'nutrition_records', label: t('fims.nutritionRecords') },
             { key: 'monthly_progress_reports', label: 'मासिक प्रगती अहवाल' },
             { key: 'timetable_available', label: 'वेळापत्रक उपलब्ध' },
@@ -986,11 +982,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
               { key: 'hot_meal_served', label: t('fims.hotMealServed') },
-              { key: 'monthly_25_days_meals', label: 'मासिक 25 दिवस जेवण' },
               { key: 'take_home_ration', label: t('fims.takeHomeRation') },
-              { key: 'thr_provided_regularly', label: 'THR नियमित प्रदान' },
-              { key: 'food_distribution_decentralized', label: 'अन्न वितरण विकेंद्रीकृत' },
-              { key: 'prescribed_protein_calories', label: 'निर्धारित प्रथिने कॅलरी' },
+              { key: 'health_checkup_conducted', label: t('fims.healthCheckupConducted') },
+              { key: 'immunization_updated', label: t('fims.immunizationUpdated') },
+              { key: 'vitamin_a_given', label: t('fims.vitaminAGiven') },
+              { key: 'iron_tablets_given', label: t('fims.ironTabletsGiven') }
               { key: 'prescribed_weight_food', label: 'निर्धारित वजन अन्न' },
               { key: 'health_checkup_conducted', label: t('fims.healthCheckupConducted') },
               { key: 'regular_weighing', label: 'नियमित वजन' },
@@ -1038,13 +1034,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                अन्न पुरवठादार
+              {t('fims.basicDetails')}
               </label>
               <input
                 type="text"
                 value={anganwadiFormData.food_provider}
                 onChange={(e) => setAnganwadiFormData(prev => ({...prev, food_provider: e.target.value}))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              {t('fims.inspectionDetails')}
                 placeholder="अन्न पुरवठादाराचे नाव"
                 disabled={isViewMode}
               />
@@ -1138,7 +1134,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           >
             <Camera className="h-4 w-4 mr-2" />
             {t('fims.chooseFiles')}
-          </label>
+          {t('fims.chooseFiles')}
         )}
         
         <p className="text-xs text-gray-500 mt-2">
@@ -1180,7 +1176,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
         <div>
           <h4 className="text-md font-medium text-gray-900 mb-3">
-            Inspection Photos ({editingInspection.fims_inspection_photos.length})
+            {t('fims.inspectionPhotos')} ({editingInspection.fims_inspection_photos.length})
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
@@ -1206,21 +1202,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
       {/* Show message when no photos in view mode */}
       {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
-        <div className="text-center py-8 text-gray-500">
-          <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-          <p>{t('fims.noPhotosFound')}</p>
-        </div>
-      )}
-
-      {isUploading && (
-        <div className="text-center py-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
-          <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
-        </div>
-      )}
-    </div>
-  );
-
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -1278,7 +1259,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                 {t('fims.viewMode')} - {t('fims.formReadOnly')}
               </p>
             </div>
-          )}
+              {t('fims.mealQuality')}
           
           <div className="flex items-center justify-between mb-4">
             <button
@@ -1341,73 +1322,12 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                t('fims.newInspection')} - {t('fims.anganwadiCenterInspection')}
             </h1>
             <div className="w-20"></div>
-          </div>
-
-          {renderStepIndicator()}
-
-          <div className="flex justify-center space-x-4 md:space-x-8 text-xs md:text-sm">
-            <div className={`${currentStep === 1 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              {t('fims.basicDetails')}
-            </div>
-            <div className={`${currentStep === 2 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              {t('fims.locationDetails')}
-            </div>
-            <div className={`${currentStep === 3 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              {t('fims.inspectionDetails')}
-            </div>
-            <div className={`${currentStep === 4 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-              {t('fims.photosSubmit')}
-            </div>
-          </div>
-        </div>
-
-        {/* Form Content */}
-        <div className="bg-gradient-to-br from-white via-purple-50/30 to-pink-50/30 rounded-xl shadow-lg border-2 border-purple-200 p-4 md:p-6 mb-4 md:mb-6">
-          {renderStepContent()}
-        </div>
-
-        {/* Navigation Buttons */}
-        <div className="flex justify-between items-center">
-          <button
-            onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-            disabled={currentStep === 1}
-            className="px-4 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
-          >
-            {t('common.previous')}
-          </button>
-
-          <div className="flex space-x-2 md:space-x-3">
-            {currentStep === 4 ? (
-              <>
-                {!isViewMode && (
-                <button
-                  onClick={() => handleSubmit(true)}
-                  disabled={isLoading || isUploading}
-                  className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                >
-                  <Save className="h-4 w-4" />
-                  <span>{t('fims.saveAsDraft')}</span>
-                </button>
-                )}
-                {!isViewMode && (
-                <button
-                  onClick={() => handleSubmit(false)}
-                  disabled={isLoading || isUploading}
-                  className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                >
-                  <Send className="h-4 w-4" />
-                  <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
-                </button>
-                )}
-              </>
-            ) : (
-              <button
                 onClick={() => setCurrentStep(prev => Math.min(4, prev + 1))}
-                disabled={!canProceedToNext() || isViewMode}
-                className="px-4 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm md:text-base"
-              >
-                {t('common.next')}
-              </button>
+              <option value="">{t('fims.selectQuality')}</option>
+              <option value="excellent">{t('fims.excellent')}</option>
+              <option value="good">{t('fims.good')}</option>
+              <option value="average">{t('fims.average')}</option>
+              <option value="poor">{t('fims.poor')}</option>
             )}
           </div>
         </div>
