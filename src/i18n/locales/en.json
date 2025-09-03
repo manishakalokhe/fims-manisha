@@ -531,7 +531,8 @@
     "uploadedPhotos": "Uploaded Photos",
     "uploadingPhotos": "Uploading photos...",
     "noPhotosFound": "No photos found",
-    "maxPhotosAllowed": "Maximum 5 photos allowed"
+    "maxPhotosAllowed": "Maximum 5 photos allowed",
+    "selectcategory" :"select Category"
   },
   "statuses": {
     "planned": "Planned",
