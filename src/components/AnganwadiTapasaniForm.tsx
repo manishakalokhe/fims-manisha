@@ -386,7 +386,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           ...prev,
           latitude: lat,
           longitude: lng,
-          location_accuracy: accuracy
+          location_accuracy: accuracy,
           location_detected: ''
         }));
         
