@@ -1356,7 +1356,9 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
         </section>
       )}
-    </div>
+      </div>
+    );
+  };
   );
 
   return (
