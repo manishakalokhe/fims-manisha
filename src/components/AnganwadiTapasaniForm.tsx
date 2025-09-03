@@ -856,22 +856,24 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                 placeholder="GPS द्वारे शोधलेले स्थान येथे दिसेल"
                 readOnly={isViewMode}
               />
-                        {/* Google Maps Place Picker for manual location selection - only show if location not detected */}
-          {!inspectionData.location_detected && (
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                स्थान शोधा (Search Location)
-              </label>
-              <div style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px' }}>
-                <gmpx-place-picker 
-                  placeholder="पत्ता किंवा स्थान शोधा"
-                ></gmpx-place-picker>
-              </div>
             </div>
-          )}
+            </div>
+            {/* Google Maps Place Picker for manual location selection - only show if location not detected */}
+            {!inspectionData.location_detected && (
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  स्थान शोधा (Search Location)
+                </label>
+                <div style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px' }}>
+                  <gmpx-place-picker 
+                    placeholder="पत्ता किंवा स्थान शोधा"
+                  ></gmpx-place-picker>
+                </div>
+              </div>
+                )}
+            </div>
         </div>
       </section>
-            </div>
           </div>
         </div>
       </section>
