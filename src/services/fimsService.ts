@@ -11,6 +11,7 @@ export interface Inspection {
   latitude?: number;
   longitude?: number;
   location_accuracy?: number;
+  location_detected?: string;
   address?: string;
   planned_date?: string;
   inspection_date?: string;

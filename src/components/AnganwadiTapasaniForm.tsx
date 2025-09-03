@@ -163,7 +163,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     planned_date: '',
     latitude: null as number | null,
     longitude: null as number | null,
-    location_accuracy: null as number | null
+    location_accuracy: null as number | null,
+    location_detected: ''
   });
 
   // Anganwadi form data
@@ -269,7 +270,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         planned_date: editingInspection.planned_date ? editingInspection.planned_date.split('T')[0] : '',
         latitude: editingInspection.latitude,
         longitude: editingInspection.longitude,
-        location_accuracy: editingInspection.location_accuracy
+        location_accuracy: editingInspection.location_accuracy,
+        location_detected: editingInspection.location_detected || ''
       });
 
       // Load anganwadi form data if it exists
@@ -380,7 +382,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           ...prev,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          location_accuracy: position.coords.accuracy
+          location_accuracy: position.coords.accuracy,
+          location_detected: ''
         }));
         
         // Get location name using Google Maps API
@@ -391,14 +394,19 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           const data = await response.json();
           
           if (data.results && data.results.length > 0) {
-            const locationName = data.results[0].formatted_address;
-            setDetectedLocationName(locationName);
+            const detectedLocation = data.results[0].formatted_address;
             
-            // Auto-fill location name if it's empty
-            if (!inspectionData.location_name) {
+            // Update the location_detected field
+            setInspectionData(prev => ({
+              ...prev,
+              location_detected: detectedLocation
+            }));
+            
+            // Auto-fill location name if empty
+            if (!prev.location_name) {
               setInspectionData(prev => ({
                 ...prev,
-                location_name: locationName
+                location_name: detectedLocation
               }));
             }
           }
@@ -499,6 +507,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             latitude: inspectionData.latitude,
             longitude: inspectionData.longitude,
             location_accuracy: inspectionData.location_accuracy,
+            location_detected: inspectionData.location_detected,
             address: inspectionData.address,
             planned_date: inspectionData.planned_date,
             inspection_date: new Date().toISOString(),
@@ -535,6 +544,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             latitude: inspectionData.latitude,
             longitude: inspectionData.longitude,
             location_accuracy: inspectionData.location_accuracy,
+            location_detected: inspectionData.location_detected,
             address: inspectionData.address,
             planned_date: inspectionData.planned_date,
             inspection_date: new Date().toISOString(),
@@ -805,6 +815,20 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   </p>
                 </div>
               )}
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                शोधलेले स्थान (Location Detected)
+              </label>
+              <input
+                type="text"
+                value={inspectionData.location_detected}
+                onChange={(e) => setInspectionData(prev => ({...prev, location_detected: e.target.value}))}
+                className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent text-xs"
+                placeholder="GPS द्वारे शोधलेले स्थान येथे दिसेल"
+                readOnly={isViewMode}
+              />
             </div>
           </div>
         </div>
@@ -1089,508 +1113,4 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               question="२] निर्धारीत वजनाचा आहार मिळतो काय?"
             />
             <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">३] आहार नमुने प्रयोगशाळेत पृथ:करणाकरिता केव्हा पाठविले होते?</label>
-              <input
-                type="date"
-                value={anganwadiFormData.lab_sample_date}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, lab_sample_date: e.target.value}))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
-                disabled={isViewMode}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 9 - Weight Monitoring */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-        <div className="bg-gradient-to-r from-violet-500 to-purple-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <CheckCircle className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">९. बालकांचे वजन तपासणी:</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="space-y-6">
-            <YesNoRadio
-              name="regular_weighing"
-              value={anganwadiFormData.regular_weighing ? 'होय' : anganwadiFormData.regular_weighing === false ? 'नाही' : ''}
-              onChange={(value) => setAnganwadiFormData(prev => ({...prev, regular_weighing: value === 'होय'}))}
-              question="१] बालकांचे वजने नियमित वजने घेतली जातात किंवा कसे?"
-            />
-            <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">२] (वृद्धिपत्रक तपासून) वय व वजन यांची नोंद तपासून पोषण श्रेणी योग्य प्रमाणे दर्शविलेली आहे काय? काही मुलांची प्रत्यक्ष वजने घेऊन तपासणी व खात्री करावी. तसेच वृद्धिपत्रकातील नोंद तपासावी.</label>
-              <textarea
-                value={anganwadiFormData.children_attendance_comparison}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_attendance_comparison: e.target.value}))}
-                rows={4}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
-                disabled={isViewMode}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 10 - Vaccination */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-        <div className="bg-gradient-to-r from-red-500 to-pink-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <Heart className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">१०. लसीकरण:</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="space-y-6">
-            <YesNoRadio
-              name="vaccination_health_checkup_regular"
-              value={anganwadiFormData.vaccination_health_checkup_regular ? 'होय' : anganwadiFormData.vaccination_health_checkup_regular === false ? 'नाही' : ''}
-              onChange={(value) => setAnganwadiFormData(prev => ({...prev, vaccination_health_checkup_regular: value === 'होय'}))}
-              question="१] लसीकरण व आरोग्य तपासणी नियमितपणे होते काय? (मागील दोन महिन्याचे रेकॉर्ड तपासावे.)"
-            />
-            <YesNoRadio
-              name="vaccination_schedule_awareness"
-              value={anganwadiFormData.vaccination_schedule_awareness ? 'होय' : anganwadiFormData.vaccination_schedule_awareness === false ? 'नाही' : ''}
-              onChange={(value) => setAnganwadiFormData(prev => ({...prev, vaccination_schedule_awareness: value === 'होय'}))}
-              question="२] लसीकरण दिवसाची माहिती लाभार्थी पालकांना आहे काय? (एक-दोन घरी जाऊन तपासावे)"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Remaining Sections 11-17 */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-        <div className="bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <Calendar className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">११. ग्राम आरोग्य व पोषण दिवसाचे गावनिहाय सूक्ष्म नियोजन केले आहे काय?</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <input
-            type="text"
-            value={anganwadiFormData.village_health_nutrition_planning}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, village_health_nutrition_planning: e.target.value}))}
-            className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
-            disabled={isViewMode}
-          />
-        </div>
-      </section>
-
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-        <div className="bg-gradient-to-r from-lime-500 to-green-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <Users className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">१२. भेटीच्या दिवशी प्रत्यक्ष उपस्थित असलेली बालके व नोंदविलेल्या बालकांपैकी त्या दिवशी प्रत्यक्ष हजर असलेली बालके. (मागील आठवड्यातील सरासरी आकडेवारीची ही संख्या पडताळून पहावी.):</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">एकूण नोंदणीकृत मुले</label>
-              <input
-                type="number"
-                value={anganwadiFormData.total_registered_children}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, total_registered_children: parseInt(e.target.value) || 0}))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">आज उपस्थित मुले</label>
-              <input
-                type="number"
-                value={anganwadiFormData.children_present_today}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_present_today: parseInt(e.target.value) || 0}))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">०-३ वर्षे मुले</label>
-              <input
-                type="number"
-                value={anganwadiFormData.children_0_3_years}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_0_3_years: parseInt(e.target.value) || 0}))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">३-६ वर्षे मुले</label>
-              <input
-                type="number"
-                value={anganwadiFormData.children_3_6_years}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_3_6_years: parseInt(e.target.value) || 0}))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
-                disabled={isViewMode}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final sections for observations and recommendations */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <MessageSquare className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">निरीक्षणे आणि शिफारसी</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="space-y-6">
-            <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">सामान्य निरीक्षणे</label>
-              <textarea
-                value={anganwadiFormData.general_observations}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, general_observations: e.target.value}))}
-                rows={4}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
-                placeholder="अंगणवाडी केंद्राबद्दल सामान्य निरीक्षणे टाका"
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">शिफारसी</label>
-              <textarea
-                value={anganwadiFormData.recommendations}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, recommendations: e.target.value}))}
-                rows={4}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
-                placeholder="सुधारणेसाठी शिफारसी टाका"
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">आवश्यक कृती</label>
-              <textarea
-                value={anganwadiFormData.action_required}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, action_required: e.target.value}))}
-                rows={4}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
-                placeholder="घ्यावयाच्या विशिष्ट कृती टाका"
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">सूचना</label>
-              <textarea
-                value={anganwadiFormData.suggestions}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, suggestions: e.target.value}))}
-                rows={4}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50 hover:bg-white resize-none text-lg shadow-sm"
-                placeholder="अतिरिक्त सूचना टाका"
-                disabled={isViewMode}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Inspector Details */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-        <div className="bg-gradient-to-r from-gray-600 to-gray-800 px-8 py-6">
-          <div className="flex items-center text-white">
-            <UserCheck className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">तपासणीकर्त्याची माहिती</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">तपासणीकर्त्याचे नाव</label>
-              <input
-                type="text"
-                value={anganwadiFormData.inspector_name}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, inspector_name: e.target.value}))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">पदनाम</label>
-              <input
-                type="text"
-                value={anganwadiFormData.inspector_designation}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, inspector_designation: e.target.value}))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">भेटीची तारीख</label>
-              <input
-                type="date"
-                value={anganwadiFormData.visit_date}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, visit_date: e.target.value}))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
-                disabled={isViewMode}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-
-  const renderPhotoUpload = () => (
-    <div className="space-y-8">
-      {/* Photo Upload Section */}
-      <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <Camera className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">{t('fims.photosAndDocuments')}</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="space-y-6">
-            <div>
-              <h4 className="text-md font-medium text-gray-900 mb-3">
-                {t('fims.uploadPhotos')}
-              </h4>
-              {!isViewMode && (
-                <>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handlePhotoUpload}
-                    className="hidden"
-                    id="photo-upload"
-                  />
-                  <label
-                    htmlFor="photo-upload"
-                    className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
-                  >
-                    <Camera className="h-4 w-4 mr-2" />
-                    <span>छायाचित्र अपलोड करा</span>
-                  </label>
-                </>
-              )}
-              
-              <p className="text-xs text-gray-500 mt-2">
-                Maximum 5 photos allowed
-              </p>
-            </div>
-
-            {uploadedPhotos.length > 0 && (
-              <div>
-                <h4 className="text-md font-medium text-gray-900 mb-3">
-                  Uploaded Photos ({uploadedPhotos.length})
-                </h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {uploadedPhotos.map((photo, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={URL.createObjectURL(photo)}
-                        alt={`Upload ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                      {!isViewMode && (
-                        <button
-                          onClick={() => removePhoto(index)}
-                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
-                        >
-                          ×
-                        </button>
-                      )}
-                      <p className="text-xs text-gray-600 mt-1 truncate">
-                        {photo.name}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Display existing photos when viewing */}
-            {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
-              <div>
-                <h4 className="text-md font-medium text-gray-900 mb-3">
-                  Inspection Photos ({editingInspection.fims_inspection_photos.length})
-                </h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
-                    <div key={photo.id} className="relative">
-                      <img
-                        src={photo.photo_url}
-                        alt={photo.description || `Anganwadi photo ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                      <p className="text-xs text-gray-600 mt-1 truncate">
-                        {photo.photo_name || `Photo ${index + 1}`}
-                      </p>
-                      {photo.description && (
-                        <p className="text-xs text-gray-500 truncate">
-                          {photo.description}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {isUploading && (
-              <div className="text-center py-4">
-                <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
-              </div>
-            )}
-
-            {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
-              <div className="text-center py-8 text-gray-500">
-                <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                <p>{t('fims.noPhotosFound')}</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 1:
-        return renderBasicDetailsAndLocation();
-      case 2:
-        return renderAnganwadiInspectionForm();
-      case 3:
-        return renderPhotoUpload();
-      default:
-        return null;
-    }
-  };
-
-  const canProceedToNext = () => {
-    switch (currentStep) {
-      case 1:
-        return anganwadiFormData.anganwadi_name;
-      case 2:
-        return inspectionData.location_name;
-      default:
-        return true;
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 md:p-6">
-      <section className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-6 md:mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 px-6 md:px-8 py-8 md:py-12 text-white relative">
-            <div className="absolute inset-0 bg-black/10"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <button
-                  onClick={onBack}
-                  className="flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200"
-                >
-                  <ArrowLeft className="h-5 w-5" />
-                  <span>Back</span>
-                </button>
-                <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center">
-                  {editingInspection?.mode === 'view' ? t('fims.viewInspection') : 
-                   editingInspection?.mode === 'edit' ? t('fims.editInspection') : 
-                   t('fims.newInspection')} - अंगणवाडी केंद्र तपासणी
-                </h1>
-                <div className="w-20"></div>
-              </div>
-
-              {renderStepIndicator()}
-
-              <div className="flex justify-center space-x-4 md:space-x-8 text-xs md:text-sm">
-                <div className={`${currentStep === 1 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-                  मूलभूत माहिती
-                </div>
-                <div className={`${currentStep === 2 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-                  अंगणवाडी तपासणी
-                </div>
-                <div className={`${currentStep === 3 ? 'text-purple-600 font-medium' : 'text-gray-500'}`}>
-                  {t('fims.photosSubmit')}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Form Content */}
-        <div className="bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/30 rounded-xl shadow-lg border-2 border-blue-200 p-4 md:p-6 mb-4 md:mb-6">
-          {renderStepContent()}
-        </div>
-
-        {/* Navigation Buttons */}
-        <div className="flex justify-between items-center">
-          <button
-            onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-            disabled={currentStep === 1}
-            className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span>{t('common.previous')}</span>
-          </button>
-
-          <div className="flex space-x-2 md:space-x-3">
-            {currentStep < 3 ? (
-              <>
-                {!isViewMode && (
-                  <button
-                    onClick={() => handleSubmit(true)}
-                    disabled={isLoading || isUploading}
-                    className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                  >
-                    <Save className="h-4 w-4" />
-                    <span>{t('fims.saveAsDraft')}</span>
-                  </button>
-                )}
-                <button
-                  onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
-                  disabled={!canProceedToNext()}
-                  className="px-3 md:px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                >
-                  <span>{t('common.next')}</span>
-                  <ArrowLeft className="h-4 w-4 rotate-180" />
-                </button>
-              </>
-            ) : (
-              <>
-                {!isViewMode && (
-                  <button
-                    onClick={() => handleSubmit(true)}
-                    disabled={isLoading || isUploading}
-                    className="px-3 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                  >
-                    <Save className="h-4 w-4" />
-                    <span>{t('fims.saveAsDraft')}</span>
-                  </button>
-                )}
-                {!isViewMode && (
-                  <button
-                    onClick={() => handleSubmit(false)}
-                    disabled={isLoading || isUploading}
-                    className="px-3 md:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
-                  >
-                    <Send className="h-4 w-4" />
-                    <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Location Detection Display */}
-        {detectedLocationName && (
-          <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-xs text-green-700 mt-1 font-medium">
-              स्थान केंद्र केले: {detectedLocationName}
-            </p>
-          </div>
-        )}
-      </section>
-    </div>
-  );
-};
+              <label className="block mb-4 text-lg font-bold text-gray-700">३] आहार नमुने प्रयोगशाळेत प
