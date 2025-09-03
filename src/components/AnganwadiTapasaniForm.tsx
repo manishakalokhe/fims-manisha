@@ -857,7 +857,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                 readOnly={isViewMode}
               />
             </div>
-            </div>
             {/* Google Maps Place Picker for manual location selection - only show if location not detected */}
             {!inspectionData.location_detected && (
               <div className="mt-4">
@@ -871,8 +870,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                 </div>
               </div>
                 )}
-            </div>
-        </div>
       </section>
           </div>
         </div>
