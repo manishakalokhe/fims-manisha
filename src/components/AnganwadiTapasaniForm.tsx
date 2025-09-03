@@ -50,7 +50,6 @@ interface AnganwadiFormData {
   
   // Building and Facilities
   building_type: string;
-  building_condition: string;
   room_availability: boolean;
   toilet_facility: boolean;
   drinking_water: boolean;
