@@ -398,7 +398,11 @@
     "enterVillageName": "गावाचे नाव प्रविष्ट करा",
     "viewMode": "दृश्य मोड - हा फॉर्म फक्त वाचण्यासाठी आहे",
     "noPhotosFound": "या तपासणीसाठी कोणतेही फोटो सापडले नाहीत",
-    "selectcategory" :"वर्ग निवडा"
+    "selectcategory" :"वर्ग निवडा",
+    "photoDocumentationRequired": "फोटो दस्तऐवजीकरण आवश्यक",
+    "photoDocumentationRequiredDesc": "दोन्ही तपासणी प्रकारांसाठी फोटो दस्तऐवजीकरण आवश्यक आहे. योग्य रेकॉर्ड ठेवण्यासाठी आपण प्रति तपासणी 5 पर्यंत फोटो अपलोड करू शकता.",
+    "gpsLocationCaptureRequired": "GPS स्थान कॅप्चर आवश्यक",
+    "gpsLocationCaptureDesc": "अचूक रेकॉर्ड ठेवण्यासाठी तपासणी प्रक्रियेदरम्यान स्थान निर्देशांक आपोआप कॅप्चर केले जातील."
     },
     "pesa": {
       "name": "PESA 5%",
