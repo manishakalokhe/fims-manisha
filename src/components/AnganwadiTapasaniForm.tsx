@@ -867,6 +867,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               <p className="text-sm font-medium">
                 (केंद्र शासनाचे पत्र क्र. F.No.१६-३/२००४-ME (P+) दि. २२ ऑक्टोबर२०१०.)
               </p>
+              {inspectionData.location_detected && (
+                <p className="text-sm text-green-700 mt-1">
+                  <strong>स्थान:</strong> {inspectionData.location_detected}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -1334,39 +1339,20 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               ))}
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Submit Section */}
-      {!isViewMode && (
-        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-6">
-            <div className="flex items-center text-white">
-              <Send className="w-8 h-8 mr-4" />
-              <h3 className="text-2xl font-bold">{t('fims.submitInspection')}</h3>
+          
+          {/* Google Maps Place Picker for manual location selection - only show if location not detected */}
+          {!inspectionData.location_detected && (
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                स्थान शोधा (Search Location)
+              </label>
+              <div style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px' }}>
+                <gmpx-place-picker 
+                  placeholder="पत्ता किंवा स्थान शोधा"
+                ></gmpx-place-picker>
+              </div>
             </div>
-          </div>
-          <div className="p-10">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                type="button"
-                onClick={() => handleSubmit(true)}
-                disabled={isLoading || isUploading}
-                className="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
-              >
-                <Save className="h-5 w-5" />
-                <span>{isLoading ? t('fims.saving') : t('fims.saveAsDraft')}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSubmit(false)}
-                disabled={isLoading || isUploading}
-                className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
-              >
-                <Send className="h-5 w-5" />
-                <span>{isLoading ? t('fims.submitting') : t('fims.submitInspection')}</span>
-              </button>
-            </div>
+          )}
           </div>
         </section>
       )}
