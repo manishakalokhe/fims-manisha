@@ -95,7 +95,7 @@ interface AnganwadiFormData {
   
   // Nutrition and Health Services
   hot_meal_served: boolean;
-  meal_quality: string;
+ // meal_quality: string;
   take_home_ration: boolean;
   monthly_25_days_meals: boolean;
   thr_provided_regularly: boolean;
@@ -208,7 +208,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     preschool_education_registered: 0,
     preschool_education_present: 0,
     hot_meal_served: false,
-    meal_quality: '',
+    //meal_quality: '',
     take_home_ration: false,
     monthly_25_days_meals: false,
     thr_provided_regularly: false,
