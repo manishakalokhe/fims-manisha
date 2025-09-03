@@ -1350,16 +1350,16 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             </div>
 
             {uploadedPhotos.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
                 <h4 className="text-md font-medium text-gray-900 mb-3">
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Uploaded Photos ({uploadedPhotos.length})
                 </h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {uploadedPhotos.map((photo, index) => (
                     <div key={index} className="relative">
                       <img
                         src={URL.createObjectURL(photo)}
-              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-purple-500 focus:border-transparent"
+                        alt={`Upload ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg"
                       />
                       {!isViewMode && (
@@ -1367,34 +1367,34 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                           onClick={() => removePhoto(index)}
                           className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
                         >
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+                          ×
                         </button>
                       )}
                       <p className="text-xs text-gray-600 mt-1 truncate">
                         {photo.name}
                       </p>
-              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-purple-500 focus:border-transparent"
-              rows={2}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
             {/* Display existing photos when viewing */}
             {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+              <div>
                 <h4 className="text-md font-medium text-gray-900 mb-3">
                   Inspection Photos ({editingInspection.fims_inspection_photos.length})
                 </h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
                     <div key={photo.id} className="relative">
-              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-purple-500 focus:border-transparent"
+                      <img
                         src={photo.photo_url}
                         alt={photo.description || `Anganwadi photo ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg"
                       />
                       <p className="text-xs text-gray-600 mt-1 truncate">
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+                        {photo.photo_name || `Photo ${index + 1}`}
                       </p>
                       {photo.description && (
                         <p className="text-xs text-gray-500 truncate">
@@ -1402,17 +1402,17 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                         </p>
                       )}
                     </div>
-              className="w-full px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 flex items-center justify-center space-x-1"
+                  ))}
                 </div>
-              <MapPin className="h-3 w-3" />
-              <span className="text-xs">{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
+              </div>
+            )}
 
             {isUploading && (
               <div className="text-center py-4">
                 <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
-              <div className="mt-1 p-2 bg-green-50 border border-green-200 rounded-md">
-                <p className="text-xs text-green-800 font-medium">{t('fims.locationCaptured')}</p>
-                <p className="text-xs text-green-600">
+              </div>
+            )}
+
             {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
               <div className="text-center py-8 text-gray-500">
                 <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
