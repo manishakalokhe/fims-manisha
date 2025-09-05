@@ -406,8 +406,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       },
       (error) => {
         console.error('Error getting location:', error);
-        timeout: 15000, 
-        maximumAge: 0 
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
       }
     );
   };
