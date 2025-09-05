@@ -147,7 +147,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -157,11 +156,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [inspectionData, setInspectionData] = useState({
     category_id: '',
     location_name: '',
+    address: '',
     planned_date: '',
     latitude: null as number | null,
     longitude: null as number | null,
-    location_accuracy: null as number | null,
-    location_detected: ''
+    location_accuracy: null as number | null
   });
 
   // Anganwadi form data
@@ -262,11 +261,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       setInspectionData({
         category_id: editingInspection.category_id || '',
         location_name: editingInspection.location_name || '',
+        address: editingInspection.address || '',
         planned_date: editingInspection.planned_date ? editingInspection.planned_date.split('T')[0] : '',
         latitude: editingInspection.latitude,
         longitude: editingInspection.longitude,
-        location_accuracy: editingInspection.location_accuracy,
-        location_detected: editingInspection.location_detected || ''
+        location_accuracy: editingInspection.location_accuracy
       });
 
       // Load anganwadi form data if it exists
@@ -362,107 +361,17 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     }
   }, [editingInspection]);
 
-  const getCurrentLocation = () => {
-    if (!navigator.geolocation) {
-      alert(t('categories.geolocationNotSupported'));
-      return;
-    }
+  // Initialize place picker when component mounts
+  useEffect(() => {
+    // Import and initialize place picker
+    const script = document.createElement('script');
+    script.src = '/src/utils/placePicker.js';
+    script.type = 'module';
+    document.head.appendChild(script);
 
-    setIsGettingLocation(true);
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        const accuracy = position.coords.accuracy;
-        
-        setInspectionData(prev => ({
-          ...prev,
-          latitude: lat,
-          longitude: lng,
-          location_accuracy: accuracy,
-          location_detected: ''
-        }));
-        
-        // Get location name using Google Maps Geocoding API
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE&language=mr`
-          );
-          const data = await response.json();
-          
-          if (data.results && data.results.length > 0) {
-            const address = data.results[0].formatted_address;
-            setInspectionData(prev => ({
-              ...prev,
-              location_detected: address
-            }));
-            
-            // Auto-fill location name if empty
-            if (!prev.location_name) {
-              setInspectionData(prevData => ({
-                ...prevData,
-                location_name: address
-              }));
-            }
-          }
-        } catch (error) {
-          console.error('Error getting location name:', error);
-        }
-        
-        setIsGettingLocation(false);
-        // Get location name using Google Maps API
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}&language=mr`
-          );
-          const data = await response.json();
-          
-          if (data.results && data.results.length > 0) {
-            const detectedLocation = data.results[0].formatted_address;
-            
-            // Update the location_detected field
-            setInspectionData(prev => ({
-               ...prev,
-               location_detected: detectedLocation
-             }));
-           }
-         } catch (error) {
-           console.error('Error getting location name:', error);
-         }
-       },
-       (error) => {
-         console.error('Error getting location:', error);
-         setIsGettingLocation(false);
-         alert(t('categories.geolocationError'));
-       }
-     );
-   };
-
-     // Handle place picker selection
-     useEffect(() => {
-    const handlePlaceChange = (event: any) => {
-      const place = event.detail.place;
-      if (place && place.geometry && place.geometry.location) {
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
-        setInspectionData(prev => ({
-          ...prev,
-          latitude: lat,
-          longitude: lng,
-          location_accuracy: null,
-          location_detected: place.formatted_address || place.name || '',
-          address: place.formatted_address || prev.address
-        }));
-      }
+    return () => {
+      document.head.removeChild(script);
     };
-
-    const placePicker = document.querySelector('gmpx-place-picker');
-    if (placePicker) {
-      placePicker.addEventListener('gmpx-placechange', handlePlaceChange);
-      return () => {
-        placePicker.removeEventListener('gmpx-placechange', handlePlaceChange);
-      };
-    }
   }, []);
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -553,7 +462,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             latitude: sanitizedInspectionData.latitude,
             longitude: sanitizedInspectionData.longitude,
             location_accuracy: sanitizedInspectionData.location_accuracy,
-            location_detected: sanitizedInspectionData.location_detected,
             address: sanitizedInspectionData.address,
             planned_date: sanitizedInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
@@ -590,7 +498,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             latitude: sanitizedInspectionData.latitude,
             longitude: sanitizedInspectionData.longitude,
             location_accuracy: sanitizedInspectionData.location_accuracy,
-            location_detected: sanitizedInspectionData.location_detected,
             address: sanitizedInspectionData.address,
             planned_date: sanitizedInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
@@ -804,6 +711,77 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               />
             </div>
 
+            <div className="md:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Street Address
+                  </label>
+                  <input
+                    type="text"
+                    id="address-autocomplete"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Enter street address"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Apt/Suite
+                  </label>
+                  <input
+                    type="text"
+                    id="apt-suite"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Apt, suite, etc."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    id="city"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="City"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    State/Province
+                  </label>
+                  <input
+                    type="text"
+                    id="state-province"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="State/Province"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    ZIP/Postal Code
+                  </label>
+                  <input
+                    type="text"
+                    id="zip-postal-code"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="ZIP/Postal Code"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Country
+                  </label>
+                  <input
+                    type="text"
+                    id="country"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Country"
+                  />
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {t('fims.plannedDate')}
@@ -817,59 +795,36 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                GPS Location
-              </label>
-              {!isViewMode && (
-                <button
-                  type="button"
-                  onClick={getCurrentLocation}
-                  disabled={isLoading}
-                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-                >
-                  <MapPin className="h-4 w-4" />
-                  <span>{isGettingLocation ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
-                </button>
-              )}
-              {inspectionData.latitude && inspectionData.longitude && (
-                <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
-                  <p className="text-xs text-green-600">
-                    {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
-                    {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
-                    {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
-                  </p>
-                </div>
-              )}
-            </div>
-
             <div className="md:col-span-2">
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                शोधलेले स्थान (Location Detected)
-              </label>
-              <input
-                type="text"
-                value={inspectionData.location_detected}
-                onChange={(e) => setInspectionData(prev => ({...prev, location_detected: e.target.value}))}
-                className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent text-xs"
-                placeholder="GPS द्वारे शोधलेले स्थान येथे दिसेल"
-                readOnly={isViewMode}
-              />
-            </div>
-            {/* Google Maps Place Picker for manual location selection - only show if location not detected */}
-            {!inspectionData.location_detected && (
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  स्थान शोधा (Search Location)
-                </label>
-                <div style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px' }}>
-                  <gmpx-place-picker 
-                    placeholder="पत्ता किंवा स्थान शोधा"
-                  ></gmpx-place-picker>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select Landmark
+                  </label>
+                  <select
+                    id="landmarks"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    <option value="" disabled selected>Choose your Landmark</option>
+                  </select>
                 </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Combined Address
+                  </label>
+                  <textarea
+                    id="combined-address"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    rows={3}
+                    placeholder="Combined address will appear here"
+                    readOnly
+                  />
+                </div>
+                
+                <div id="map" style={{ height: '300px', width: '100%' }} className="rounded-lg border border-gray-300"></div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </section>
@@ -895,11 +850,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               <p className="text-sm font-medium">
                 (केंद्र शासनाचे पत्र क्र. F.No.१६-३/२००४-ME (P+) दि. २२ ऑक्टोबर२०१०.)
               </p>
-              {inspectionData.location_detected && (
-                <p className="text-sm text-green-700 mt-1">
-                  <strong>स्थान:</strong> {inspectionData.location_detected}
-                </p>
-              )}
             </div>
           </div>
         </div>
