@@ -411,7 +411,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         setIsGettingLocation(false);
       }
     );
-          );
           const data = await response.json();
           
           if (data.results && data.results.length > 0) {
