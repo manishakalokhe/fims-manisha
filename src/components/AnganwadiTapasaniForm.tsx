@@ -391,33 +391,57 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         const longitude = position.coords.longitude;
         const accuracy = position.coords.accuracy;
 
-        // Update inspection data with coordinates
-        setInspectionData(prev => ({
-          ...prev,
-          latitude,
-          longitude,
-          location_accuracy: accuracy
-        }));
-
         // Try to get address using Google Maps Geocoding
-        try {
-          // Wait for Google Maps to be available
-          if (typeof google !== 'undefined' && google.maps) {
-            await google.maps.importLibrary("geocoding");
-            const geocoder = new google.maps.Geocoder();
-            
-            const latlng = { lat: latitude, lng: longitude };
-            geocoder.geocode({ location: latlng }, (results, status) => {
-              if (status === 'OK' && results[0]) {
-                setDetectedLocation(results[0].formatted_address);
-                console.log('Address found:', results[0].formatted_address);
-              } else {
-                setDetectedLocation(`Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
-                console.log('No address found, using coordinates');
-              }
-              setIsGettingLocation(false);
-            });
-          } else {
+        if (window.google && window.google.maps) {
+          const geocoder = new window.google.maps.Geocoder();
+          const latlng = { lat: latitude, lng: longitude };
+          
+          geocoder.geocode({ location: latlng }, (results, status) => {
+            if (status === 'OK' && results && results[0]) {
+              const address = results[0].formatted_address;
+              console.log('Address found:', address);
+              
+              // Update ALL required state variables
+              setInspectionData(prev => ({
+                ...prev,
+                latitude,
+                longitude,
+                location_accuracy: accuracy,
+                location_detected: address
+              }));
+              setDetectedLocation(address);
+              setDetectedAddress(address);
+            } else {
+              console.log('Geocoding failed:', status);
+              const coordsString = `Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+              
+              // Update ALL required state variables with coordinates
+              setInspectionData(prev => ({
+                ...prev,
+                latitude,
+                longitude,
+                location_accuracy: accuracy,
+                location_detected: coordsString
+              }));
+              setDetectedLocation(coordsString);
+              setDetectedAddress('');
+            }
+          });
+        } else {
+          console.log('Google Maps not available, showing coordinates only');
+          const coordsString = `Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          
+          // Update ALL required state variables with coordinates
+          setInspectionData(prev => ({
+            ...prev,
+            latitude,
+            longitude,
+            location_accuracy: accuracy,
+            location_detected: coordsString
+          }));
+          setDetectedLocation(coordsString);
+          setDetectedAddress('');
+        }
             // Fallback: just show coordinates
             setDetectedLocation(`Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
             setIsGettingLocation(false);
