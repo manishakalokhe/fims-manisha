@@ -647,6 +647,16 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     if (!navigator.geolocation) {
       alert(t('fims.geolocationNotSupported'));
       return;
+    }
+
+    setIsGettingLocation(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+
         try {
           // Load Google Maps libraries
           await window.google.maps.importLibrary('maps');
