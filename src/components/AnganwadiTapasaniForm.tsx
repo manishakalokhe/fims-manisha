@@ -411,58 +411,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         setIsGettingLocation(false);
       }
     );
-          const data = await response.json();
-          
-          if (data.results && data.results.length > 0) {
-            const address = data.results[0].formatted_address;
-            setInspectionData(prev => ({
-              ...prev,
-              location_detected: address
-            }));
-            
-            // Auto-fill location name if empty
-            if (!prev.location_name) {
-              setInspectionData(prevData => ({
-                ...prevData,
-                location_name: address
-              }));
-            }
-          }
-        } catch (error) {
-          console.error('Error getting location name:', error);
-        }
-        
-        setIsGettingLocation(false);
-        // Get location name using Google Maps API
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}&language=mr`
-          );
-          const data = await response.json();
-          
-          if (data.results && data.results.length > 0) {
-            const detectedLocation = data.results[0].formatted_address;
-            
-            // Update the location_detected field
-            setInspectionData(prev => ({
-               ...prev,
-               location_detected: detectedLocation
-             }));
-           }
-         } catch (error) {
-           console.error('Error getting location name:', error);
-         }
-       },
-       (error) => {
-         console.error('Error getting location:', error);
-         setIsGettingLocation(false);
-         alert(t('categories.geolocationError'));
-       }
-     );
-   };
+  };
 
-     // Handle place picker selection
-     useEffect(() => {
+  // Handle place picker selection
+  useEffect(() => {
     const handlePlaceChange = (event: any) => {
       const place = event.detail.place;
       if (place && place.geometry && place.geometry.location) {
