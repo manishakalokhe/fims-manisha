@@ -149,6 +149,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [detectedLocation, setDetectedLocation] = useState<string>('');
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [detectedAddress, setDetectedAddress] = useState<string>('');
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -634,11 +635,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     // Request current position from browser
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        console.log('Position received:', position);
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         const accuracy = position.coords.accuracy;
-
-        // Update inspection data with coordinates
+        
         setInspectionData(prev => ({
           ...prev,
           latitude: lat,
@@ -646,40 +647,33 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           location_accuracy: accuracy
         }));
 
-        // Try to get address using Google Maps Geocoding API
+        // Try to get address using Google Maps Geocoding
         try {
           // Wait for Google Maps to be available
-          if (typeof google === 'undefined' || !google.maps) {
-            await new Promise((resolve) => {
-              const checkGoogle = () => {
-                if (typeof google !== 'undefined' && google.maps) {
-                  resolve(true);
-                } else {
-                  setTimeout(checkGoogle, 100);
-                }
-              };
-              checkGoogle();
-            });
-          }
-
-          await google.maps.importLibrary("geocoding");
-          const geocoder = new google.maps.Geocoder();
-          
-          geocoder.geocode(
-            { location: { lat, lng } },
-            (results, status) => {
-              if (status === 'OK' && results && results[0]) {
-                setDetectedLocation(results[0].formatted_address);
+          if (typeof google !== 'undefined' && google.maps) {
+            await google.maps.importLibrary("geocoding");
+            const geocoder = new google.maps.Geocoder();
+            
+            const latlng = { lat, lng };
+            geocoder.geocode({ location: latlng }, (results, status) => {
+              if (status === 'OK' && results[0]) {
+                const address = results[0].formatted_address;
+                console.log('Address found:', address);
+                setDetectedAddress(address);
               } else {
-                // Fallback to coordinates if geocoding fails
-                setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
+                console.log('Geocoding failed:', status);
+                setDetectedAddress('');
               }
-              setIsGettingLocation(false);
-            }
-          );
+            });
+          } else {
+            console.log('Google Maps not available, showing coordinates only');
+            setDetectedAddress('');
+          }
+          
+          setIsGettingLocation(false);
         } catch (geocodingError) {
           console.error('Geocoding error:', geocodingError);
-          setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
+          setDetectedAddress('');
           setIsGettingLocation(false);
         }
       },
@@ -908,11 +902,16 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               )}
               {inspectionData.latitude && inspectionData.longitude && (
                 <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
+                  <p className="text-sm text-green-800 font-medium mb-2">स्थान कॅप्चर केले</p>
+                  {detectedAddress && (
+                    <p className="text-xs text-green-600 mb-2">
+                      <strong>पत्ता:</strong> {detectedAddress}
+                    </p>
+                  )}
                   <p className="text-xs text-green-600">
-                    {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
-                    {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
-                    {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                    अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
+                    रेखांश: {inspectionData.longitude.toFixed(6)}<br />
+                    अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
                   </p>
                 </div>
               )}
