@@ -149,6 +149,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [detectedLocation, setDetectedLocation] = useState<string>('');
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -602,81 +603,91 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
             form_data: anganwadiFormData
-          })
-          .eq('id', editingInspection.id)
-          .select()
-          .single();
-
-        if (updateError) throw updateError;
-        inspectionResult = updateResult;
-
-        // Upsert anganwadi form record
-        const { error: formError } = await supabase
-          .from('fims_anganwadi_forms')
-          .upsert({
-            inspection_id: editingInspection.id,
-            ...anganwadiFormData
-          });
-
-        if (formError) throw formError;
-      } else {
-        // Create new inspection
-        const inspectionNumber = generateInspectionNumber();
-
-        const { data: createResult, error: createError } = await supabase
-          .from('fims_inspections')
-          .insert({
-            inspection_number: inspectionNumber,
-            category_id: sanitizedInspectionData.category_id,
-            inspector_id: user.id,
-            location_name: sanitizedInspectionData.location_name,
-            latitude: sanitizedInspectionData.latitude,
-            longitude: sanitizedInspectionData.longitude,
-            location_accuracy: sanitizedInspectionData.location_accuracy,
-            location_detected: sanitizedInspectionData.location_detected,
-            address: sanitizedInspectionData.address,
-            planned_date: sanitizedInspectionData.planned_date,
-            inspection_date: new Date().toISOString(),
-            status: isDraft ? 'draft' : 'submitted',
-            form_data: anganwadiFormData
-          })
-          .select()
-          .single();
-
-        if (createError) throw createError;
-        inspectionResult = createResult;
-
-        // Create anganwadi form record
-        const { error: formError } = await supabase
-          .from('fims_anganwadi_forms')
-          .insert({
-            inspection_id: inspectionResult.id,
-            ...anganwadiFormData
-          });
-
-        if (formError) throw formError;
-      }
-
-      // Upload photos if any
-      if (uploadedPhotos.length > 0) {
-        await uploadPhotosToSupabase(inspectionResult.id);
-      }
-
-      const isUpdate = editingInspection && editingInspection.id;
-      const message = isDraft 
-        ? (isUpdate ? t('fims.inspectionUpdatedAsDraft') : t('fims.inspectionSavedAsDraft'))
-        : (isUpdate ? t('fims.inspectionUpdatedSuccessfully') : t('fims.inspectionSubmittedSuccessfully'));
-      
-      alert(message);
-      onInspectionCreated();
-      onBack();
-
-    } catch (error) {
-      console.error('Error saving inspection:', error);
-      alert('Error saving inspection: ' + error.message);
-    } finally {
-      setIsLoading(false);
+    // Check if geolocation is supported
+    if (!navigator.geolocation) {
+      alert(t('fims.geolocationNotSupported'));
+      return;
     }
+
+    setIsGettingLocation(true);
+
+    // Request current position from browser
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+
+        // Update inspection data with coordinates
+        setInspectionData(prev => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng,
+          location_accuracy: accuracy
+        }));
+
+        // Try to get address using Google Maps Geocoding API
+        try {
+          // Wait for Google Maps to be available
+          if (typeof google === 'undefined' || !google.maps) {
+            await new Promise((resolve) => {
+              const checkGoogle = () => {
+                if (typeof google !== 'undefined' && google.maps) {
+                  resolve(true);
+                } else {
+                  setTimeout(checkGoogle, 100);
+                }
+              };
+              checkGoogle();
+            });
+          }
+
+          await google.maps.importLibrary("geocoding");
+          const geocoder = new google.maps.Geocoder();
+          
+          geocoder.geocode(
+            { location: { lat, lng } },
+            (results, status) => {
+              if (status === 'OK' && results && results[0]) {
+                setDetectedLocation(results[0].formatted_address);
+              } else {
+                // Fallback to coordinates if geocoding fails
+                setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
+              }
+              setIsGettingLocation(false);
+            }
+          );
+        } catch (geocodingError) {
+          console.error('Geocoding error:', geocodingError);
+          setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
+          setIsGettingLocation(false);
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        let errorMessage = t('fims.unableToGetLocation');
+        
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Location access denied by user";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Location information unavailable";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Location request timed out";
+            break;
+        }
+        
+        alert(errorMessage);
+        setIsGettingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+      }
+    );
   };
 
   const renderStepIndicator = () => (
