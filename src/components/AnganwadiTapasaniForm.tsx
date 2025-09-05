@@ -387,9 +387,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             setInspectionData(prev => ({
               ...prev,
               latitude: lat,
-              location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
-              location_accuracy: position.coords.accuracy,
-              location_detected: locationDetected
+              location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
+              location_accuracy: position.coords.accuracy
             }));
             setIsGettingLocation(false);
           })
