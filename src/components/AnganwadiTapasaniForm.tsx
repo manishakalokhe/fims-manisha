@@ -239,7 +239,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     visit_date: '',
     inspector_designation: '',
     inspector_name: ''
-  });
+  const handlePlaceChange = async (event: any) => {
 
   // Get anganwadi inspection category
   const anganwadiCategory = categories.find(cat => cat.form_type === 'anganwadi');
