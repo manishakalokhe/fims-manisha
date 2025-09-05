@@ -585,18 +585,18 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         if (updateError) throw updateError;
         inspectionResult = updateResult;
 
-        // Update or insert anganwadi form data
-        const { error: formError } = await supabase
+        // Update anganwadi form data
+        const { error: formUpdateError } = await supabase
           .from('fims_anganwadi_forms')
           .upsert({
             inspection_id: editingInspection.id,
             ...anganwadiFormData
           });
 
-        if (formError) throw formError;
+        if (formUpdateError) throw formUpdateError;
       } else {
         // Create new inspection
-        const { data: newInspection, error: insertError } = await supabase
+        const { data: newInspection, error: inspectionError } = await supabase
           .from('fims_inspections')
           .insert({
             inspection_number: generateInspectionNumber(),
@@ -610,13 +610,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             planned_date: sanitizedInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
-            inspector_id: user.id,
-            form_data: anganwadiFormData
+            form_data: anganwadiFormData,
+            created_by: user.id
           })
           .select()
           .single();
 
-        if (insertError) throw insertError;
+        if (inspectionError) throw inspectionError;
         inspectionResult = newInspection;
 
         // Insert anganwadi form data
@@ -638,8 +638,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       alert(isDraft ? t('fims.draftSaved') : t('fims.inspectionSubmitted'));
       onInspectionCreated();
     } catch (error) {
-      console.error('Error saving inspection:', error);
-      alert(t('fims.errorSavingInspection'));
+      console.error('Error submitting inspection:', error);
+      alert(t('fims.errorSubmitting'));
     } finally {
       setIsLoading(false);
     }
@@ -841,7 +841,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                   <span>{isGettingLocation ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
                 </button>
               )}
-              {inspectionData.latitude && inspectionData.longitude && !detectedLocation && (
+              {inspectionData.latitude && inspectionData.longitude && (
                 <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
                   <p className="text-xs text-green-600">
