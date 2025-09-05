@@ -368,96 +368,88 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   }, [editingInspection]);
 
   const getCurrentLocation = async () => {
+    console.log('getCurrentLocation called'); // Debug log
+    
+    // Check if geolocation is supported
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by this browser.');
       return;
     }
 
     setIsGettingLocation(true);
-    
+    console.log('Getting location...'); // Debug log
+
+    // Use browser's geolocation API
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
+      async (position) => {
+        console.log('Position received:', position); // Debug log
         
-        // Call Google Geocoding API to convert to location name
-        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE`)
-          .then(response => response.json())
-          .then(data => {
-            let locationDetected = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-            if (data.results.length > 0) {
-              locationDetected = data.results[0].formatted_address;
-            }
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+
+        // Update inspection data with coordinates
+        setInspectionData(prev => ({
+          ...prev,
+          latitude,
+          longitude,
+          location_accuracy: accuracy
+        }));
+
+        // Try to get address using Google Maps Geocoding
+        try {
+          // Wait for Google Maps to be available
+          if (typeof google !== 'undefined' && google.maps) {
+            await google.maps.importLibrary("geocoding");
+            const geocoder = new google.maps.Geocoder();
             
-            setInspectionData(prev => ({
-              ...prev,
-              latitude: lat,
-              longitude: lng,
-              location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
-              location_accuracy: position.coords.accuracy
-            }));
+            const latlng = { lat: latitude, lng: longitude };
+            geocoder.geocode({ location: latlng }, (results, status) => {
+              if (status === 'OK' && results[0]) {
+                setDetectedLocation(results[0].formatted_address);
+                console.log('Address found:', results[0].formatted_address);
+              } else {
+                setDetectedLocation(`Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+                console.log('No address found, using coordinates');
+              }
+              setIsGettingLocation(false);
+            });
+          } else {
+            // Fallback: just show coordinates
+            setDetectedLocation(`Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
             setIsGettingLocation(false);
-          })
-          .catch(error => {
-            setInspectionData(prev => ({
-              ...prev,
-              latitude: lat,
-              longitude: lng,
-              location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
-              location_accuracy: position.coords.accuracy
-            }));
-            setIsGettingLocation(false);
-          });
+          }
+        } catch (error) {
+          console.error('Geocoding error:', error);
+          setDetectedLocation(`Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+          setIsGettingLocation(false);
+        }
       },
       (error) => {
-        console.error('Error getting location:', error);
-        alert('Unable to get location');
+        console.error('Geolocation error:', error);
+        
+        let errorMessage = 'Unable to get location';
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Location access denied. Please allow location access and try again.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Location information is unavailable.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Location request timed out.";
+            break;
+        }
+        
+        alert(errorMessage);
         setIsGettingLocation(false);
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-    );
-    
-    try {
-      // Wait for Google Maps API to be available
-      if (typeof window.google === 'undefined') {
-        await new Promise((resolve) => {
-          const checkGoogle = () => {
-            if (typeof window.google !== 'undefined') {
-              resolve(true);
-            } else {
-              setTimeout(checkGoogle, 100);
-            }
-          };
-          checkGoogle();
-        });
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 60000
       }
-
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          const accuracy = position.coords.accuracy;
-
-          setInspectionData(prev => ({
-            ...prev,
-            latitude: lat,
-            longitude: lng,
-            location_accuracy: accuracy
-          }));
-
-          // Get address using Google Maps Geocoding API
-          try {
-            await window.google.maps.importLibrary("geocoding");
-            const geocoder = new window.google.maps.Geocoder();
-            
-            geocoder.geocode(
-              { location: { lat, lng } },
-              (results, status) => {
-                if (status === 'OK' && results[0]) {
-                  setDetectedLocation(results[0].formatted_address);
-                } else {
-                  setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
-                }
+    );
               }
             );
           } catch (geocodeError) {
