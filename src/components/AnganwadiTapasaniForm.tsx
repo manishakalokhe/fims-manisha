@@ -364,7 +364,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation not supported.');
+      alert('Geolocation is not supported by this browser.');
       return;
     }
 
@@ -387,14 +387,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             setInspectionData(prev => ({
               ...prev,
               latitude: lat,
-              longitude: lng,
+              location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
               location_accuracy: position.coords.accuracy,
               location_detected: locationDetected
             }));
             setIsGettingLocation(false);
           })
           .catch(error => {
-            console.error('Error getting location name:', error);
+            location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
             setInspectionData(prev => ({
               ...prev,
               latitude: lat,
@@ -402,13 +402,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               location_accuracy: position.coords.accuracy,
               location_detected: `${lat.toFixed(6)}, ${lng.toFixed(6)}`
             }));
-            setIsGettingLocation(false);
+        alert('Error: ' + error.message);
           });
       },
       (error) => {
         console.error('Error getting location:', error);
-        alert('Error: ' + error.message);
-        setIsGettingLocation(false);
+        timeout: 15000, 
+        maximumAge: 0 
       }
     );
   };
@@ -420,18 +420,22 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       if (place && place.geometry && place.geometry.location) {
         const lat = place.geometry.location.lat();
         const lng = place.geometry.location.lng();
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+        
         setInspectionData(prev => ({
           ...prev,
           latitude: lat,
           longitude: lng,
-          location_accuracy: null,
+          location_accuracy: accuracy
           location_detected: place.formatted_address || place.name || '',
           address: place.formatted_address || prev.address
         }));
       }
     };
 
-    const placePicker = document.querySelector('gmpx-place-picker');
+          const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE`);
     if (placePicker) {
       placePicker.addEventListener('gmpx-placechange', handlePlaceChange);
       return () => {
