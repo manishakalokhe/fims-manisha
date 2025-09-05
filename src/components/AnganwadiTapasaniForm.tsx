@@ -403,6 +403,19 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               ...prev,
               latitude: lat,
               longitude: lng,
+              location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
+              location_accuracy: position.coords.accuracy
+            }));
+            setIsGettingLocation(false);
+          });
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        alert('Unable to get location');
+        setIsGettingLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
     
     try {
       // Wait for Google Maps API to be available
@@ -920,23 +933,28 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">
               अंगणवाडी केंद्र तपासणी अहवाल (नमुना)
-              {detectedLocation && (
-                <div className="mt-2 p-2 bg-green-100 rounded">
-                  <p className="text-xs text-green-700 font-medium">शोधलेले स्थान (Location Detected)</p>
-                  <p className="text-xs text-green-600">{detectedLocation}</p>
-                </div>
-              )}
             </h1>
-                अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
-                रेखांश: {inspectionData.longitude.toFixed(6)}<br />
-                अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
-              </p>
-              {inspectionData.location_detected && (
-                <p className="text-sm text-green-700 mt-1">
-                  <strong>स्थान:</strong> {inspectionData.location_detected}
+            {detectedLocation && (
+              <div className="mt-2 p-2 bg-green-100 rounded">
+                <p className="text-xs text-green-700 font-medium">शोधलेले स्थान (Location Detected)</p>
+                <p className="text-xs text-green-600">{detectedLocation}</p>
+              </div>
+            )}
+            {inspectionData.latitude && inspectionData.longitude && (
+              <div className="mt-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                <p className="text-sm text-white/90 font-medium mb-2">GPS निर्देशांक (GPS Coordinates)</p>
+                <p className="text-xs text-white/80">
+                  अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
+                  रेखांश: {inspectionData.longitude.toFixed(6)}<br />
+                  अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
                 </p>
-              )}
-            </div>
+                {inspectionData.location_detected && (
+                  <p className="text-sm text-green-700 mt-1">
+                    <strong>स्थान:</strong> {inspectionData.location_detected}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
