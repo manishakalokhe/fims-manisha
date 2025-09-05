@@ -147,6 +147,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [detectedLocation, setDetectedLocation] = useState<string>('');
   const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   // Check if we're in view mode
@@ -366,7 +367,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     }
   }, [editingInspection]);
 
-  const getCurrentLocation = () => {
+  const getCurrentLocation = async () => {
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by this browser.');
       return;
@@ -402,23 +403,68 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               ...prev,
               latitude: lat,
               longitude: lng,
-              location_accuracy: position.coords.accuracy,
-              location_detected: `${lat.toFixed(6)}, ${lng.toFixed(6)}`
-            }));
-            setIsGettingLocation(false);
-            alert('Error: ' + error.message);
-          });
-      },
-      (error) => {
-        console.error('Error getting location:', error);
-        setIsGettingLocation(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0
+    
+    try {
+      // Wait for Google Maps API to be available
+      if (typeof window.google === 'undefined') {
+        await new Promise((resolve) => {
+          const checkGoogle = () => {
+            if (typeof window.google !== 'undefined') {
+              resolve(true);
+            } else {
+              setTimeout(checkGoogle, 100);
+            }
+          };
+          checkGoogle();
+        });
       }
-    );
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const accuracy = position.coords.accuracy;
+
+          setInspectionData(prev => ({
+            ...prev,
+            latitude: lat,
+            longitude: lng,
+            location_accuracy: accuracy
+          }));
+
+          // Get address using Google Maps Geocoding API
+          try {
+            await window.google.maps.importLibrary("geocoding");
+            const geocoder = new window.google.maps.Geocoder();
+            
+            geocoder.geocode(
+              { location: { lat, lng } },
+              (results, status) => {
+                if (status === 'OK' && results[0]) {
+                  setDetectedLocation(results[0].formatted_address);
+                } else {
+                  setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
+                }
+              }
+            );
+          } catch (geocodeError) {
+            console.error('Geocoding error:', geocodeError);
+            setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
+          }
+
+          setIsLoading(false);
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          alert(t('fims.unableToGetLocation'));
+          setIsLoading(false);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+      );
+    } catch (error) {
+      console.error('Error initializing location:', error);
+      setIsLoading(false);
+    }
   };
 
   // Handle place picker selection
@@ -874,10 +920,16 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">
               अंगणवाडी केंद्र तपासणी अहवाल (नमुना)
+              {detectedLocation && (
+                <div className="mt-2 p-2 bg-green-100 rounded">
+                  <p className="text-xs text-green-700 font-medium">शोधलेले स्थान (Location Detected)</p>
+                  <p className="text-xs text-green-600">{detectedLocation}</p>
+                </div>
+              )}
             </h1>
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 inline-block shadow-lg border border-white/30">
-              <p className="text-sm font-medium">
-                (केंद्र शासनाचे पत्र क्र. F.No.१६-३/२००४-ME (P+) दि. २२ ऑक्टोबर२०१०.)
+                अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
+                रेखांश: {inspectionData.longitude.toFixed(6)}<br />
+                अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
               </p>
               {inspectionData.location_detected && (
                 <p className="text-sm text-green-700 mt-1">
