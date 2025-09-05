@@ -364,29 +364,53 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert(t('categories.geolocationNotSupported'));
+      alert('Geolocation not supported.');
       return;
     }
 
     setIsGettingLocation(true);
+    
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
-        const accuracy = position.coords.accuracy;
         
-        setInspectionData(prev => ({
-          ...prev,
-          latitude: lat,
-          longitude: lng,
-          location_accuracy: accuracy,
-          location_detected: ''
-        }));
-        
-        // Get location name using Google Maps Geocoding API
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE&language=mr`
+        // Call Google Geocoding API to convert to location name
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE`)
+          .then(response => response.json())
+          .then(data => {
+            let locationDetected = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            if (data.results.length > 0) {
+              locationDetected = data.results[0].formatted_address;
+            }
+            
+            setInspectionData(prev => ({
+              ...prev,
+              latitude: lat,
+              longitude: lng,
+              location_accuracy: position.coords.accuracy,
+              location_detected: locationDetected
+            }));
+            setIsGettingLocation(false);
+          })
+          .catch(error => {
+            console.error('Error getting location name:', error);
+            setInspectionData(prev => ({
+              ...prev,
+              latitude: lat,
+              longitude: lng,
+              location_accuracy: position.coords.accuracy,
+              location_detected: `${lat.toFixed(6)}, ${lng.toFixed(6)}`
+            }));
+            setIsGettingLocation(false);
+          });
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        alert('Error: ' + error.message);
+        setIsGettingLocation(false);
+      }
+    );
           );
           const data = await response.json();
           
