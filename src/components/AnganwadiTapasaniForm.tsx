@@ -647,53 +647,57 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     if (!navigator.geolocation) {
       alert(t('fims.geolocationNotSupported'));
       return;
-    }
-
-    setIsGettingLocation(true);
-
-    // Request current position from browser
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        console.log('Position received:', position);
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        const accuracy = position.coords.accuracy;
-        
-        setInspectionData(prev => ({
-          ...prev,
-          latitude: lat,
-          longitude: lng,
-          location_accuracy: accuracy
-        }));
-
-        // Try to get address using Google Maps Geocoding
         try {
-          // Wait for Google Maps to be available
-          if (typeof google !== 'undefined' && google.maps) {
-            await google.maps.importLibrary("geocoding");
-            const geocoder = new google.maps.Geocoder();
-            
-            const latlng = { lat, lng };
-            geocoder.geocode({ location: latlng }, (results, status) => {
-              if (status === 'OK' && results[0]) {
-                const address = results[0].formatted_address;
-                console.log('Address found:', address);
-                setDetectedAddress(address);
-                setDetectedLocation(results[0].formatted_address);
-              } else {
-                console.log('Geocoding failed:', status);
-                setDetectedAddress('');
-                setDetectedLocation('');
-              }
-            });
-          } else {
-            console.log('Google Maps not available, showing coordinates only');
-            setDetectedLocation('');
-          }
+          // Load Google Maps libraries
+          await window.google.maps.importLibrary('maps');
+          const { Geocoder } = await window.google.maps.importLibrary('maps');
           
-          setIsGettingLocation(false);
-        } catch (geocodingError) {
-          setDetectedLocation('');
+          const geocoder = new Geocoder();
+          const latlng = { lat: latitude, lng: longitude };
+          
+          geocoder.geocode({ location: latlng }, (results, status) => {
+            if (status === 'OK' && results && results[0]) {
+              const address = results[0].formatted_address;
+              console.log('Address found:', address);
+              
+              // Update all state variables with the address
+              setInspectionData(prev => ({
+                ...prev,
+                latitude,
+                longitude,
+                location_accuracy: accuracy,
+                location_detected: address
+              }));
+              setDetectedLocation(address);
+              setDetectedAddress(address);
+            } else {
+              console.log('Geocoding failed:', status);
+              // Fallback to coordinates string
+              const coordString = `Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+              setInspectionData(prev => ({
+                ...prev,
+                latitude,
+                longitude,
+                location_accuracy: accuracy,
+                location_detected: coordString
+              }));
+              setDetectedLocation(coordString);
+              setDetectedAddress('');
+            }
+            setIsGettingLocation(false);
+          });
+        } catch (error) {
+          console.log('Google Maps not available or failed to load:', error);
+          // Fallback to coordinates string when Google Maps is not available
+          const coordString = `Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          setInspectionData(prev => ({
+            ...prev,
+            latitude,
+            longitude,
+            location_accuracy: accuracy,
+            location_detected: coordString
+          }));
+          setDetectedLocation(coordString);
           setDetectedAddress('');
           setIsGettingLocation(false);
         }
