@@ -368,91 +368,116 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   }, [editingInspection]);
 
   const getCurrentLocation = async () => {
-    // Check if geolocation is supported
     if (!navigator.geolocation) {
-      alert(t('fims.geolocationNotSupported'));
+      alert('Geolocation is not supported by this browser.');
       return;
     }
 
     setIsGettingLocation(true);
-
-    // Request current position from browser
+    
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
-        const accuracy = position.coords.accuracy;
-
-        // Update inspection data with coordinates
-        setInspectionData(prev => ({
-          ...prev,
-          latitude: lat,
-          longitude: lng,
-          location_accuracy: accuracy
-        }));
-
-        // Try to get address using Google Maps Geocoding API
-        try {
-          // Wait for Google Maps to be available
-          if (typeof google === 'undefined' || !google.maps) {
-            await new Promise((resolve) => {
-              const checkGoogle = () => {
-                if (typeof google !== 'undefined' && google.maps) {
-                  resolve(true);
-                } else {
-                  setTimeout(checkGoogle, 100);
-                }
-              };
-              checkGoogle();
-            });
-          }
-
-          await google.maps.importLibrary("geocoding");
-          const geocoder = new google.maps.Geocoder();
-          
-          geocoder.geocode(
-            { location: { lat, lng } },
-            (results, status) => {
-              if (status === 'OK' && results && results[0]) {
-                setDetectedLocation(results[0].formatted_address);
-              } else {
-                // Fallback to coordinates if geocoding fails
-                setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
-              }
-              setIsGettingLocation(false);
+        
+        // Call Google Geocoding API to convert to location name
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE`)
+          .then(response => response.json())
+          .then(data => {
+            let locationDetected = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            if (data.results.length > 0) {
+              locationDetected = data.results[0].formatted_address;
             }
-          );
-        } catch (geocodingError) {
-          console.error('Geocoding error:', geocodingError);
-          setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
-          setIsGettingLocation(false);
-        }
+            
+            setInspectionData(prev => ({
+              ...prev,
+              latitude: lat,
+              longitude: lng,
+              location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
+              location_accuracy: position.coords.accuracy
+            }));
+            setIsGettingLocation(false);
+          })
+          .catch(error => {
+            setInspectionData(prev => ({
+              ...prev,
+              latitude: lat,
+              longitude: lng,
+              location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
+              location_accuracy: position.coords.accuracy
+            }));
+            setIsGettingLocation(false);
+          });
       },
       (error) => {
-        console.error('Geolocation error:', error);
-        let errorMessage = t('fims.unableToGetLocation');
-        
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorMessage = "Location access denied by user";
-            break;
-          case error.POSITION_UNAVAILABLE:
-            errorMessage = "Location information unavailable";
-            break;
-          case error.TIMEOUT:
-            errorMessage = "Location request timed out";
-            break;
-        }
-        
-        alert(errorMessage);
+        console.error('Error getting location:', error);
+        alert('Unable to get location');
         setIsGettingLocation(false);
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 60000
-      }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
+    
+    try {
+      // Wait for Google Maps API to be available
+      if (typeof window.google === 'undefined') {
+        await new Promise((resolve) => {
+          const checkGoogle = () => {
+            if (typeof window.google !== 'undefined') {
+              resolve(true);
+            } else {
+              setTimeout(checkGoogle, 100);
+            }
+          };
+          checkGoogle();
+        });
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const accuracy = position.coords.accuracy;
+
+          setInspectionData(prev => ({
+            ...prev,
+            latitude: lat,
+            longitude: lng,
+            location_accuracy: accuracy
+          }));
+
+          // Get address using Google Maps Geocoding API
+          try {
+            await window.google.maps.importLibrary("geocoding");
+            const geocoder = new window.google.maps.Geocoder();
+            
+            geocoder.geocode(
+              { location: { lat, lng } },
+              (results, status) => {
+                if (status === 'OK' && results[0]) {
+                  setDetectedLocation(results[0].formatted_address);
+                } else {
+                  setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
+                }
+              }
+            );
+          } catch (geocodeError) {
+            console.error('Geocoding error:', geocodeError);
+            setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
+          }
+
+          setIsLoading(false);
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          alert(t('fims.unableToGetLocation'));
+          setIsLoading(false);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+      );
+    } catch (error) {
+      console.error('Error initializing location:', error);
+      setIsLoading(false);
+    }
   };
 
   // Handle place picker selection
@@ -584,16 +609,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
         if (updateError) throw updateError;
         inspectionResult = updateResult;
-
-        // Update anganwadi form data
-        const { error: formUpdateError } = await supabase
-          .from('fims_anganwadi_forms')
-          .upsert({
-            inspection_id: editingInspection.id,
-            ...anganwadiFormData
-          });
-
-        if (formUpdateError) throw formUpdateError;
       } else {
         // Create new inspection
         const { data: newInspection, error: inspectionError } = await supabase
@@ -610,24 +625,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             planned_date: sanitizedInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
-            form_data: anganwadiFormData,
-            created_by: user.id
+            inspector_id: user.id,
+            form_data: anganwadiFormData
           })
           .select()
           .single();
 
         if (inspectionError) throw inspectionError;
         inspectionResult = newInspection;
-
-        // Insert anganwadi form data
-        const { error: formError } = await supabase
-          .from('fims_anganwadi_forms')
-          .insert({
-            inspection_id: newInspection.id,
-            ...anganwadiFormData
-          });
-
-        if (formError) throw formError;
       }
 
       // Upload photos if any
@@ -643,6 +648,94 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Check if geolocation is supported
+  const getCurrentLocationNew = () => {
+    if (!navigator.geolocation) {
+      alert(t('fims.geolocationNotSupported'));
+      return;
+    }
+
+    setIsGettingLocation(true);
+
+    // Request current position from browser
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+
+        // Update inspection data with coordinates
+        setInspectionData(prev => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng,
+          location_accuracy: accuracy
+        }));
+
+        // Try to get address using Google Maps Geocoding API
+        try {
+          // Wait for Google Maps to be available
+          if (typeof google === 'undefined' || !google.maps) {
+            await new Promise((resolve) => {
+              const checkGoogle = () => {
+                if (typeof google !== 'undefined' && google.maps) {
+                  resolve(true);
+                } else {
+                  setTimeout(checkGoogle, 100);
+                }
+              };
+              checkGoogle();
+            });
+          }
+
+          await google.maps.importLibrary("geocoding");
+          const geocoder = new google.maps.Geocoder();
+          
+          geocoder.geocode(
+            { location: { lat, lng } },
+            (results, status) => {
+              if (status === 'OK' && results && results[0]) {
+                setDetectedLocation(results[0].formatted_address);
+              } else {
+                // Fallback to coordinates if geocoding fails
+                setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
+              }
+              setIsGettingLocation(false);
+            }
+          );
+        } catch (geocodingError) {
+          console.error('Geocoding error:', geocodingError);
+          setDetectedLocation(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
+          setIsGettingLocation(false);
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        let errorMessage = t('fims.unableToGetLocation');
+        
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Location access denied by user";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Location information unavailable";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Location request timed out";
+            break;
+        }
+        
+        alert(errorMessage);
+        setIsGettingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+      }
+    );
   };
 
   const renderStepIndicator = () => (
