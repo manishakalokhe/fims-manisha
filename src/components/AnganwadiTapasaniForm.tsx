@@ -442,15 +442,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           setDetectedLocation(coordsString);
           setDetectedAddress('');
         }
-            // Fallback: just show coordinates
-            setDetectedLocation(`Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
-            setIsGettingLocation(false);
-          }
-        } catch (error) {
-          console.error('Geocoding error:', error);
-          setDetectedLocation(`Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
-          setIsGettingLocation(false);
-        }
+        
+        setIsGettingLocation(false);
       },
       (error) => {
         console.error('Geolocation error:', error);
