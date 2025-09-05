@@ -149,7 +149,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [detectedLocation, setDetectedLocation] = useState<string>('');
   const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [detectedAddress, setDetectedAddress] = useState<string>('');
+  const [detectedLocation, setDetectedLocation] = useState('');
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -660,19 +660,19 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                 const address = results[0].formatted_address;
                 console.log('Address found:', address);
                 setDetectedAddress(address);
-              } else {
+              setDetectedLocation(results[0].formatted_address);
                 console.log('Geocoding failed:', status);
                 setDetectedAddress('');
-              }
+              setDetectedLocation('');
             });
           } else {
             console.log('Google Maps not available, showing coordinates only');
-            setDetectedAddress('');
+            setDetectedLocation('');
           }
           
           setIsGettingLocation(false);
         } catch (geocodingError) {
-          console.error('Geocoding error:', geocodingError);
+        setDetectedLocation('');
           setDetectedAddress('');
           setIsGettingLocation(false);
         }
