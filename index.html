@@ -33,8 +33,8 @@
           }));
         d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
       })({
-        key: "AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE", // <--- REPLACE WITH YOUR ACTUAL API KEY
-        v: "beta" // Using the beta channel for latest features like Advanced Markers
+        key: "AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE",
+        libraries: "places,geometry,geocoding"
       });
     </script>
   </head>
