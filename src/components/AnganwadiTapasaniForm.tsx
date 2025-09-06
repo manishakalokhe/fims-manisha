@@ -147,9 +147,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [detectedLocation, setDetectedLocation] = useState<string>('');
   const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [detectedAddress, setDetectedAddress] = useState('');
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -163,8 +161,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     latitude: null as number | null,
     longitude: null as number | null,
     location_accuracy: null as number | null,
-    location_detected: '',
-    address: ''
+    location_detected: ''
   });
 
   // Anganwadi form data
@@ -244,10 +241,6 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     inspector_name: ''
   });
 
-  const handlePlaceChange = async (event: any) => {
-
-  };
-
   // Get anganwadi inspection category
   const anganwadiCategory = categories.find(cat => cat.form_type === 'anganwadi');
 
@@ -273,8 +266,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         latitude: editingInspection.latitude,
         longitude: editingInspection.longitude,
         location_accuracy: editingInspection.location_accuracy,
-        location_detected: editingInspection.location_detected || '',
-        address: editingInspection.address || ''
+        location_detected: editingInspection.location_detected || ''
       });
 
       // Load anganwadi form data if it exists
@@ -370,116 +362,89 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     }
   }, [editingInspection]);
 
-  const getCurrentLocation = async () => {
-    console.log('getCurrentLocation called'); // Debug log
-    
-    // Check if geolocation is supported
+  const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by this browser.');
+      alert(t('categories.geolocationNotSupported'));
       return;
     }
 
     setIsGettingLocation(true);
-    console.log('Getting location...'); // Debug log
-
-    // Use browser's geolocation API
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        console.log('Position received:', position); // Debug log
-        
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
         const accuracy = position.coords.accuracy;
-
-        // Try to get address using Google Maps Geocoding
-        if (window.google && window.google.maps) {
-          const geocoder = new window.google.maps.Geocoder();
-          const latlng = { lat: latitude, lng: longitude };
+        
+        setInspectionData(prev => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng,
+          location_accuracy: accuracy,
+          location_detected: ''
+        }));
+        
+        // Get location name using Google Maps Geocoding API
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE&language=mr`
+          );
+          const data = await response.json();
           
-          geocoder.geocode({ location: latlng }, (results, status) => {
-            if (status === 'OK' && results && results[0]) {
-              const address = results[0].formatted_address;
-              console.log('Address found:', address);
-              
-              // Update ALL required state variables
-              setInspectionData(prev => ({
-                ...prev,
-                latitude,
-                longitude,
-                location_accuracy: accuracy,
-                location_detected: address
+          if (data.results && data.results.length > 0) {
+            const address = data.results[0].formatted_address;
+            setInspectionData(prev => ({
+              ...prev,
+              location_detected: address
+            }));
+            
+            // Auto-fill location name if empty
+            if (!prev.location_name) {
+              setInspectionData(prevData => ({
+                ...prevData,
+                location_name: address
               }));
-              setDetectedLocation(address);
-              setDetectedAddress(address);
-            } else {
-              console.log('Geocoding failed:', status);
-              const coordsString = `Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-              
-              // Update ALL required state variables with coordinates
-              setInspectionData(prev => ({
-                ...prev,
-                latitude,
-                longitude,
-                location_accuracy: accuracy,
-                location_detected: coordsString
-              }));
-              setDetectedLocation(coordsString);
-              setDetectedAddress('');
             }
-          });
-        } else {
-          console.log('Google Maps not available, showing coordinates only');
-          const coordsString = `Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          }
+        } catch (error) {
+          console.error('Error getting location name:', error);
+        }
+        
+        setIsGettingLocation(false);
+        // Get location name using Google Maps API
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}&language=mr`
+          );
+          const data = await response.json();
           
-          // Update ALL required state variables with coordinates
-          setInspectionData(prev => ({
-            ...prev,
-            latitude,
-            longitude,
-            location_accuracy: accuracy,
-            location_detected: coordsString
-          }));
-          setDetectedLocation(coordsString);
-          setDetectedAddress('');
-        }
-        
-        setIsGettingLocation(false);
-      },
-      (error) => {
-        console.error('Geolocation error:', error);
-        
-        let errorMessage = 'Unable to get location';
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorMessage = "Location access denied. Please allow location access and try again.";
-            break;
-          case error.POSITION_UNAVAILABLE:
-            errorMessage = "Location information is unavailable.";
-            break;
-          case error.TIMEOUT:
-            errorMessage = "Location request timed out.";
-            break;
-        }
-        
-        alert(errorMessage);
-        setIsGettingLocation(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 60000
-      }
-    );
-  };
+          if (data.results && data.results.length > 0) {
+            const detectedLocation = data.results[0].formatted_address;
+            
+            // Update the location_detected field
+            setInspectionData(prev => ({
+               ...prev,
+               location_detected: detectedLocation
+             }));
+           }
+         } catch (error) {
+           console.error('Error getting location name:', error);
+         }
+       },
+       (error) => {
+         console.error('Error getting location:', error);
+         setIsGettingLocation(false);
+         alert(t('categories.geolocationError'));
+       }
+     );
+   };
 
-  // Handle place picker selection
-  useEffect(() => {
+     // Handle place picker selection
+     useEffect(() => {
     const handlePlaceChange = (event: any) => {
       const place = event.detail.place;
       if (place && place.geometry && place.geometry.location) {
         const lat = place.geometry.location.lat();
         const lng = place.geometry.location.lng();
-        
         setInspectionData(prev => ({
           ...prev,
           latitude: lat,
@@ -601,13 +566,26 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
         if (updateError) throw updateError;
         inspectionResult = updateResult;
+
+        // Upsert anganwadi form record
+        const { error: formError } = await supabase
+          .from('fims_anganwadi_forms')
+          .upsert({
+            inspection_id: editingInspection.id,
+            ...anganwadiFormData
+          });
+
+        if (formError) throw formError;
       } else {
         // Create new inspection
-        const { data: newInspection, error: inspectionError } = await supabase
+        const inspectionNumber = generateInspectionNumber();
+
+        const { data: createResult, error: createError } = await supabase
           .from('fims_inspections')
           .insert({
-            inspection_number: generateInspectionNumber(),
+            inspection_number: inspectionNumber,
             category_id: sanitizedInspectionData.category_id,
+            inspector_id: user.id,
             location_name: sanitizedInspectionData.location_name,
             latitude: sanitizedInspectionData.latitude,
             longitude: sanitizedInspectionData.longitude,
@@ -617,14 +595,23 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             planned_date: sanitizedInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
-            inspector_id: user.id,
             form_data: anganwadiFormData
           })
           .select()
           .single();
 
-        if (inspectionError) throw inspectionError;
-        inspectionResult = newInspection;
+        if (createError) throw createError;
+        inspectionResult = createResult;
+
+        // Create anganwadi form record
+        const { error: formError } = await supabase
+          .from('fims_anganwadi_forms')
+          .insert({
+            inspection_id: inspectionResult.id,
+            ...anganwadiFormData
+          });
+
+        if (formError) throw formError;
       }
 
       // Upload photos if any
@@ -632,111 +619,21 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         await uploadPhotosToSupabase(inspectionResult.id);
       }
 
-      alert(isDraft ? t('fims.draftSaved') : t('fims.inspectionSubmitted'));
+      const isUpdate = editingInspection && editingInspection.id;
+      const message = isDraft 
+        ? (isUpdate ? t('fims.inspectionUpdatedAsDraft') : t('fims.inspectionSavedAsDraft'))
+        : (isUpdate ? t('fims.inspectionUpdatedSuccessfully') : t('fims.inspectionSubmittedSuccessfully'));
+      
+      alert(message);
       onInspectionCreated();
+      onBack();
+
     } catch (error) {
-      console.error('Error submitting inspection:', error);
-      alert(t('fims.errorSubmitting'));
+      console.error('Error saving inspection:', error);
+      alert('Error saving inspection: ' + error.message);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // Check if geolocation is supported
-  const getCurrentLocationNew = () => {
-    if (!navigator.geolocation) {
-      alert(t('fims.geolocationNotSupported'));
-      return;
-    }
-
-    setIsGettingLocation(true);
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        const accuracy = position.coords.accuracy;
-
-        try {
-          // Load Google Maps libraries
-          await window.google.maps.importLibrary('maps');
-          const { Geocoder } = await window.google.maps.importLibrary('maps');
-          
-          const geocoder = new Geocoder();
-          const latlng = { lat: latitude, lng: longitude };
-          
-          geocoder.geocode({ location: latlng }, (results, status) => {
-            if (status === 'OK' && results && results[0]) {
-              const address = results[0].formatted_address;
-              console.log('Address found:', address);
-              
-              // Update all state variables with the address
-              setInspectionData(prev => ({
-                ...prev,
-                latitude,
-                longitude,
-                location_accuracy: accuracy,
-                location_detected: address
-              }));
-              setDetectedLocation(address);
-              setDetectedAddress(address);
-            } else {
-              console.log('Geocoding failed:', status);
-              // Fallback to coordinates string
-              const coordString = `Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-              setInspectionData(prev => ({
-                ...prev,
-                latitude,
-                longitude,
-                location_accuracy: accuracy,
-                location_detected: coordString
-              }));
-              setDetectedLocation(coordString);
-              setDetectedAddress('');
-            }
-            setIsGettingLocation(false);
-          });
-        } catch (error) {
-          console.log('Google Maps not available or failed to load:', error);
-          // Fallback to coordinates string when Google Maps is not available
-          const coordString = `Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-          setInspectionData(prev => ({
-            ...prev,
-            latitude,
-            longitude,
-            location_accuracy: accuracy,
-            location_detected: coordString
-          }));
-          setDetectedLocation(coordString);
-          setDetectedAddress('');
-          setIsGettingLocation(false);
-        }
-      },
-      (error) => {
-        console.error('Geolocation error:', error);
-        let errorMessage = t('fims.unableToGetLocation');
-        
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorMessage = "Location access denied by user";
-            break;
-          case error.POSITION_UNAVAILABLE:
-            errorMessage = "Location information unavailable";
-            break;
-          case error.TIMEOUT:
-            errorMessage = "Location request timed out";
-            break;
-        }
-        
-        alert(errorMessage);
-        setIsGettingLocation(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 60000
-      }
-    );
   };
 
   const renderStepIndicator = () => (
@@ -937,16 +834,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               )}
               {inspectionData.latitude && inspectionData.longitude && (
                 <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm text-green-800 font-medium mb-2">स्थान कॅप्चर केले</p>
-                  {detectedAddress && (
-                    <p className="text-xs text-green-600 mb-2">
-                      <strong>पत्ता:</strong> {detectedAddress}
-                    </p>
-                  )}
+                  <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
                   <p className="text-xs text-green-600">
-                    अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
-                    रेखांश: {inspectionData.longitude.toFixed(6)}<br />
-                    अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                    {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
+                    {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
+                    {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
                   </p>
                 </div>
               )}
@@ -999,27 +891,16 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">
               अंगणवाडी केंद्र तपासणी अहवाल (नमुना)
             </h1>
-            {detectedLocation && (
-              <div className="mt-2 p-2 bg-green-100 rounded">
-                <p className="text-xs text-green-700 font-medium">शोधलेले स्थान (Location Detected)</p>
-                <p className="text-xs text-green-600">{detectedLocation}</p>
-              </div>
-            )}
-            {inspectionData.latitude && inspectionData.longitude && (
-              <div className="mt-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                <p className="text-sm text-white/90 font-medium mb-2">GPS निर्देशांक (GPS Coordinates)</p>
-                <p className="text-xs text-white/80">
-                  अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
-                  रेखांश: {inspectionData.longitude.toFixed(6)}<br />
-                  अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 inline-block shadow-lg border border-white/30">
+              <p className="text-sm font-medium">
+                (केंद्र शासनाचे पत्र क्र. F.No.१६-३/२००४-ME (P+) दि. २२ ऑक्टोबर२०१०.)
+              </p>
+              {inspectionData.location_detected && (
+                <p className="text-sm text-green-700 mt-1">
+                  <strong>स्थान:</strong> {inspectionData.location_detected}
                 </p>
-                {inspectionData.location_detected && (
-                  <p className="text-sm text-green-700 mt-1">
-                    <strong>स्थान:</strong> {inspectionData.location_detected}
-                  </p>
-                )}
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

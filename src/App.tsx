@@ -31,6 +31,7 @@ function App() {
             // Clear any stale authentication tokens from local storage
             localStorage.removeItem('supabase.auth.token');
             sessionStorage.removeItem('supabase.auth.token');
+            await supabase.auth.signOut();
           } catch (signOutError) {
             console.error('Error signing out:', signOutError);
           }

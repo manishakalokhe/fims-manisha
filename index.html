@@ -1,18 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FIMS - Field Inspection Management System</title>
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE&libraries=places,geometry,geocoding"
-      async
-      defer>
-    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/@googlemaps/extended-component-library/0.6.11/index.min.js"></script>
+    <script>
+      // Wait for the Google Maps Extended Component Library to load
+      window.addEventListener('DOMContentLoaded', () => {
+        const apiLoader = document.createElement('gmpx-api-loader');
+        apiLoader.setAttribute('key', 'AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE');
+        apiLoader.setAttribute('solution-channel', 'GMP_GE_placepicker_v2');
+        document.body.appendChild(apiLoader);
+      });
+    </script>
   </body>
 </html>
