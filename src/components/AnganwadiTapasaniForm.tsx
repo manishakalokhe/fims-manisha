@@ -467,7 +467,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       return;
     }
     
-    const place = event.detail.place;
+    const place = event.detail?.place;
+    if (!place) {
+      return;
+    }
     
     if (uploadedPhotos.length + files.length > 5) {
       alert(t('fims.maxPhotosAllowed'));
