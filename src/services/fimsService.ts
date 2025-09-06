@@ -175,6 +175,40 @@ export const deleteInspection = async (id: string): Promise<void> => {
   }
 
   try {
+    // First delete related records from fims_anganwadi_forms
+    const { error: anganwadiError } = await supabase
+      .from('fims_anganwadi_forms')
+      .delete()
+      .eq('inspection_id', id);
+
+    if (anganwadiError) {
+      console.error('Error deleting anganwadi forms:', anganwadiError);
+      // Continue with deletion even if this fails
+    }
+
+    // Delete related records from fims_office_inspection_forms
+    const { error: officeError } = await supabase
+      .from('fims_office_inspection_forms')
+      .delete()
+      .eq('inspection_id', id);
+
+    if (officeError) {
+      console.error('Error deleting office forms:', officeError);
+      // Continue with deletion even if this fails
+    }
+
+    // Delete related photos (they should cascade delete, but let's be explicit)
+    const { error: photosError } = await supabase
+      .from('fims_inspection_photos')
+      .delete()
+      .eq('inspection_id', id);
+
+    if (photosError) {
+      console.error('Error deleting photos:', photosError);
+      // Continue with deletion even if this fails
+    }
+
+    // Finally delete the main inspection record
     const { error } = await supabase
       .from('fims_inspections')
       .delete()
