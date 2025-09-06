@@ -375,60 +375,48 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         const lng = position.coords.longitude;
         const accuracy = position.coords.accuracy;
         
-        setInspectionData(prev => ({
-          ...prev,
-          latitude: lat,
-          longitude: lng,
-          location_accuracy: accuracy,
-          location_detected: ''
-        }));
-        
         // Get location name using Google Maps Geocoding API
         try {
           const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE&language=mr`
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${import.meta.env.VITE_GOOGLE_API_KEY || 'AIzaSyDzOjsiqs6rRjSJWVdXfUBl4ckXayL8AbE'}&language=mr`
           );
           const data = await response.json();
           
           if (data.results && data.results.length > 0) {
             const address = data.results[0].formatted_address;
+            
+            // Update all location data in a single state call
             setInspectionData(prev => ({
               ...prev,
-              location_detected: address
+              latitude: lat,
+              longitude: lng,
+              location_accuracy: accuracy,
+              location_detected: address,
+              location_name: prev.location_name || address // Auto-fill if empty
             }));
-            
-            // Auto-fill location name if empty
-            if (!prev.location_name) {
-              setInspectionData(prevData => ({
-                ...prevData,
-                location_name: address
-              }));
-            }
+          } else {
+            // No geocoding results, just update coordinates
+            setInspectionData(prev => ({
+              ...prev,
+              latitude: lat,
+              longitude: lng,
+              location_accuracy: accuracy,
+              location_detected: 'Location detected but address not found'
+            }));
           }
         } catch (error) {
           console.error('Error getting location name:', error);
+          // Fallback: just update coordinates without address
+          setInspectionData(prev => ({
+            ...prev,
+            latitude: lat,
+            longitude: lng,
+            location_accuracy: accuracy,
+            location_detected: 'Unable to get address'
+          }));
         }
         
         setIsGettingLocation(false);
-        // Get location name using Google Maps API
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}&language=mr`
-          );
-          const data = await response.json();
-          
-          if (data.results && data.results.length > 0) {
-            const detectedLocation = data.results[0].formatted_address;
-            
-            // Update the location_detected field
-            setInspectionData(prev => ({
-               ...prev,
-               location_detected: detectedLocation
-             }));
-           }
-         } catch (error) {
-           console.error('Error getting location name:', error);
-         }
        },
        (error) => {
          console.error('Error getting location:', error);
