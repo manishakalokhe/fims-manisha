@@ -924,10 +924,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
                 disabled={isViewMode}
               >
                 <option value="">निवडा</option>
-                <option value="स्वतःची">स्वतःची</option>
-                <option value="भाड्याची">भाड्याची</option>
-                <option value="मोफत">मोफत</option>
-                <option value="इमारत नाही">इमारत नाही</option>
+                <option value="own">स्वतःची</option>
+                <option value="rented">भाड्याची</option>
+                <option value="free">मोफत</option>
+                <option value="no_building">इमारत नाही</option>
               </select>
             </div>
 
