@@ -1441,10 +1441,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
             >
               {t('common.next')}
-            </button>
-          )}
-        </div>
-      </div>
+              <option value="own">स्वतःची इमारत</option>
+              <option value="rented">भाड्याची इमारत</option>
+              <option value="free">मोफत उपलब्ध इमारत</option>
+              <option value="no_building">इमारत नाही</option>
     </div>
   );
 };
