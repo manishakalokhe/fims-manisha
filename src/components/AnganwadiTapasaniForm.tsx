@@ -368,6 +368,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       return;
     }
 
+    // Clear any cached location data by requesting fresh location
+    // This forces the browser to get a new GPS fix instead of using cached data
     setIsGettingLocation(true);
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -423,7 +425,11 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
          setIsGettingLocation(false);
          alert(t('categories.geolocationError'));
        }
-     );
+      { 
+        enableHighAccuracy: true, 
+        timeout: 15000, // Increased timeout for better GPS fix
+        maximumAge: 0 // Force fresh location, don't use cached data
+      }
    };
 
      // Handle place picker selection
