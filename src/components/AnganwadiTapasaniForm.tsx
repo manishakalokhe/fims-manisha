@@ -424,13 +424,14 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
          console.error('Error getting location:', error);
          setIsGettingLocation(false);
          alert(t('categories.geolocationError'));
-       }
+       },
       { 
         enableHighAccuracy: true, 
         timeout: 15000, // Increased timeout for better GPS fix
         maximumAge: 0 // Force fresh location, don't use cached data
       }
-   };
+    );
+  };
 
      // Handle place picker selection
      useEffect(() => {
