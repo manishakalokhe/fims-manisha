@@ -461,7 +461,13 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   }, []);
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
+    // Check if event.detail and event.detail.place exist before accessing
+    if (!event.detail || !event.detail.place) {
+      console.warn('Place picker event does not contain place data');
+      return;
+    }
+    
+    const place = event.detail.place;
     
     if (uploadedPhotos.length + files.length > 5) {
       alert(t('fims.maxPhotosAllowed'));
