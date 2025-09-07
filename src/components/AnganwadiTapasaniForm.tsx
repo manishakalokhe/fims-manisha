@@ -1559,6 +1559,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
 
         </div>
       </div>
+    </section>
 
       {/* Submit Buttons */}
       {!isViewMode && (
