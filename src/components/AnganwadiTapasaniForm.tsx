@@ -432,39 +432,44 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       }
     );
   };
-
-     // Handle place picker selection
-     useEffect(() => {
-    const handlePlaceChange = (event: any) => {
-      const place = event.detail.place;
-      if (place && place.geometry && place.geometry.location) {
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
-        setInspectionData(prev => ({
-          ...prev,
-          latitude: lat,
-          longitude: lng,
-          location_accuracy: null,
-          location_detected: place.formatted_address || place.name || '',
-          address: place.formatted_address || prev.address
-        }));
+    try {
+      const files = event.target.files;
+      if (!files || files.length === 0) {
+        return;
       }
-    };
 
-    const placePicker = document.querySelector('gmpx-place-picker');
-    if (placePicker) {
-      placePicker.addEventListener('gmpx-placechange', handlePlaceChange);
-      return () => {
-        placePicker.removeEventListener('gmpx-placechange', handlePlaceChange);
-      };
+      const fileArray = Array.from(files);
+      
+      // Check total count first
+      if (uploadedPhotos.length + fileArray.length > 5) {
+        alert(t('fims.maxPhotosAllowed'));
+        event.target.value = '';
+        return;
+      }
+
+      // Filter valid files
+      const validFiles = fileArray.filter(file => {
+        if (file.size > 10 * 1024 * 1024) {
+          alert(`File ${file.name} is too large. Maximum size is 10MB.`);
+          return false;
+        }
+        if (!file.type.startsWith('image/')) {
+          alert(`File ${file.name} is not an image file.`);
+          return false;
+        }
+        return true;
+      });
+
+      if (validFiles.length > 0) {
+        setUploadedPhotos(prev => [...prev, ...validFiles]);
+      }
+      
+      // Always reset the input
+      event.target.value = '';
+    } catch (error) {
+      console.error('Error handling file upload:', error);
+      event.target.value = '';
     }
-  }, []);
-
-  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Check if event.detail and event.detail.place exist before accessing
-    if (!event.detail || !event.detail.place) {
-    // Reset the input value to allow re-selecting the same files
-    event.target.value = '';
     
       console.warn('Place picker event does not contain place data');
       return;
