@@ -463,6 +463,9 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Check if event.detail and event.detail.place exist before accessing
     if (!event.detail || !event.detail.place) {
+    // Reset the input value to allow re-selecting the same files
+    event.target.value = '';
+    
       console.warn('Place picker event does not contain place data');
       return;
     }
@@ -477,11 +480,33 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       return;
     }
 
-    setUploadedPhotos(prev => [...prev, ...files]);
+    // Filter out files that are too large (>10MB) or invalid formats
+    const validFiles = files.filter(file => {
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        console.warn(`File ${file.name} is too large (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+        return false;
+      }
+      if (!file.type.startsWith('image/')) {
+        console.warn(`File ${file.name} is not an image`);
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length !== files.length) {
+      alert('Some files were skipped. Only image files under 10MB are allowed.');
+    }
+
+    if (validFiles.length > 0) {
+      setUploadedPhotos(prev => [...prev, ...validFiles]);
+    }
   };
 
   const removePhoto = (index: number) => {
-    setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
+    setUploadedPhotos(prev => {
+      const newPhotos = prev.filter((_, i) => i !== index);
+      return newPhotos;
+    });
   };
 
   const uploadPhotosToSupabase = async (inspectionId: string) => {
@@ -491,37 +516,57 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     try {
       for (let i = 0; i < uploadedPhotos.length; i++) {
         const file = uploadedPhotos[i];
+        
+        // Validate file before upload
+        if (!file || file.size === 0) {
+          console.warn(`Skipping invalid file at index ${i}`);
+          continue;
+        }
+        
         const fileExt = file.name.split('.').pop();
         const fileName = `${inspectionId}_${Date.now()}_${i}.${fileExt}`;
 
-        // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('field-visit-images')
-          .upload(fileName, file);
+        try {
+          // Upload to Supabase Storage
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('field-visit-images')
+            .upload(fileName, file);
 
-        if (uploadError) throw uploadError;
+          if (uploadError) {
+            console.error(`Upload error for ${file.name}:`, uploadError);
+            throw uploadError;
+          }
 
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('field-visit-images')
-          .getPublicUrl(fileName);
+          // Get public URL
+          const { data: { publicUrl } } = supabase.storage
+            .from('field-visit-images')
+            .getPublicUrl(fileName);
 
-        // Save photo record to database
-        const { error: dbError } = await supabase
-          .from('fims_inspection_photos')
-          .insert({
-            inspection_id: inspectionId,
-            photo_url: publicUrl,
-            photo_name: file.name,
-            description: `Anganwadi inspection photo ${i + 1}`,
-            photo_order: i + 1
-          });
+          // Save photo record to database
+          const { error: dbError } = await supabase
+            .from('fims_inspection_photos')
+            .insert({
+              inspection_id: inspectionId,
+              photo_url: publicUrl,
+              photo_name: file.name,
+              description: `Anganwadi inspection photo ${i + 1}`,
+              photo_order: i + 1
+            });
 
-        if (dbError) throw dbError;
+          if (dbError) {
+            console.error(`Database error for ${file.name}:`, dbError);
+            throw dbError;
+          }
+        } catch (fileError) {
+          console.error(`Error processing file ${file.name}:`, fileError);
+          // Continue with other files instead of stopping completely
+          continue;
+        }
       }
     } catch (error) {
       console.error('Error uploading photos:', error);
-      throw error;
+      // Don't throw error to prevent form submission from failing
+      alert('Some photos failed to upload. The inspection was saved but please try uploading photos again.');
     } finally {
       setIsUploading(false);
     }
