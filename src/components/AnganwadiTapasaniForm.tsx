@@ -432,6 +432,8 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       }
     );
   };
+
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const files = event.target.files;
       if (!files || files.length === 0) {
@@ -470,7 +472,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       console.error('Error handling file upload:', error);
       event.target.value = '';
     }
-    
+  };
+
+  const handlePlaceSelect = (event: any) => {
+    if (!event.detail) {
       console.warn('Place picker event does not contain place data');
       return;
     }
@@ -480,6 +485,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       return;
     }
     
+    // Handle place selection logic here
+  };
+
+  const handleFileUpload = (files: File[]) => {
     if (uploadedPhotos.length + files.length > 5) {
       alert(t('fims.maxPhotosAllowed'));
       return;
