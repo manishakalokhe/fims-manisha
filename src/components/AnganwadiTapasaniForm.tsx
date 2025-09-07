@@ -148,6 +148,9 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
@@ -433,45 +436,50 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     );
   };
 
-  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const files = event.target.files;
-      if (!files || files.length === 0) {
-        return;
-      }
+  const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
 
-      const fileArray = Array.from(files);
-      
-      // Check total count first
-      if (uploadedPhotos.length + fileArray.length > 5) {
-        alert(t('fims.maxPhotosAllowed'));
-        event.target.value = '';
-        return;
-      }
-
-      // Filter valid files
-      const validFiles = fileArray.filter(file => {
-        if (file.size > 10 * 1024 * 1024) {
-          alert(`File ${file.name} is too large. Maximum size is 10MB.`);
-          return false;
-        }
-        if (!file.type.startsWith('image/')) {
-          alert(`File ${file.name} is not an image file.`);
-          return false;
-        }
-        return true;
-      });
-
-      if (validFiles.length > 0) {
-        setUploadedPhotos(prev => [...prev, ...validFiles]);
-      }
-      
-      // Always reset the input
+    const fileArray = Array.from(files);
+    
+    // Check total limit
+    if (photoFiles.length + fileArray.length > 5) {
+      alert(t('fims.maxPhotosAllowed'));
       event.target.value = '';
-    } catch (error) {
-      console.error('Error handling file upload:', error);
-      event.target.value = '';
+      return;
     }
+
+    // Validate files
+    const validFiles: File[] = [];
+    const newPreviews: string[] = [];
+
+    for (const file of fileArray) {
+      // Check file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name} is too large. Maximum size is 5MB.`);
+        continue;
+      }
+      
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        alert(`${file.name} is not an image file.`);
+        continue;
+      }
+      
+      validFiles.push(file);
+      
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      newPreviews.push(previewUrl);
+    }
+
+    if (validFiles.length > 0) {
+      setPhotoFiles(prev => [...prev, ...validFiles]);
+      setPhotoPreviews(prev => [...prev, ...newPreviews]);
+    }
+
+    // Reset input
+    event.target.value = '';
   };
 
   const handlePlaceSelect = (event: any) => {
@@ -517,72 +525,70 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   };
 
   const removePhoto = (index: number) => {
-    setUploadedPhotos(prev => {
-      const newPhotos = prev.filter((_, i) => i !== index);
-      return newPhotos;
-    });
+    // Revoke the preview URL to free memory
+    URL.revokeObjectURL(photoPreviews[index]);
+    
+    setPhotoFiles(prev => prev.filter((_, i) => i !== index));
+    setPhotoPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
+  // Clean up preview URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      photoPreviews.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, []);
+
   const uploadPhotosToSupabase = async (inspectionId: string) => {
-    if (uploadedPhotos.length === 0) return;
+    if (photoFiles.length === 0) return;
 
     setIsUploading(true);
+    setUploadProgress(0);
+    
     try {
-      for (let i = 0; i < uploadedPhotos.length; i++) {
-        const file = uploadedPhotos[i];
-        
-        // Validate file before upload
-        if (!file || file.size === 0) {
-          console.warn(`Skipping invalid file at index ${i}`);
-          continue;
-        }
-        
+      for (let i = 0; i < photoFiles.length; i++) {
+        const file = photoFiles[i];
         const fileExt = file.name.split('.').pop();
         const fileName = `${inspectionId}_${Date.now()}_${i}.${fileExt}`;
+        
+        // Update progress
+        setUploadProgress(Math.round(((i + 1) / photoFiles.length) * 100));
 
-        try {
-          // Upload to Supabase Storage
-          const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('field-visit-images')
-            .upload(fileName, file);
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('field-visit-images')
+          .upload(fileName, file);
 
-          if (uploadError) {
-            console.error(`Upload error for ${file.name}:`, uploadError);
-            throw uploadError;
-          }
+        if (uploadError) throw uploadError;
 
-          // Get public URL
-          const { data: { publicUrl } } = supabase.storage
-            .from('field-visit-images')
-            .getPublicUrl(fileName);
+        console.log('Photo uploaded successfully:', fileName);
 
-          // Save photo record to database
-          const { error: dbError } = await supabase
-            .from('fims_inspection_photos')
-            .insert({
-              inspection_id: inspectionId,
-              photo_url: publicUrl,
-              photo_name: file.name,
-              description: `Anganwadi inspection photo ${i + 1}`,
-              photo_order: i + 1
-            });
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('field-visit-images')
+          .getPublicUrl(fileName);
 
-          if (dbError) {
-            console.error(`Database error for ${file.name}:`, dbError);
-            throw dbError;
-          }
-        } catch (fileError) {
-          console.error(`Error processing file ${file.name}:`, fileError);
-          // Continue with other files instead of stopping completely
-          continue;
-        }
+        // Save photo record to database
+        const { error: dbError } = await supabase
+          .from('fims_inspection_photos')
+          .insert({
+            inspection_id: inspectionId,
+            photo_url: publicUrl,
+            photo_name: file.name,
+            description: `Anganwadi inspection photo ${i + 1}`,
+            photo_order: i + 1
+          });
+
+        if (dbError) throw dbError;
       }
+      
+      console.log('All photos uploaded successfully');
     } catch (error) {
       console.error('Error uploading photos:', error);
-      // Don't throw error to prevent form submission from failing
-      alert('Some photos failed to upload. The inspection was saved but please try uploading photos again.');
+      throw error;
     } finally {
       setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -678,7 +684,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       }
 
       // Upload photos if any
-      if (uploadedPhotos.length > 0) {
+      if (photoFiles.length > 0) {
         await uploadPhotosToSupabase(inspectionResult.id);
       }
 
@@ -1393,43 +1399,145 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
         </div>
         <div className="p-10">
-          {!isViewMode && (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('fims.selectPhotos')} (Max 5)
-              </label>
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              {t('fims.photoDocumentation')}
+            </h3>
+            
+            {/* Photo Upload Area */}
+            <div className="border-2 border-dashed border-purple-300 rounded-lg p-6 text-center bg-purple-50">
+              <Camera className="h-12 w-12 text-purple-400 mx-auto mb-4" />
+              <h4 className="text-lg font-medium text-gray-900 mb-2">
+                Upload Anganwadi Photos
+              </h4>
+              <p className="text-gray-600 mb-4">
+                Upload photos of the anganwadi center for documentation (Max 5 photos, 5MB each)
+              </p>
+              
               <input
                 type="file"
                 multiple
                 accept="image/*"
                 onChange={handlePhotoUpload}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                disabled={isViewMode || photoFiles.length >= 5}
+                className="hidden"
+                id="photo-upload"
               />
+              
+              {!isViewMode && (
+                <label
+                  htmlFor="photo-upload"
+                  className={`inline-flex items-center px-6 py-3 rounded-lg cursor-pointer transition-colors duration-200 ${
+                    photoFiles.length >= 5 
+                      ? 'bg-gray-400 text-white cursor-not-allowed' 
+                      : 'bg-purple-600 hover:bg-purple-700 text-white'
+                  }`}
+                >
+                  <Camera className="h-5 w-5 mr-2" />
+                  {photoFiles.length >= 5 ? 'Maximum Photos Reached' : t('fims.chooseFiles')}
+                </label>
+              )}
+              
+              <p className="text-sm text-purple-600 mt-3 font-medium">
+                {photoFiles.length}/5 photos selected
+              </p>
             </div>
-          )}
 
-          {uploadedPhotos.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {uploadedPhotos.map((photo, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={URL.createObjectURL(photo)}
-                    alt={`Upload ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
-                  {!isViewMode && (
-                    <button
-                      type="button"
-                      onClick={() => removePhoto(index)}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
-                    >
-                      ×
-                    </button>
-                  )}
+            {/* Photo Previews */}
+            {photoFiles.length > 0 && (
+              <div>
+                <h4 className="text-md font-medium text-gray-900 mb-3">
+                  Selected Photos ({photoFiles.length}/5)
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {photoFiles.map((photo, index) => (
+                    <div key={index} className="relative bg-white rounded-lg shadow-md overflow-hidden">
+                      <img
+                        src={photoPreviews[index]}
+                        alt={`Anganwadi photo ${index + 1}`}
+                        className="w-full h-40 object-cover"
+                      />
+                      <div className="p-3">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {photo.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {(photo.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
+                      {!isViewMode && (
+                        <button
+                          onClick={() => removePhoto(index)}
+                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold shadow-lg"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            )}
+
+            {/* Upload Progress */}
+            {isUploading && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-blue-900">
+                    {t('fims.uploadingPhotos')}
+                  </span>
+                  <span className="text-sm text-blue-700">{uploadProgress}%</span>
+                </div>
+                <div className="w-full bg-blue-200 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${uploadProgress}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs text-blue-600 mt-2">
+                  Please wait while we upload your photos...
+                </p>
+              </div>
+            )}
+
+            {/* Display existing photos when viewing */}
+            {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
+              <div>
+                <h4 className="text-md font-medium text-gray-900 mb-3">
+                  {t('fims.existingPhotos')} ({editingInspection.fims_inspection_photos.length})
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
+                    <div key={photo.id} className="relative bg-white rounded-lg shadow-md overflow-hidden">
+                      <img
+                        src={photo.photo_url}
+                        alt={photo.description || `Anganwadi photo ${index + 1}`}
+                        className="w-full h-40 object-cover"
+                      />
+                      <div className="p-3">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {photo.photo_name || `Photo ${index + 1}`}
+                        </p>
+                        {photo.description && (
+                          <p className="text-xs text-gray-500 truncate">
+                            {photo.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* No photos message for view mode */}
+            {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
+              <div className="text-center py-8 text-gray-500">
+                <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+                <p>{t('fims.noPhotosFound')}</p>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
