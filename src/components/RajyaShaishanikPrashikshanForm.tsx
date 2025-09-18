@@ -240,13 +240,32 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
 
     setIsLoading(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         setInspectionData(prev => ({
           ...prev,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           location_accuracy: position.coords.accuracy
         }));
+        
+        // Get location name using reverse geocoding
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`
+          );
+          const data = await response.json();
+          
+          if (data.results && data.results.length > 0) {
+            const locationName = data.results[0].formatted_address;
+            setInspectionData(prev => ({
+              ...prev,
+              address: locationName
+            }));
+          }
+        } catch (error) {
+          console.error('Error getting location name:', error);
+        }
+        
         setIsLoading(false);
       },
       (error) => {
