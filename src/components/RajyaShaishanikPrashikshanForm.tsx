@@ -311,6 +311,12 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         planned_date: inspectionData.planned_date || null
       };
 
+      // Convert empty date strings to null for database compatibility
+      const sanitizedInspectionData = {
+        ...inspectionData,
+        planned_date: inspectionData.planned_date || null
+      };
+
       let inspectionResult;
 
       if (editingInspection && editingInspection.id) {
@@ -335,7 +341,7 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         if (updateError) throw updateError;
         inspectionResult = updateResult;
       } else {
-        // Create new inspection
+        // Upsert school inspection form record with proper UUID handling
         const inspectionNumber = generateInspectionNumber();
 
         const { data: createResult, error: createError } = await supabase
@@ -360,7 +366,7 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         if (createError) throw createError;
         inspectionResult = createResult;
       }
-
+        // Create school inspection form record with proper UUID handling
       // Upload photos if any
       if (uploadedPhotos.length > 0) {
         await uploadPhotosToSupabase(inspectionResult.id);
