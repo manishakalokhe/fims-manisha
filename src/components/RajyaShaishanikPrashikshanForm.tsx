@@ -310,7 +310,6 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         ...inspectionData,
         planned_date: inspectionData.planned_date || null,
         category_id: inspectionData.category_id || schoolCategory?.id || null
-        category_id: inspectionData.category_id || null
       };
 
       // Validate required UUID fields
@@ -350,6 +349,7 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
           ...inspectionData,
           planned_date: inspectionData.planned_date || null,
           category_id: inspectionData.category_id || schoolCategory?.id || null
+        };
 
         // Validate required UUID fields
         if (!sanitizedInspectionData.category_id || sanitizedInspectionData.category_id === '') {
@@ -378,7 +378,7 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         if (createError) throw createError;
         inspectionResult = createResult;
       }
-        // Create school inspection form record with proper UUID handling
+
       // Upload photos if any
       if (uploadedPhotos.length > 0) {
         await uploadPhotosToSupabase(inspectionResult.id);
