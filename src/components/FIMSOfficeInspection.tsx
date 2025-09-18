@@ -618,7 +618,6 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
           />
         </div>
       </div>
-      </div>
     </div>
   );
 
