@@ -308,15 +308,15 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
       let inspectionResult;
 
       if (editingInspection && editingInspection.id) {
-        // Convert empty date strings to null for database compatibility
-        const sanitizedInspectionData = {
+        // Convert empty strings to null for database compatibility
+        const updateInspectionData = {
           ...inspectionData,
           planned_date: inspectionData.planned_date || null,
           category_id: inspectionData.category_id || schoolCategory?.id || null
         };
 
         // Validate required UUID fields
-        if (!sanitizedInspectionData.category_id) {
+        if (!updateInspectionData.category_id) {
           throw new Error('Category is required. Please select a valid inspection category.');
         }
 
@@ -324,12 +324,12 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         const { data: updateResult, error: updateError } = await supabase
           .from('fims_inspections')
           .update({
-            location_name: sanitizedInspectionData.location_name,
-            latitude: sanitizedInspectionData.latitude,
-            longitude: sanitizedInspectionData.longitude,
-            location_accuracy: sanitizedInspectionData.location_accuracy,
-            address: sanitizedInspectionData.address,
-            planned_date: sanitizedInspectionData.planned_date,
+            location_name: updateInspectionData.location_name,
+            latitude: updateInspectionData.latitude,
+            longitude: updateInspectionData.longitude,
+            location_accuracy: updateInspectionData.location_accuracy,
+            address: updateInspectionData.address,
+            planned_date: updateInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
             form_data: schoolFormData
@@ -341,45 +341,33 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         if (updateError) throw updateError;
         inspectionResult = updateResult;
       } else {
-        // Convert empty date strings to null for database compatibility
-        const sanitizedInspectionData = {
+        // Convert empty strings to null for database compatibility
+        const createInspectionData = {
           ...inspectionData,
           planned_date: inspectionData.planned_date || null,
           category_id: inspectionData.category_id || schoolCategory?.id || null
         };
 
         // Validate required UUID fields
-        if (!sanitizedInspectionData.category_id) {
+        if (!createInspectionData.category_id) {
           throw new Error('Category is required. Please select a valid inspection category.');
         }
 
         // Upsert school inspection form record with inspection_id
         const inspectionNumber = generateInspectionNumber();
         
-        // Convert empty strings to null for database compatibility
-        const sanitizedInspectionData = {
-          ...inspectionData,
-          planned_date: inspectionData.planned_date || null,
-          category_id: inspectionData.category_id || schoolCategory?.id || null
-        };
-
-        // Validate required UUID fields
-        if (!sanitizedInspectionData.category_id || sanitizedInspectionData.category_id === '') {
-          throw new Error('Category is required. Please select a valid inspection category.');
-        }
-
         const { data: createResult, error: createError } = await supabase
           .from('fims_inspections')
           .insert({
             inspection_number: inspectionNumber,
-            category_id: sanitizedInspectionData.category_id,
+            category_id: createInspectionData.category_id,
             inspector_id: user.id,
-            location_name: sanitizedInspectionData.location_name,
-            latitude: sanitizedInspectionData.latitude,
-            longitude: sanitizedInspectionData.longitude,
-            location_accuracy: sanitizedInspectionData.location_accuracy,
-            address: sanitizedInspectionData.address,
-            planned_date: sanitizedInspectionData.planned_date,
+            location_name: createInspectionData.location_name,
+            latitude: createInspectionData.latitude,
+            longitude: createInspectionData.longitude,
+            location_accuracy: createInspectionData.location_accuracy,
+            address: createInspectionData.address,
+            planned_date: createInspectionData.planned_date,
             inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
             form_data: schoolFormData
