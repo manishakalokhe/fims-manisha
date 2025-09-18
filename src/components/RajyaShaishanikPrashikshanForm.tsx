@@ -305,21 +305,21 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
     try {
       setIsLoading(true);
 
-      // Convert empty strings to null for database compatibility
-      const sanitizedInspectionData = {
-        ...inspectionData,
-        planned_date: inspectionData.planned_date || null,
-        category_id: inspectionData.category_id || schoolCategory?.id || null
-      };
-
-      // Validate required UUID fields
-      if (!sanitizedInspectionData.category_id || sanitizedInspectionData.category_id === '') {
-        throw new Error('Category is required. Please select a valid inspection category.');
-      }
-
       let inspectionResult;
 
       if (editingInspection && editingInspection.id) {
+        // Convert empty date strings to null for database compatibility
+        const sanitizedInspectionData = {
+          ...inspectionData,
+          planned_date: inspectionData.planned_date || null,
+          category_id: inspectionData.category_id || schoolCategory?.id || null
+        };
+
+        // Validate required UUID fields
+        if (!sanitizedInspectionData.category_id) {
+          throw new Error('Category is required. Please select a valid inspection category.');
+        }
+
         // Update existing inspection
         const { data: updateResult, error: updateError } = await supabase
           .from('fims_inspections')
@@ -341,7 +341,19 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         if (updateError) throw updateError;
         inspectionResult = updateResult;
       } else {
-        // Create new inspection
+        // Convert empty date strings to null for database compatibility
+        const sanitizedInspectionData = {
+          ...inspectionData,
+          planned_date: inspectionData.planned_date || null,
+          category_id: inspectionData.category_id || schoolCategory?.id || null
+        };
+
+        // Validate required UUID fields
+        if (!sanitizedInspectionData.category_id) {
+          throw new Error('Category is required. Please select a valid inspection category.');
+        }
+
+        // Upsert school inspection form record with inspection_id
         const inspectionNumber = generateInspectionNumber();
         
         // Convert empty strings to null for database compatibility
@@ -378,7 +390,7 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         if (createError) throw createError;
         inspectionResult = createResult;
       }
-
+        // Create school inspection form record with inspection_id
       // Upload photos if any
       if (uploadedPhotos.length > 0) {
         await uploadPhotosToSupabase(inspectionResult.id);
