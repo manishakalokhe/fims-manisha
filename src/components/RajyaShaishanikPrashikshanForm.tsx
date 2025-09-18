@@ -469,22 +469,6 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         await uploadPhotosToSupabase(inspectionResult.id);
       }
 
-      const isUpdate = editingInspection && editingInspection.id;
-      const message = isDraft 
-        ? (isUpdate ? t('fims.inspectionUpdatedAsDraft') : t('fims.inspectionSavedAsDraft'))
-        : (isUpdate ? t('fims.inspectionUpdatedSuccessfully') : t('fims.inspectionSubmittedSuccessfully'));
-      
-      alert(message);
-      onInspectionCreated();
-      onBack();
-
-    } catch (error) {
-      console.error('Error saving inspection:', error);
-      alert('Error saving inspection: ' + error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
       if (editingInspection && editingInspection.id) {
         // Convert empty strings to null for database compatibility
         const updateInspectionData = {
