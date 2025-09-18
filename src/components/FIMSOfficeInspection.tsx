@@ -543,75 +543,81 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
 
   const renderLocationDetails = () => (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {t('fims.locationDetails')}
-      </h3>
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-lg">
+        <h3 className="text-lg font-semibold flex items-center">
+          <MapPin className="h-5 w-5 mr-2" />
+          स्थान माहिती (Location Information)
+        </h3>
+      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="md:col-span-2">
+      <div className="bg-white p-6 rounded-b-lg border border-gray-200 space-y-6">
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('fims.locationName')} *
+            स्थानाचे नाव *
           </label>
           <input
             type="text"
             value={inspectionData.location_name}
             onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder={t('fims.enterLocationName')}
+            placeholder="स्थानाचे नाव प्रविष्ट करा"
             required
           />
         </div>
 
-        <div className="md:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              नियोजित तारीख
+            </label>
+            <input
+              type="date"
+              value={inspectionData.planned_date}
+              onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              GPS Location
+            </label>
+            <button
+              type="button"
+              onClick={getCurrentLocation}
+              disabled={isLoading}
+              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+            >
+              <MapPin className="h-4 w-4" />
+              <span>{isLoading ? 'स्थान मिळवत आहे...' : 'सध्याचे स्थान मिळवा'}</span>
+            </button>
+          </div>
+        </div>
+
+        {inspectionData.latitude && inspectionData.longitude && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <p className="text-sm text-green-800 font-medium mb-2">स्थान कॅप्चर केले</p>
+            <div className="text-xs text-green-600 space-y-1">
+              <p>अक्षांश: {inspectionData.latitude.toFixed(6)}</p>
+              <p>रेखांश: {inspectionData.longitude.toFixed(6)}</p>
+              <p>अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}</p>
+            </div>
+          </div>
+        )}
+
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('fims.address')}
+            शोधलेले स्थान (Location Detected)
           </label>
           <textarea
             value={inspectionData.address}
             onChange={(e) => setInspectionData(prev => ({...prev, address: e.target.value}))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             rows={3}
-            placeholder={t('fims.enterFullAddress')}
+            placeholder="संपूर्ण पत्ता प्रविष्ट करा"
           />
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('fims.plannedDate')}
-          </label>
-          <input
-            type="date"
-            value={inspectionData.planned_date}
-            onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            GPS Location
-          </label>
-          <button
-            type="button"
-            onClick={getCurrentLocation}
-            disabled={isLoading}
-            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-          >
-            <MapPin className="h-4 w-4" />
-            <span>{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
-          </button>
-          
-          {inspectionData.latitude && inspectionData.longitude && (
-            <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
-              <p className="text-xs text-green-600">
-                {t('fims.latitude')}: {inspectionData.latitude.toFixed(6)}<br />
-                {t('fims.longitude')}: {inspectionData.longitude.toFixed(6)}<br />
-                {t('fims.accuracy')}: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
-              </p>
-            </div>
-          )}
-        </div>
+      </div>
       </div>
     </div>
   );
