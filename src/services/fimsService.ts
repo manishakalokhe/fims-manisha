@@ -42,6 +42,7 @@ export interface Inspection {
   }>;
   fims_anganwadi_forms?: any[];
   fims_office_inspection_forms?: any[];
+  fims_school_inspection_forms?: any[];
 }
 
 export const getInspections = async (userId?: string): Promise<Inspection[]> => {
@@ -70,7 +71,8 @@ export const getInspections = async (userId?: string): Promise<Inspection[]> => 
           photo_order
         ),
         fims_anganwadi_forms (*),
-        fims_office_inspection_forms (*)
+        fims_office_inspection_forms (*),
+        fims_school_inspection_forms (*)
       `)
       .order('created_at', { ascending: false });
 
@@ -115,7 +117,10 @@ export const createInspection = async (inspectionData: Partial<Inspection>): Pro
           photo_name,
           description,
           photo_order
-        )
+        ),
+        fims_anganwadi_forms (*),
+        fims_office_inspection_forms (*),
+        fims_school_inspection_forms (*)
       `)
       .single();
 
@@ -154,7 +159,10 @@ export const updateInspection = async (id: string, updates: Partial<Inspection>)
           photo_name,
           description,
           photo_order
-        )
+        ),
+        fims_anganwadi_forms (*),
+        fims_office_inspection_forms (*),
+        fims_school_inspection_forms (*)
       `)
       .single();
 
@@ -194,6 +202,17 @@ export const deleteInspection = async (id: string): Promise<void> => {
 
     if (officeError) {
       console.error('Error deleting office forms:', officeError);
+      // Continue with deletion even if this fails
+    }
+
+    // Delete related records from fims_school_inspection_forms
+    const { error: schoolError } = await supabase
+      .from('fims_school_inspection_forms')
+      .delete()
+      .eq('inspection_id', id);
+
+    if (schoolError) {
+      console.error('Error deleting school forms:', schoolError);
       // Continue with deletion even if this fails
     }
 
@@ -277,7 +296,10 @@ export const reassignInspection = async (id: string, newInspectorId: string): Pr
           photo_name,
           description,
           photo_order
-        )
+        ),
+        fims_anganwadi_forms (*),
+        fims_office_inspection_forms (*),
+        fims_school_inspection_forms (*)
       `)
       .single();
 
