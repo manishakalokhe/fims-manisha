@@ -308,6 +308,184 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
       let inspectionResult;
 
       if (editingInspection && editingInspection.id) {
+        // Update existing inspection
+        const updateInspectionData = {
+          ...inspectionData,
+          planned_date: inspectionData.planned_date || null
+        };
+
+        const { data: updateResult, error: updateError } = await supabase
+          .from('fims_inspections')
+          .update({
+            location_name: updateInspectionData.location_name,
+            latitude: updateInspectionData.latitude,
+            longitude: updateInspectionData.longitude,
+            location_accuracy: updateInspectionData.location_accuracy,
+            address: updateInspectionData.address,
+            planned_date: updateInspectionData.planned_date,
+            inspection_date: new Date().toISOString(),
+            status: isDraft ? 'draft' : 'submitted',
+            form_data: schoolFormData
+          })
+          .eq('id', editingInspection.id)
+          .select()
+          .single();
+
+        if (updateError) throw updateError;
+        inspectionResult = updateResult;
+
+        // Upsert school inspection form record
+        const { error: formError } = await supabase
+          .from('fims_school_inspection_forms')
+          .upsert({
+            inspection_id: editingInspection.id,
+            visit_date: schoolFormData.visit_date,
+            school_name: schoolFormData.school_name,
+            school_address: schoolFormData.school_address,
+            principal_name: schoolFormData.principal_name,
+            principal_mobile: schoolFormData.principal_mobile,
+            udise_number: schoolFormData.udise_number,
+            center: schoolFormData.center,
+            taluka: schoolFormData.taluka,
+            district: schoolFormData.district,
+            management_type: schoolFormData.management_type,
+            school_achievement_self: schoolFormData.school_achievement_self,
+            school_achievement_external: schoolFormData.school_achievement_external,
+            sanctioned_posts: schoolFormData.sanctioned_posts,
+            working_posts: schoolFormData.working_posts,
+            present_teachers: schoolFormData.present_teachers,
+            class_enrollment_data: schoolFormData.class_enrollment_data,
+            math_teachers_count: schoolFormData.math_teachers_count,
+            khan_registered_teachers: schoolFormData.khan_registered_teachers,
+            khan_registered_students: schoolFormData.khan_registered_students,
+            khan_active_students: schoolFormData.khan_active_students,
+            khan_usage_method: schoolFormData.khan_usage_method,
+            sqdp_prepared: schoolFormData.sqdp_prepared,
+            sqdp_objectives_achieved: schoolFormData.sqdp_objectives_achieved,
+            nipun_bharat_verification: schoolFormData.nipun_bharat_verification,
+            learning_outcomes_assessment: schoolFormData.learning_outcomes_assessment,
+            learning_outcomes_data: schoolFormData.learning_outcomes_data,
+            officer_feedback: schoolFormData.officer_feedback,
+            innovative_initiatives: schoolFormData.innovative_initiatives,
+            suggested_changes: schoolFormData.suggested_changes,
+            srujanrang_articles: schoolFormData.srujanrang_articles,
+            future_articles: schoolFormData.future_articles,
+            ngo_involvement: schoolFormData.ngo_involvement,
+            materials_usage_data: schoolFormData.materials_usage_data,
+            inspector_name: schoolFormData.inspector_name,
+            inspector_designation: schoolFormData.inspector_designation,
+            visit_date_inspector: schoolFormData.visit_date_inspector
+          });
+
+        if (formError) throw formError;
+      } else {
+        // Create new inspection
+        const createInspectionData = {
+          ...inspectionData,
+          planned_date: inspectionData.planned_date || null
+        };
+
+        // Validate category_id
+        if (!createInspectionData.category_id && schoolCategory?.id) {
+          createInspectionData.category_id = schoolCategory.id;
+        }
+
+        if (!createInspectionData.category_id) {
+          throw new Error('Category not found. Please ensure the rajya_shaishanik category exists in the database.');
+        }
+
+        const inspectionNumber = generateInspectionNumber();
+
+        const { data: createResult, error: createError } = await supabase
+          .from('fims_inspections')
+          .insert({
+            inspection_number: inspectionNumber,
+            category_id: createInspectionData.category_id,
+            inspector_id: user.id,
+            location_name: createInspectionData.location_name,
+            latitude: createInspectionData.latitude,
+            longitude: createInspectionData.longitude,
+            location_accuracy: createInspectionData.location_accuracy,
+            address: createInspectionData.address,
+            planned_date: createInspectionData.planned_date,
+            inspection_date: new Date().toISOString(),
+            status: isDraft ? 'draft' : 'submitted',
+            form_data: schoolFormData
+          })
+          .select()
+          .single();
+
+        if (createError) throw createError;
+        inspectionResult = createResult;
+
+        // Create school inspection form record
+        const { error: formError } = await supabase
+          .from('fims_school_inspection_forms')
+          .insert({
+            inspection_id: inspectionResult.id,
+            visit_date: schoolFormData.visit_date,
+            school_name: schoolFormData.school_name,
+            school_address: schoolFormData.school_address,
+            principal_name: schoolFormData.principal_name,
+            principal_mobile: schoolFormData.principal_mobile,
+            udise_number: schoolFormData.udise_number,
+            center: schoolFormData.center,
+            taluka: schoolFormData.taluka,
+            district: schoolFormData.district,
+            management_type: schoolFormData.management_type,
+            school_achievement_self: schoolFormData.school_achievement_self,
+            school_achievement_external: schoolFormData.school_achievement_external,
+            sanctioned_posts: schoolFormData.sanctioned_posts,
+            working_posts: schoolFormData.working_posts,
+            present_teachers: schoolFormData.present_teachers,
+            class_enrollment_data: schoolFormData.class_enrollment_data,
+            math_teachers_count: schoolFormData.math_teachers_count,
+            khan_registered_teachers: schoolFormData.khan_registered_teachers,
+            khan_registered_students: schoolFormData.khan_registered_students,
+            khan_active_students: schoolFormData.khan_active_students,
+            khan_usage_method: schoolFormData.khan_usage_method,
+            sqdp_prepared: schoolFormData.sqdp_prepared,
+            sqdp_objectives_achieved: schoolFormData.sqdp_objectives_achieved,
+            nipun_bharat_verification: schoolFormData.nipun_bharat_verification,
+            learning_outcomes_assessment: schoolFormData.learning_outcomes_assessment,
+            learning_outcomes_data: schoolFormData.learning_outcomes_data,
+            officer_feedback: schoolFormData.officer_feedback,
+            innovative_initiatives: schoolFormData.innovative_initiatives,
+            suggested_changes: schoolFormData.suggested_changes,
+            srujanrang_articles: schoolFormData.srujanrang_articles,
+            future_articles: schoolFormData.future_articles,
+            ngo_involvement: schoolFormData.ngo_involvement,
+            materials_usage_data: schoolFormData.materials_usage_data,
+            inspector_name: schoolFormData.inspector_name,
+            inspector_designation: schoolFormData.inspector_designation,
+            visit_date_inspector: schoolFormData.visit_date_inspector
+          });
+
+        if (formError) throw formError;
+      }
+
+      // Upload photos if any
+      if (uploadedPhotos.length > 0) {
+        await uploadPhotosToSupabase(inspectionResult.id);
+      }
+
+      const isUpdate = editingInspection && editingInspection.id;
+      const message = isDraft 
+        ? (isUpdate ? t('fims.inspectionUpdatedAsDraft') : t('fims.inspectionSavedAsDraft'))
+        : (isUpdate ? t('fims.inspectionUpdatedSuccessfully') : t('fims.inspectionSubmittedSuccessfully'));
+      
+      alert(message);
+      onInspectionCreated();
+      onBack();
+
+    } catch (error) {
+      console.error('Error saving inspection:', error);
+      alert('Error saving inspection: ' + error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+      if (editingInspection && editingInspection.id) {
         // Convert empty strings to null for database compatibility
         const updateInspectionData = {
           ...inspectionData,

@@ -73,7 +73,6 @@ export const getInspections = async (userId?: string): Promise<Inspection[]> => 
         fims_anganwadi_forms (*),
         fims_office_inspection_forms (*),
         fims_school_inspection_forms (*),
-        fims_rajya_shaishanik_forms (*)
       `)
       .order('created_at', { ascending: false });
 
