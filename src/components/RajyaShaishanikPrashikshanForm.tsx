@@ -788,6 +788,7 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
               value={inspectionData.planned_date}
               onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              disabled={isViewMode}
             />
           </div>
 
@@ -798,7 +799,7 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
             <button
               type="button"
               onClick={getCurrentLocation}
-              disabled={isLoading}
+              disabled={isLoading || isViewMode}
               className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
             >
               <MapPin className="h-4 w-4" />
@@ -818,7 +819,6 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
           </div>
         )}
 
-        <div>
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             शोधलेले स्थान (Location Detected)
@@ -832,10 +832,6 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
             disabled={isViewMode}
           />
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-      </div>
       </div>
     </div>
   );
