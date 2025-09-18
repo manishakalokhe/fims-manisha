@@ -72,7 +72,8 @@ export const getInspections = async (userId?: string): Promise<Inspection[]> => 
         ),
         fims_anganwadi_forms (*),
         fims_office_inspection_forms (*),
-        fims_school_inspection_forms (*)
+        fims_school_inspection_forms (*),
+        fims_rajya_shaishanik_forms (*)
       `)
       .order('created_at', { ascending: false });
 
@@ -120,7 +121,8 @@ export const createInspection = async (inspectionData: Partial<Inspection>): Pro
         ),
         fims_anganwadi_forms (*),
         fims_office_inspection_forms (*),
-        fims_school_inspection_forms (*)
+        fims_school_inspection_forms (*),
+        fims_rajya_shaishanik_forms (*)
       `)
       .single();
 
@@ -162,7 +164,8 @@ export const updateInspection = async (id: string, updates: Partial<Inspection>)
         ),
         fims_anganwadi_forms (*),
         fims_office_inspection_forms (*),
-        fims_school_inspection_forms (*)
+        fims_school_inspection_forms (*),
+        fims_rajya_shaishanik_forms (*)
       `)
       .single();
 
@@ -213,6 +216,17 @@ export const deleteInspection = async (id: string): Promise<void> => {
 
     if (schoolError) {
       console.error('Error deleting school forms:', schoolError);
+      // Continue with deletion even if this fails
+    }
+
+    // Delete related records from fims_rajya_shaishanik_forms
+    const { error: rajyaError } = await supabase
+      .from('fims_rajya_shaishanik_forms')
+      .delete()
+      .eq('inspection_id', id);
+
+    if (rajyaError) {
+      console.error('Error deleting rajya shaishanik forms:', rajyaError);
       // Continue with deletion even if this fails
     }
 
@@ -299,7 +313,8 @@ export const reassignInspection = async (id: string, newInspectorId: string): Pr
         ),
         fims_anganwadi_forms (*),
         fims_office_inspection_forms (*),
-        fims_school_inspection_forms (*)
+        fims_school_inspection_forms (*),
+        fims_rajya_shaishanik_forms (*)
       `)
       .single();
 
