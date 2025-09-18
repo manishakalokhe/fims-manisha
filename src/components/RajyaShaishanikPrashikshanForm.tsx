@@ -305,22 +305,15 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
     try {
       setIsLoading(true);
 
-      // Convert empty date strings to null for database compatibility
-      const sanitizedInspectionData = {
-        ...inspectionData,
-        planned_date: inspectionData.planned_date || null
-      };
-
-      // Convert empty date strings to null for database compatibility
-      const sanitizedInspectionData = {
-        ...inspectionData,
-        planned_date: inspectionData.planned_date || null
-      };
-
       let inspectionResult;
 
       if (editingInspection && editingInspection.id) {
         // Update existing inspection
+        const sanitizedInspectionData = {
+          ...inspectionData,
+          planned_date: inspectionData.planned_date || null
+        };
+
         const { data: updateResult, error: updateError } = await supabase
           .from('fims_inspections')
           .update({
@@ -341,8 +334,12 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         if (updateError) throw updateError;
         inspectionResult = updateResult;
       } else {
-        // Upsert school inspection form record with proper UUID handling
+        // Create new inspection
         const inspectionNumber = generateInspectionNumber();
+        const sanitizedInspectionData = {
+          ...inspectionData,
+          planned_date: inspectionData.planned_date || null
+        };
 
         const { data: createResult, error: createError } = await supabase
           .from('fims_inspections')
