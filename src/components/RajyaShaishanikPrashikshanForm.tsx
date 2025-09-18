@@ -305,15 +305,22 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
     try {
       setIsLoading(true);
 
+      // Convert empty strings to null for database compatibility
+      const sanitizedInspectionData = {
+        ...inspectionData,
+        planned_date: inspectionData.planned_date || null,
+        category_id: inspectionData.category_id || null
+      };
+
+      // Validate required UUID fields
+      if (!sanitizedInspectionData.category_id) {
+        throw new Error('Category is required. Please select a valid inspection category.');
+      }
+
       let inspectionResult;
 
       if (editingInspection && editingInspection.id) {
         // Update existing inspection
-        const sanitizedInspectionData = {
-          ...inspectionData,
-          planned_date: inspectionData.planned_date || null
-        };
-
         const { data: updateResult, error: updateError } = await supabase
           .from('fims_inspections')
           .update({
@@ -336,10 +343,18 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
       } else {
         // Create new inspection
         const inspectionNumber = generateInspectionNumber();
+        
+        // Convert empty strings to null for database compatibility
         const sanitizedInspectionData = {
           ...inspectionData,
-          planned_date: inspectionData.planned_date || null
+          planned_date: inspectionData.planned_date || null,
+          category_id: inspectionData.category_id || null
         };
+
+        // Validate required UUID fields
+        if (!sanitizedInspectionData.category_id) {
+          throw new Error('Category is required. Please select a valid inspection category.');
+        }
 
         const { data: createResult, error: createError } = await supabase
           .from('fims_inspections')
