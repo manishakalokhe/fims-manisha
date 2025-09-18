@@ -6,11 +6,26 @@ import {
   FileText,
   Camera,
   MapPin,
-  Building2
+  Building2,
+  School,
+  Users,
+  BookOpen,
+  GraduationCap,
+  Building,
+  UserCheck,
+  ClipboardList,
+  Award,
+  Target,
+  CheckSquare,
+  FileCheck,
+  UserPlus,
+  Settings,
+  Activity
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { AnganwadiTapasaniForm } from './AnganwadiTapasaniForm';
 import { FIMSOfficeInspection } from './FIMSOfficeInspection';
+import { RajyaShaishanikPrashikshanForm } from './RajyaShaishanikPrashikshanForm';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface FIMSNewInspectionProps {
@@ -94,6 +109,18 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       );
     }
 
+    if (selectedInspectionType === 'rajya_shaishanik') {
+      return (
+        <RajyaShaishanikPrashikshanForm
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
+
     return null;
   };
 
@@ -127,8 +154,8 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
           </p>
         </div>
 
-        {/* Inspection Type Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        {/* Inspection Type Selection - Updated to support more forms */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Anganwadi Inspection */}
           <div 
             onClick={() => handleInspectionTypeSelect('anganwadi')}
@@ -165,7 +192,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             </div>
           </div>
 
-          {/* Document Inspection */}
+          {/* Office Inspection */}
           <div 
             onClick={() => handleInspectionTypeSelect('office')}
             className="bg-gradient-to-br from-blue-100 via-blue-50 to-cyan-50 rounded-lg shadow-lg border-2 border-blue-200 p-4 md:p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer hover:border-blue-400 touch-manipulation hover:from-blue-200 hover:via-blue-100 hover:to-cyan-100"
@@ -200,6 +227,94 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Rajya Shaishanik Prashikshan Form */}
+          <div 
+            onClick={() => handleInspectionTypeSelect('rajya_shaishanik')}
+            className="bg-gradient-to-br from-green-100 via-green-50 to-emerald-50 rounded-lg shadow-lg border-2 border-green-200 p-4 md:p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer hover:border-green-400 touch-manipulation hover:from-green-200 hover:via-green-100 hover:to-emerald-100"
+          >
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-xl shadow-lg">
+                <School className="h-6 w-6 md:h-8 md:w-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg md:text-xl font-semibold text-gray-900">
+                  आदर्श शाळा भेट प्रपत्र
+                </h3>
+                <p className="text-sm md:text-base text-green-700 font-medium">
+                  राज्य शैक्षणिक संशोधन व प्रशिक्षण
+                </p>
+              </div>
+            </div>
+            
+            <div className="space-y-2 text-sm text-green-800">
+              <p>• शाळेची माहिती आणि पटसंख्या</p>
+              <p>• Khan Academy पोर्टल वापर</p>
+              <p>• SQDP आणि निपुण भारत लक्ष्य</p>
+              <p>• शैक्षणिक गुणवत्ता मूल्यांकन</p>
+            </div>
+            
+            <div className="mt-4 flex items-center justify-between">
+              <span className="text-sm font-bold text-green-700 bg-white/50 px-3 py-1 rounded-full">
+                तपासणी सुरू करण्यासाठी निवडा
+              </span>
+              <div className="bg-gradient-to-r from-green-500 to-green-600 p-2 rounded-full shadow-lg">
+                <Plus className="h-5 w-5 text-white" />
+              </div>
+            </div>
+          </div>
+
+          {/* Placeholder cards for the remaining 12 forms */}
+          {[
+            { key: 'form_4', title: 'Form 4 Title', subtitle: 'Form 4 Description', color: 'orange' },
+            { key: 'form_5', title: 'Form 5 Title', subtitle: 'Form 5 Description', color: 'indigo' },
+            { key: 'form_6', title: 'Form 6 Title', subtitle: 'Form 6 Description', color: 'pink' },
+            { key: 'form_7', title: 'Form 7 Title', subtitle: 'Form 7 Description', color: 'teal' },
+            { key: 'form_8', title: 'Form 8 Title', subtitle: 'Form 8 Description', color: 'red' },
+            { key: 'form_9', title: 'Form 9 Title', subtitle: 'Form 9 Description', color: 'yellow' },
+            { key: 'form_10', title: 'Form 10 Title', subtitle: 'Form 10 Description', color: 'cyan' },
+            { key: 'form_11', title: 'Form 11 Title', subtitle: 'Form 11 Description', color: 'violet' },
+            { key: 'form_12', title: 'Form 12 Title', subtitle: 'Form 12 Description', color: 'lime' },
+            { key: 'form_13', title: 'Form 13 Title', subtitle: 'Form 13 Description', color: 'amber' },
+            { key: 'form_14', title: 'Form 14 Title', subtitle: 'Form 14 Description', color: 'emerald' },
+            { key: 'form_15', title: 'Form 15 Title', subtitle: 'Form 15 Description', color: 'rose' }
+          ].map((form, index) => (
+            <div 
+              key={form.key}
+              onClick={() => alert(`${form.title} - Coming Soon!`)}
+              className={`bg-gradient-to-br from-${form.color}-100 via-${form.color}-50 to-${form.color}-50 rounded-lg shadow-lg border-2 border-${form.color}-200 p-4 md:p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer hover:border-${form.color}-400 touch-manipulation opacity-75`}
+            >
+              <div className="flex items-center space-x-4 mb-4">
+                <div className={`bg-gradient-to-br from-${form.color}-500 to-${form.color}-600 p-3 rounded-xl shadow-lg`}>
+                  <FileCheck className="h-6 w-6 md:h-8 md:w-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-900">
+                    {form.title}
+                  </h3>
+                  <p className={`text-sm md:text-base text-${form.color}-700 font-medium`}>
+                    {form.subtitle}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="space-y-2 text-sm text-gray-600">
+                <p>• Feature 1</p>
+                <p>• Feature 2</p>
+                <p>• Feature 3</p>
+                <p>• Feature 4</p>
+              </div>
+              
+              <div className="mt-4 flex items-center justify-between">
+                <span className={`text-sm font-bold text-${form.color}-700 bg-white/50 px-3 py-1 rounded-full`}>
+                  Coming Soon
+                </span>
+                <div className={`bg-gradient-to-r from-${form.color}-500 to-${form.color}-600 p-2 rounded-full shadow-lg`}>
+                  <Plus className="h-5 w-5 text-white" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Additional Information */}
