@@ -381,8 +381,13 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         // Create rajya shaishanik form record
         const { error: formError } = await supabase
           .from('fims_rajya_shaishanik_forms')
+          .insert({
+            inspection_id: inspectionResult.id
+          });
+
+        if (formError) throw formError;
+
         await uploadPhotosToSupabase(inspectionResult.id);
-      }
 
       // Save Rajya Shaishanik form data to dedicated table
       const rajyaShaishanikFormData = {
