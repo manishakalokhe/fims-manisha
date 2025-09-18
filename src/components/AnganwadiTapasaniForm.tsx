@@ -1218,25 +1218,26 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         </div>
       </section>
 
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-lg">
-        <h3 className="text-lg font-semibold flex items-center">
-          <MapPin className="h-5 w-5 mr-2" />
-          स्थान माहिती (Location Information)
-        </h3>
-      </div>
+      {/* Section 7 - Children's Food Preference */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6">
           <div className="flex items-center text-white">
-      <div className="bg-white p-6 rounded-b-lg border border-gray-200 space-y-6">
-        <div>
+            <MapPin className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">७. मुलांच्या आहाराची आवड:</h3>
           </div>
-            स्थानाचे नाव *
+        </div>
         <div className="p-10">
-          <input
-            type="text"
-            value={anganwadiFormData.children_food_taste_preference}
-            onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_food_taste_preference: e.target.value}))}
-            placeholder="स्थानाचे नाव प्रविष्ट करा"
-            disabled={isViewMode}
-          />
+          <div>
+            <label className="block mb-4 text-lg font-bold text-gray-700">मुलांना आहार आवडतो काय?</label>
+            <input
+              type="text"
+              value={anganwadiFormData.children_food_taste_preference}
+              onChange={(e) => setAnganwadiFormData(prev => ({...prev, children_food_taste_preference: e.target.value}))}
+              className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+              placeholder="मुलांच्या आहाराची आवड नमूद करा"
+              disabled={isViewMode}
+            />
+          </div>
         </div>
       </section>
 
@@ -1561,7 +1562,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
 
         </div>
-    </section>
+      </section>
 
       {/* Submit Buttons */}
       {!isViewMode && (
@@ -1588,58 +1589,46 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
       )}
     </div>
   );
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              नियोजित तारीख
-            </label>
-            <input
-              type="date"
-              value={inspectionData.planned_date}
-              onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              GPS Location
-            </label>
-            <button
-              type="button"
-              onClick={getCurrentLocation}
-              disabled={isLoading}
-              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-            >
-              <MapPin className="h-4 w-4" />
-              <span>{isLoading ? 'स्थान मिळवत आहे...' : 'सध्याचे स्थान मिळवा'}</span>
-            </button>
-          </div>
-        </div>
-
-        {inspectionData.latitude && inspectionData.longitude && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <p className="text-sm text-green-800 font-medium mb-2">स्थान कॅप्चर केले</p>
-            <div className="text-xs text-green-600 space-y-1">
-              <p>अक्षांश: {inspectionData.latitude.toFixed(6)}</p>
-              <p>रेखांश: {inspectionData.longitude.toFixed(6)}</p>
-              <p>अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}</p>
-            </div>
-          </div>
-        )}
-
-        <div>
   return (
-            शोधलेले स्थान (Location Detected)
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <button
-            onClick={onBack}
-            className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
-            placeholder="संपूर्ण पत्ता प्रविष्ट करा"
-            <ArrowLeft className="h-5 w-5" />
+    <div className="container mx-auto px-4 py-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <button
+          onClick={onBack}
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span>{t('common.back')}</span>
+        </button>
       </div>
+
+      {/* Step Indicator */}
+      {renderStepIndicator()}
+
+      {/* Form Content */}
+      {currentStep === 1 && renderBasicDetailsAndLocation()}
+      {currentStep === 2 && renderAnganwadiInspectionForm()}
+      {currentStep === 3 && renderPhotosAndSubmit()}
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-8">
+        <button
+          onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
+          disabled={currentStep === 1}
+          className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-400 transition-colors"
+        >
+          {t('common.previous')}
+        </button>
+        
+        {currentStep < 3 && (
+          <button
+            onClick={() => setCurrentStep(Math.min(3, currentStep + 1))}
+            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            {t('common.next')}
+          </button>
+        )}
       </div>
     </div>
   );
