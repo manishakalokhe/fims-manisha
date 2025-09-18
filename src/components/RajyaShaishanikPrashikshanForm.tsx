@@ -350,7 +350,6 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
           ...inspectionData,
           planned_date: inspectionData.planned_date || null,
           category_id: inspectionData.category_id || schoolCategory?.id || null
-        };
 
         // Validate required UUID fields
         if (!sanitizedInspectionData.category_id || sanitizedInspectionData.category_id === '') {
