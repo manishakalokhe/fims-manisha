@@ -206,7 +206,7 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         category_id: schoolCategory.id
       }));
     }
-  }, [schoolCategory]);
+  }, [schoolCategory, categories]);
 
   // Load existing inspection data when editing
   useEffect(() => {
@@ -309,11 +309,12 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
       const sanitizedInspectionData = {
         ...inspectionData,
         planned_date: inspectionData.planned_date || null,
+        category_id: inspectionData.category_id || schoolCategory?.id || null
         category_id: inspectionData.category_id || null
       };
 
       // Validate required UUID fields
-      if (!sanitizedInspectionData.category_id) {
+      if (!sanitizedInspectionData.category_id || sanitizedInspectionData.category_id === '') {
         throw new Error('Category is required. Please select a valid inspection category.');
       }
 
@@ -348,11 +349,12 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         const sanitizedInspectionData = {
           ...inspectionData,
           planned_date: inspectionData.planned_date || null,
+          category_id: inspectionData.category_id || schoolCategory?.id || null
           category_id: inspectionData.category_id || null
         };
 
         // Validate required UUID fields
-        if (!sanitizedInspectionData.category_id) {
+        if (!sanitizedInspectionData.category_id || sanitizedInspectionData.category_id === '') {
           throw new Error('Category is required. Please select a valid inspection category.');
         }
 
