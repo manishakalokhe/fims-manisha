@@ -378,9 +378,9 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         if (createError) throw createError;
         inspectionResult = createResult;
       }
-        // Create school inspection form record with inspection_id
-      // Upload photos if any
-      if (uploadedPhotos.length > 0) {
+        // Create rajya shaishanik form record
+        const { error: formError } = await supabase
+          .from('fims_rajya_shaishanik_forms')
         await uploadPhotosToSupabase(inspectionResult.id);
       }
 
