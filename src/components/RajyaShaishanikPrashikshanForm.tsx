@@ -384,6 +384,83 @@ export const RajyaShaishanikPrashikshanForm: React.FC<RajyaShaishanikPrashikshan
         await uploadPhotosToSupabase(inspectionResult.id);
       }
 
+      // Save Rajya Shaishanik form data to dedicated table
+      const rajyaShaishanikFormData = {
+        inspection_id: inspectionResult.id,
+        visit_date: schoolFormData.visit_date,
+        school_name: schoolFormData.school_name,
+        school_address: schoolFormData.school_address,
+        principal_name: schoolFormData.principal_name,
+        principal_mobile: schoolFormData.principal_mobile,
+        udise_number: schoolFormData.udise_number,
+        center: schoolFormData.center,
+        taluka: schoolFormData.taluka,
+        district: schoolFormData.district,
+        management_type: schoolFormData.management_type,
+        school_achievement_self: schoolFormData.school_achievement_self,
+        school_achievement_external: schoolFormData.school_achievement_external,
+        sanctioned_posts: schoolFormData.sanctioned_posts,
+        working_posts: schoolFormData.working_posts,
+        present_teachers: schoolFormData.present_teachers,
+        class_1_boys: schoolFormData.class_1_boys,
+        class_1_girls: schoolFormData.class_1_girls,
+        class_2_boys: schoolFormData.class_2_boys,
+        class_2_girls: schoolFormData.class_2_girls,
+        class_3_boys: schoolFormData.class_3_boys,
+        class_3_girls: schoolFormData.class_3_girls,
+        class_4_boys: schoolFormData.class_4_boys,
+        class_4_girls: schoolFormData.class_4_girls,
+        class_5_boys: schoolFormData.class_5_boys,
+        class_5_girls: schoolFormData.class_5_girls,
+        class_6_boys: schoolFormData.class_6_boys,
+        class_6_girls: schoolFormData.class_6_girls,
+        class_7_boys: schoolFormData.class_7_boys,
+        class_7_girls: schoolFormData.class_7_girls,
+        class_8_boys: schoolFormData.class_8_boys,
+        class_8_girls: schoolFormData.class_8_girls,
+        math_teachers_count: schoolFormData.math_teachers_count,
+        khan_registered_teachers: schoolFormData.khan_registered_teachers,
+        khan_registered_students: schoolFormData.khan_registered_students,
+        khan_active_students: schoolFormData.khan_active_students,
+        khan_usage_method: schoolFormData.khan_usage_method,
+        sqdp_prepared: schoolFormData.sqdp_prepared,
+        sqdp_objectives_achieved: schoolFormData.sqdp_objectives_achieved,
+        nipun_bharat_verification: schoolFormData.nipun_bharat_verification,
+        learning_outcomes_data: schoolFormData.learning_outcomes_data,
+        materials_usage_data: schoolFormData.materials_usage_data,
+        officer_feedback: schoolFormData.officer_feedback,
+        innovative_initiatives: schoolFormData.innovative_initiatives,
+        suggested_changes: schoolFormData.suggested_changes,
+        srujanrang_articles: schoolFormData.srujanrang_articles,
+        future_articles: schoolFormData.future_articles,
+        ngo_involvement: schoolFormData.ngo_involvement,
+        inspector_name: schoolFormData.inspector_name,
+        inspector_designation: schoolFormData.inspector_designation,
+        visit_date_inspector: schoolFormData.visit_date_inspector
+      };
+
+      if (editingInspection && editingInspection.id) {
+        // Update existing Rajya Shaishanik form
+        const { error: rajyaFormError } = await supabase
+          .from('fims_rajya_shaishanik_forms')
+          .upsert(rajyaShaishanikFormData);
+
+        if (rajyaFormError) {
+          console.error('Error updating Rajya Shaishanik form:', rajyaFormError);
+          throw rajyaFormError;
+        }
+      } else {
+        // Create new Rajya Shaishanik form
+        const { error: rajyaFormError } = await supabase
+          .from('fims_rajya_shaishanik_forms')
+          .insert(rajyaShaishanikFormData);
+
+        if (rajyaFormError) {
+          console.error('Error creating Rajya Shaishanik form:', rajyaFormError);
+          throw rajyaFormError;
+        }
+      }
+
       const isUpdate = editingInspection && editingInspection.id;
       const message = isDraft 
         ? (isUpdate ? t('fims.inspectionUpdatedAsDraft') : t('fims.inspectionSavedAsDraft'))
