@@ -347,7 +347,7 @@ export const FIMSOfficeInspection: React.FC<FIMSOfficeInspectionProps> = ({
     return `OFF-${year}${month}${day}-${time}`;
   };
 
-  const handleSubmit = async (isDraft: boolean = false) => {debugger
+  const handleSubmit = async (isDraft: boolean = false) => {
     try {
       setIsLoading(true);
 

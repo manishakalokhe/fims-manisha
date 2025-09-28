@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
+import {  
   ArrowLeft,
   Plus,
   FileText,
@@ -381,10 +381,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         const lng = position.coords.longitude;
         const accuracy = position.coords.accuracy;
         
-        // Get location name using Google Maps Geocoding API
+        // Get location name using reverse geocoding
         try {
           const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${import.meta.env.VITE_GOOGLE_API_KEY`
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`
           );
           const data = await response.json();
           
@@ -437,64 +437,15 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     );
   };
 
-  const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('Photo upload triggered');
-    
-    // Reset the input value immediately to prevent stuck state
-    const input = event.target;
-    const files = input.files;
-    
-    // Clear input immediately
-    input.value = '';
-    
-    if (!files || files.length === 0) {
-      console.log('No files selected');
-      return;
-    }
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const files = Array.from(event.target.files || []);
+  if (uploadedPhotos.length + files.length > 5) {
+    alert('Maximum 5 photos allowed');
+    return;
+  }
+  setUploadedPhotos(prev => [...prev, ...files]);
+};
 
-    console.log('Files selected:', files.length);
-
-    try {
-      // Check total limit
-      const totalFiles = photoFiles.length + files.length;
-      if (totalFiles > 5) {
-        alert(`Maximum 5 photos allowed. You can add ${5 - photoFiles.length} more photos.`);
-        return;
-      }
-
-      const newFiles: File[] = [];
-      const newPreviewUrls: string[] = [];
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-          alert(`${file.name} is not a valid image file`);
-          continue;
-        }
-
-        // Validate file size (5MB limit)
-        if (file.size > 5 * 1024 * 1024) {
-          alert(`${file.name} is too large. Maximum size is 5MB`);
-          continue;
-        }
-
-        newFiles.push(file);
-        newPreviewUrls.push(URL.createObjectURL(file));
-      }
-
-      if (newFiles.length > 0) {
-        setPhotoFiles(prev => [...prev, ...newFiles]);
-        setPhotoPreviews(prev => [...prev, ...newPreviewUrls]);
-        console.log('Photos added successfully:', newFiles.length);
-      }
-
-    } catch (error) {
-      console.error('Error handling photo upload:', error);
-      alert('Error processing photos. Please try again.');
-    }
-  };
 
   const handlePlaceSelect = (event: any) => {
     if (!event.detail) {
@@ -538,20 +489,10 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     }
   };
 
-  const removePhoto = async (index: number) => {
-    try {
-      // Revoke the preview URL to free memory
-      URL.revokeObjectURL(photoPreviews[index]);
-      
-      // Remove from both arrays
-      setPhotoFiles(prev => prev.filter((_, i) => i !== index));
-      setPhotoPreviews(prev => prev.filter((_, i) => i !== index));
-      
-      console.log('Photo removed at index:', index);
-    } catch (error) {
-      console.error('Error removing photo:', error);
-    }
-  };
+const removePhoto = (index: number) => {
+  setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
+};
+
 
   // Clean up preview URLs when component unmounts
   useEffect(() => {
@@ -560,71 +501,73 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
     };
   }, []);
 
-  const uploadPhotosToSupabase = async (inspectionId: string) => {
-    if (photoFiles.length === 0) return;
+const uploadPhotosToSupabase = async (inspectionId: string) => {
 
-    console.log('Starting photo upload to Supabase:', photoFiles.length, 'files');
-    setIsUploadingPhotos(true);
-    setUploadProgress(0);
-    
-    try {
-      for (let i = 0; i < photoFiles.length; i++) {
-        const file = photoFiles[i];
-        console.log(`Uploading photo ${i + 1}/${photoFiles.length}:`, file.name);
-        
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${inspectionId}_${Date.now()}_${i}.${fileExt}`;
+  if (uploadedPhotos.length === 0) return;
+ 
+  setIsUploading(true);
 
-        // Update progress
-        setUploadProgress(Math.round(((i + 0.5) / photoFiles.length) * 100));
+  try {
 
-        // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('field-visit-images')
-          .upload(fileName, file);
+    for (let i = 0; i < uploadedPhotos.length; i++) {
 
-        if (uploadError) {
-          console.error('Upload error for file:', file.name, uploadError);
-          throw uploadError;
-        }
+      const file = uploadedPhotos[i];
 
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('field-visit-images')
-          .getPublicUrl(fileName);
+      const fileExt = file.name.split('.').pop();
 
-        console.log('File uploaded successfully:', publicUrl);
+      const fileName = `anganwadi_${inspectionId}_${Date.now()}_${i}.${fileExt}`;
+ 
+      const { data: uploadData, error: uploadError } = await supabase.storage
 
-        // Save photo record to database
-        const { error: dbError } = await supabase
-          .from('fims_inspection_photos')
-          .insert({
-            inspection_id: inspectionId,
-            photo_url: publicUrl,
-            photo_name: file.name,
-            description: `Anganwadi inspection photo ${i + 1}`,
-            photo_order: i + 1
-          });
+        .from('field-visit-images')
 
-        if (dbError) {
-          console.error('Database error for photo record:', dbError);
-          throw dbError;
-        }
-        
-        // Update progress
-        setUploadProgress(Math.round(((i + 1) / photoFiles.length) * 100));
-      }
-      
-      console.log('All photos uploaded successfully');
-    } catch (error) {
-      console.error('Error uploading photos:', error);
-      throw error;
-    } finally {
-      setIsUploadingPhotos(false);
-      setUploadProgress(0);
+        .upload(fileName, file);
+ 
+      if (uploadError) throw uploadError;
+ 
+      const { data: { publicUrl } } = supabase.storage
+
+        .from('field-visit-images')
+
+        .getPublicUrl(fileName);
+ 
+      const { error: dbError } = await supabase
+
+        .from('fims_inspection_photos')
+
+        .insert({
+
+          inspection_id: inspectionId,
+
+          photo_url: publicUrl,
+
+          photo_name: file.name,
+
+          description: `Anganwadi inspection photo ${i + 1}`,
+
+          photo_order: i + 1,
+
+        });
+ 
+      if (dbError) throw dbError;
+
     }
-  };
 
+  } catch (error) {
+
+    console.error('Error uploading photos:', error);
+
+    throw error;
+
+  } finally {
+
+    setIsUploading(false);
+
+  }
+
+};
+
+ 
   const generateInspectionNumber = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -1056,8 +999,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
         </div>
       </section>
-
-      {/* Section 2 - Weighing Scales */}
+{/* Section 2 - Weighing Scales */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
           <div className="flex items-center text-white">
@@ -1086,8 +1028,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
         </div>
       </section>
-
-      {/* Section 3 - Materials */}
+{/* Section 3 - Materials */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="bg-gradient-to-r from-orange-500 to-red-600 px-8 py-6">
           <div className="flex items-center text-white">
@@ -1102,7 +1043,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               { key: 'water_storage_containers', label: 'पिण्याचे पाणी ठेवण्यासाठी भांडी' },
               { key: 'medicine_kits', label: 'मेडिसिन किट्स' },
               { key: 'pre_school_kit', label: 'पूर्व शाले संच' },
-              { key: 'all_registers', label: 'विविध नमुन्यातील रजिस्टर (सर्व)' },
+              { key: 'all_registers', label: 'विहित नमुन्यातील रजिस्टर (सर्व)' },
               { key: 'monthly_progress_reports', label: 'छापील मासिक प्रगती अहवाल' },
             ].map(({ key, label }) => (
               <label key={key} className="flex items-center p-6 bg-gradient-to-r from-gray-50 to-orange-50 rounded-2xl hover:from-orange-50 hover:to-orange-100 transition-all duration-300 cursor-pointer group border border-gray-200 hover:border-orange-300 shadow-sm hover:shadow-md">
@@ -1119,8 +1060,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
         </div>
       </section>
-
-      {/* Section 4 - Schedule */}
+{/* Section 4 - Schedule */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="bg-gradient-to-r from-indigo-500 to-blue-600 px-8 py-6">
           <div className="flex items-center text-white">
@@ -1140,7 +1080,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               name="timetable_followed"
               value={anganwadiFormData.timetable_followed ? 'होय' : anganwadiFormData.timetable_followed === false ? 'नाही' : ''}
               onChange={(value) => setAnganwadiFormData(prev => ({...prev, timetable_followed: value === 'होय'}))}
-              question="२] वेळापत्रक पाळले जाते काय?"
+              question="२] नियमितपणे पाळले जाते काय?"
             />
             <YesNoRadio
               name="supervisor_regular_attendance"
@@ -1152,7 +1092,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         </div>
       </section>
 
-      {/* Section 5 - Food */}
+{/* Section 5 - Food */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-6">
           <div className="flex items-center text-white">
@@ -1178,7 +1118,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         </div>
       </section>
 
-      {/* Section 6 - Self-help Groups */}
+{/* Section 6 - Self-help Groups */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="bg-gradient-to-r from-teal-500 to-cyan-600 px-8 py-6">
           <div className="flex items-center text-white">
@@ -1217,13 +1157,12 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
         </div>
       </section>
-
-      {/* Section 7 - Children's Food Preference */}
+{/* Section 7 - Children's Food Preference */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6">
           <div className="flex items-center text-white">
             <MapPin className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">७. मुलांच्या आहाराची आवड:</h3>
+            <h3 className="text-2xl font-bold">७. मुलांना आहाराची चव व दर्जा आवडतो की कसे?:</h3>
           </div>
         </div>
         <div className="p-10">
@@ -1240,8 +1179,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
           </div>
         </div>
       </section>
-
-      {/* Section 8 - Food Quality */}
+{/* Section 8 - Food Quality */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="bg-gradient-to-r from-amber-500 to-yellow-600 px-8 py-6">
           <div className="flex items-center text-white">
@@ -1277,7 +1215,7 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         </div>
       </section>
 
-      {/* Section 9 - Health Services */}
+{/* Section 9 - Health Services */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="bg-gradient-to-r from-red-500 to-pink-600 px-8 py-6">
           <div className="flex items-center text-white">
@@ -1291,31 +1229,31 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
               name="regular_weighing"
               value={anganwadiFormData.regular_weighing ? 'होय' : anganwadiFormData.regular_weighing === false ? 'नाही' : ''}
               onChange={(value) => setAnganwadiFormData(prev => ({...prev, regular_weighing: value === 'होय'}))}
-              question="१] मुलांचे नियमित वजन केले जाते काय?"
+              question="१]  बालकांचे वजने नियमित वजने घेतली जातात किंवा कसे?"
             />
             <YesNoRadio
               name="growth_chart_accuracy"
               value={anganwadiFormData.growth_chart_accuracy ? 'होय' : anganwadiFormData.growth_chart_accuracy === false ? 'नाही' : ''}
               onChange={(value) => setAnganwadiFormData(prev => ({...prev, growth_chart_accuracy: value === 'होय'}))}
-              question="२] वाढीचा तक्ता अचूकपणे भरला जातो काय?"
+              question="२] (वृद्धिपत्रक तपासून) वय व वजन यांची नोंद तपासून पोषण श्रेणी योग्य प्रमाणे दर्शविलेली आहे काय? काही मुलांची प्रत्यक्ष वजने घेऊन तपासणी व खात्री करावी. तसेच वृद्धिपत्रकातील नोंद तपासावी."
             />
             <YesNoRadio
               name="vaccination_health_checkup_regular"
               value={anganwadiFormData.vaccination_health_checkup_regular ? 'होय' : anganwadiFormData.vaccination_health_checkup_regular === false ? 'नाही' : ''}
               onChange={(value) => setAnganwadiFormData(prev => ({...prev, vaccination_health_checkup_regular: value === 'होय'}))}
-              question="३] लसीकरण व आरोग्य तपासणी नियमितपणे केली जाते काय?"
+              question="३] लसीकरण व आरोग्य तपासणी नियमितपणे होते काय? (मागील दोन महिन्याचे रेकॉर्ड तपासावे.)"
             />
             <YesNoRadio
               name="vaccination_schedule_awareness"
               value={anganwadiFormData.vaccination_schedule_awareness ? 'होय' : anganwadiFormData.vaccination_schedule_awareness === false ? 'नाही' : ''}
               onChange={(value) => setAnganwadiFormData(prev => ({...prev, vaccination_schedule_awareness: value === 'होय'}))}
-              question="४] लसीकरणाचे वेळापत्रक माहित आहे काय?"
+              question="४] लसीकरण दिवसाची माहिती लाभार्थी पालकांना आहे काय? (एक-दोन घरी जाऊन तपासावे)"
             />
           </div>
         </div>
       </section>
 
-      {/* Section 10 - Community Participation */}
+{/* Section 10 - Community Participation */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="bg-gradient-to-r from-violet-500 to-purple-600 px-8 py-6">
           <div className="flex items-center text-white">
@@ -1349,7 +1287,133 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
         </div>
       </section>
 
-      {/* Final Section - Inspector Details */}
+{/* Additional Sections */}
+      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
+          <div className="flex items-center text-white">
+            <Users className="w-8 h-8 mr-4" />
+            <h3 className="text-2xl font-bold">अतिरिक्त तपशील:</h3>
+          </div>
+        </div>
+        <div className="p-10">
+          <div className="space-y-8">
+            <div>
+              <YesNoRadio
+                name="village_health_nutrition_micro_planning"
+                value={anganwadiFormData.village_health_nutrition_micro_planning}
+                onChange={(value) => setAnganwadiFormData(prev => ({...prev, village_health_nutrition_micro_planning: value}))}
+                question="११. ग्राम आरोग्य व पोषण दिवसाचे गावनिहाय सूक्ष्म नियोजन केले आहे काय?"
+              />
+            </div>
+        
+            <div>
+              <h4 className="font-semibold mb-4 text-lg text-gray-700">१२. भेटीच्या दिवशी प्रत्यक्ष उपस्थित असलेली बालके व नोंदविलेल्या बालकांपैकी त्या दिवशी प्रत्यक्ष हजर असलेली बालके. (मागील आठवड्यातील सरासरी आकडेवारीची ही संख्या पडताळून पहावी.):</h4>
+              <input
+                type="text"
+                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                disabled={isViewMode}
+              />
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4 text-lg text-gray-700">१३. पूर्व शालेय शिक्षण:</h4>
+              <div className="space-y-4 pl-6">
+                <div>
+                  <label className="block mb-2 font-medium">१] पूर्वशालेय शिक्षणासाठी नोंदवलेली बालके</label>
+                  <input
+                    type="number"
+                    value={anganwadiFormData.preschool_education_registered}
+                    onChange={(e) => setAnganwadiFormData(prev => ({...prev, preschool_education_registered: parseInt(e.target.value) || 0}))}
+                    className="w-full p-3 border-2 border-gray-200 rounded-lg"
+                    disabled={isViewMode}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium">२] भेटीची वेळी प्रत्यक्ष हजर बालके</label>
+                  <input
+                    type="number"
+                    value={anganwadiFormData.preschool_education_present}
+                    onChange={(e) => setAnganwadiFormData(prev => ({...prev, preschool_education_present: parseInt(e.target.value) || 0}))}
+                    className="w-full p-3 border-2 border-gray-200 rounded-lg"
+                    disabled={isViewMode}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium">३] भेटीचे दिवशी कोणकोणते कार्यक्रम घेतले</label>
+                  <input
+                    type="text"
+                    value={anganwadiFormData.preschool_programs_conducted}
+                    onChange={(e) => setAnganwadiFormData(prev => ({...prev, preschool_programs_conducted: e.target.value}))}
+                    className="w-full p-3 border-2 border-gray-200 rounded-lg"
+                    disabled={isViewMode}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
+                <div className="flex items-center text-white">
+                  <Users className="w-8 h-8 mr-4" />
+                  <h3 className="text-2xl font-bold">१४. लोकसहभाग:</h3>
+                </div>
+              </div>
+              <div className="p-10">
+                <div className="space-y-8">
+                  <div>
+                    <YesNoRadio
+                      name="village_health_nutrition_micro_planning"
+                      value={anganwadiFormData.village_health_nutrition_micro_planning}
+                      onChange={(value) => setAnganwadiFormData(prev => ({...prev, village_health_nutrition_micro_planning: value}))}
+                      question="१] अंगणवाडी केंद्राला गावातील लोकांचे सहकार्य मिळते काय? मिळत नसेल तर का?(याबाबत ग्राम समिती अथवा ग्राम पंचायत सदस्य यांचेशी चर्चा करावी.)"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 font-medium">२] यामध्ये ग्राम समिती सदस्य/ ग्राम पंचायत सदस्य/ आरोग्य सेविका/ इतर उपस्थिती कशी होती?</label>
+                    <textarea
+                      value={anganwadiFormData.committee_member_participation}
+                      onChange={(e) => setAnganwadiFormData(prev => ({...prev, committee_member_participation: e.target.value}))}
+                      className="w-full p-3 border-2 border-gray-200 rounded-lg"
+                      rows={3}
+                      disabled={isViewMode}
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <YesNoRadio
+              name="home_visits_guidance"
+              value={anganwadiFormData.home_visits_guidance}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, home_visits_guidance: value}))}
+              question="१५. गरोदर महिला, आजारी असलेली बालके यांचे घरी अंगणवाडी सेविका नियमित भेट देऊन त्यांना मार्गदर्शन व सल्ला देण्याचे काम करते किंवा कसे? (काही घरी भेट देऊन याबाबत पडताळणी करावी.)"
+            />
+
+            <YesNoRadio
+              name="public_opinion_improvement"
+              value={anganwadiFormData.public_opinion_improvement}
+              onChange={(value) => setAnganwadiFormData(prev => ({...prev, public_opinion_improvement: value}))}
+              question="१६. अंगणवाडी क्षेत्रातील लोकांचे अंगणवाडीचे कामकाजाबाबत सर्वसाधारण मत कसे आहे? तसेच मागील २–३ वर्षाचे कालावधीत काही सुधारणा झालेल्या आहेत काय?"
+            />
+
+            
+
+            <div>
+              <h4 className="font-semibold mb-4 text-lg text-gray-700">१७. काही सूचना असल्यास-</h4>
+              <textarea
+                value={anganwadiFormData.suggestions}
+                onChange={(e) => setAnganwadiFormData(prev => ({...prev, suggestions: e.target.value}))}
+                className="w-full p-3 border-2 border-gray-200 rounded-lg"
+                rows={3}
+                disabled={isViewMode}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+{/* Final Section - Inspector Details */}
       <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="bg-gradient-to-r from-gray-600 to-gray-800 px-8 py-6">
           <div className="flex items-center text-white">
@@ -1362,12 +1426,15 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
             <div>
               <label className="block mb-4 text-lg font-bold text-gray-700">भेटीची तारीख</label>
               <input
-                type="text"
-                value={anganwadiFormData.visit_date}
-                onChange={(e) => setAnganwadiFormData(prev => ({...prev, visit_date: e.target.value}))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
-                disabled={isViewMode}
-              />
+  type="date"
+  value={anganwadiFormData.visit_date}
+  onChange={(e) =>
+    setAnganwadiFormData((prev) => ({ ...prev, visit_date: e.target.value }))
+  }
+  className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm"
+  disabled={isViewMode}
+/>
+
             </div>
             <div>
               <label className="block mb-4 text-lg font-bold text-gray-700">तपासणी अधिकारीचे नाव</label>
@@ -1426,170 +1493,242 @@ export const AnganwadiTapasaniForm: React.FC<AnganwadiTapasaniFormProps> = ({
   );
 
   const renderPhotosAndSubmit = () => (
-    <div className="space-y-8">
-      {/* Photo Upload Section */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <Camera className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">{t('fims.uploadPhotos')}</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              {t('fims.photoDocumentation')}
-            </h3>
-            
-            {/* Photo Upload Area */}
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-purple-400 transition-colors duration-200">
-              <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h4 className="text-lg font-medium text-gray-900 mb-2">Upload Anganwadi Photos</h4>
-              <p className="text-gray-600 mb-4">
-                {photoFiles.length > 0 
-                  ? `${photoFiles.length}/5 photos selected` 
-                  : 'Select photos to upload (Max 5)'}
-              </p>
-              
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handlePhotoUpload}
-                disabled={isViewMode || photoFiles.length >= 5}
-                id="photo-upload"
-                style={{ display: 'none' }}
-              />
-              <label
-                htmlFor="photo-upload"
-                className={`inline-flex items-center px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200 ${
-                  isViewMode || photoFiles.length >= 5
-                    ? 'bg-gray-400 cursor-not-allowed text-white'
-                    : 'bg-purple-600 hover:bg-purple-700 text-white'
-                }`}
-              >
-                <Camera className="h-4 w-4 mr-2" />
-                {photoFiles.length >= 5 ? 'Maximum Photos Reached' : 'Choose Photos'}
-              </label>
-            </div>
+<div className="space-y-8">
 
-            {/* Photo Previews */}
-            {photoFiles.length > 0 && (
-              <div className="mt-6">
-                <h4 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                  <Camera className="h-5 w-5 mr-2 text-purple-600" />
-                  Selected Photos ({photoFiles.length}/5)
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {photoFiles.map((file, index) => (
-                    <div key={index} className="relative bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-200">
-                      <img
-                        src={photoPreviews[index]}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-40 object-cover"
-                      />
-                      {!isViewMode && (
-                        <button
-                          onClick={() => removePhoto(index)}
-                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg transition-colors duration-200"
-                        >
-                          <span className="text-sm font-bold">×</span>
-                        </button>
+    {/* Photo Upload Section */}
+<section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+<div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
+<div className="flex items-center text-white">
+<Camera className="w-8 h-8 mr-4" />
+<h3 className="text-2xl font-bold">फोटो अपलोड करा</h3>
+</div>
+</div>
+<div className="p-10">
+<div className="space-y-6">
+<h3 className="text-lg font-semibold text-gray-900 mb-4">
+
+            फोटो दस्तऐवजीकरण
+</h3>
+ 
+          {/* Photo Upload Area */}
+<div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-purple-400 transition-colors duration-200">
+<Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+<h4 className="text-lg font-medium text-gray-900 mb-2">अंगणवाडी फोटो अपलोड करा</h4>
+<p className="text-gray-600 mb-4">
+
+              {uploadedPhotos.length > 0
+
+                ? `${uploadedPhotos.length}/5 फोटो निवडले आहेत`
+
+                : 'फोटो निवडा (जास्तीत जास्त 5)'}
+</p>
+ 
+            <input
+
+              type="file"
+
+              multiple
+
+              accept="image/*"
+
+              onChange={handlePhotoUpload}
+
+              disabled={isViewMode || uploadedPhotos.length >= 5}
+
+              id="photo-upload"
+
+              style={{ display: 'none' }}
+
+            />
+<label
+
+              htmlFor="photo-upload"
+
+              className={`inline-flex items-center px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200 ${
+
+                isViewMode || uploadedPhotos.length >= 5
+
+                  ? 'bg-gray-400 cursor-not-allowed text-white'
+
+                  : 'bg-purple-600 hover:bg-purple-700 text-white'
+
+              }`}
+>
+<Camera className="h-4 w-4 mr-2" />
+
+              {uploadedPhotos.length >= 5 ? 'जास्तीत जास्त फोटो पोहोचले' : 'फोटो निवडा'}
+</label>
+</div>
+ 
+          {/* Photo Previews */}
+
+          {uploadedPhotos.length > 0 && (
+<div className="mt-6">
+<h4 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+<Camera className="h-5 w-5 mr-2 text-purple-600" />
+
+                निवडलेले फोटो ({uploadedPhotos.length}/5)
+</h4>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                {uploadedPhotos.map((file, index) => (
+<div
+
+                    key={index}
+
+                    className="relative bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-200"
+>
+<img
+
+                      src={URL.createObjectURL(file)}
+
+                      alt={`Preview ${index + 1}`}
+
+                      className="w-full h-40 object-cover"
+
+                    />
+
+                    {!isViewMode && (
+<button
+
+                        onClick={() => removePhoto(index)}
+
+                        className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg transition-colors duration-200"
+>
+<span className="text-sm font-bold">×</span>
+</button>
+
+                    )}
+<div className="p-3">
+<p className="text-sm font-medium text-gray-800 truncate mb-1">{file.name}</p>
+<p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+</div>
+</div>
+
+                ))}
+</div>
+</div>
+
+          )}
+ 
+          {/* Upload Progress */}
+
+          {isUploading && (
+<div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+<div className="flex items-center justify-between mb-2">
+<span className="text-sm font-medium text-blue-800">फोटो अपलोड करत आहे...</span>
+
+                {/* Assuming you have uploadProgress state */}
+<span className="text-sm text-blue-600">{uploadProgress}%</span>
+</div>
+<div className="w-full bg-blue-200 rounded-full h-2">
+<div
+
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+
+                  style={{ width: `${uploadProgress}%` }}
+></div>
+</div>
+</div>
+
+          )}
+ 
+          {/* Display existing photos when viewing */}
+
+          {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
+<div className="mt-6">
+<h4 className="text-md font-medium text-gray-900 mb-3">
+
+                तपासणी फोटो ({editingInspection.fims_inspection_photos.length})
+</h4>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
+<div
+
+                    key={photo.id}
+
+                    className="relative bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden"
+>
+<img
+
+                      src={photo.photo_url}
+
+                      alt={photo.description || `Anganwadi photo ${index + 1}`}
+
+                      className="w-full h-40 object-cover"
+
+                    />
+<div className="p-3">
+<p className="text-sm font-medium text-gray-800 truncate mb-1">
+
+                        {photo.photo_name || `Photo ${index + 1}`}
+</p>
+
+                      {photo.description && (
+<p className="text-xs text-gray-500 truncate">{photo.description}</p>
+
                       )}
-                      <div className="p-3">
-                        <p className="text-sm font-medium text-gray-800 truncate mb-1">{file.name}</p>
-                        <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+</div>
+</div>
 
-            {/* Upload Progress */}
-            {isUploadingPhotos && (
-              <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-blue-800">Uploading Photos...</span>
-                  <span className="text-sm text-blue-600">{uploadProgress}%</span>
-                </div>
-                <div className="w-full bg-blue-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${uploadProgress}%` }}
-                  ></div>
-                </div>
-              </div>
-            )}
+                ))}
+</div>
+</div>
 
-            {/* Display existing photos when viewing */}
-            {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
-              <div className="mt-6">
-                <h4 className="text-md font-medium text-gray-900 mb-3">
-                  Inspection Photos ({editingInspection.fims_inspection_photos.length})
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
-                    <div key={photo.id} className="relative bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-                      <img
-                        src={photo.photo_url}
-                        alt={photo.description || `Anganwadi photo ${index + 1}`}
-                        className="w-full h-40 object-cover"
-                      />
-                      <div className="p-3">
-                        <p className="text-sm font-medium text-gray-800 truncate mb-1">
-                          {photo.photo_name || `Photo ${index + 1}`}
-                        </p>
-                        {photo.description && (
-                          <p className="text-xs text-gray-500 truncate">
-                            {photo.description}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+          )}
+ 
+          {/* No photos message for view mode */}
 
-            {/* No photos message for view mode */}
-            {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
-              <div className="text-center py-8 text-gray-500">
-                <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                <p>{t('fims.noPhotosFound')}</p>
-              </div>
-            )}
-          </div>
+          {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
+<div className="text-center py-8 text-gray-500">
+<Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+<p>कोणतेही फोटो सापडले नाहीत</p>
+</div>
 
-        </div>
-      </section>
+          )}
+</div>
+</div>
+</section>
+ 
+    {/* Submit Buttons */}
 
-      {/* Submit Buttons */}
-      {!isViewMode && (
-        <div className="flex justify-center space-x-4">
-          <button
-            type="button"
-            onClick={() => handleSubmit(true)}
-            disabled={isLoading || isUploading}
-            className="px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Save className="h-5 w-5" />
-            <span>{isLoading ? t('common.saving') : t('fims.saveAsDraft')}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSubmit(false)}
-            disabled={isLoading || isUploading}
-            className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Send className="h-5 w-5" />
-            <span>{isLoading ? t('common.submitting') : t('fims.submitInspection')}</span>
-          </button>
-        </div>
-      )}
-    </div>
-  );
+    {!isViewMode && (
+<div className="flex justify-center space-x-4">
+<button
 
+          type="button"
+
+          onClick={() => handleSubmit(true)}
+
+          disabled={isLoading || isUploading}
+
+          className="px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+>
+<Save className="h-5 w-5" />
+<span>{isLoading ? 'सेव्ह करत आहे...' : 'मसुदा म्हणून जतन करा'}</span>
+</button>
+<button
+
+          type="button"
+
+          onClick={() => handleSubmit(false)}
+
+          disabled={isLoading || isUploading}
+
+          className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+>
+<Send className="h-5 w-5" />
+<span>{isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}</span>
+</button>
+</div>
+
+    )}
+</div>
+
+);
+
+ 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}

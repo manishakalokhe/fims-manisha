@@ -71,8 +71,7 @@ export const getInspections = async (userId?: string): Promise<Inspection[]> => 
           photo_order
         ),
         fims_anganwadi_forms (*),
-        fims_office_inspection_forms (*),
-        fims_school_inspection_forms (*)
+        fims_office_inspection_forms (*)
       `)
       .order('created_at', { ascending: false });
 
@@ -119,8 +118,7 @@ export const createInspection = async (inspectionData: Partial<Inspection>): Pro
           photo_order
         ),
         fims_anganwadi_forms (*),
-        fims_office_inspection_forms (*),
-        fims_school_inspection_forms (*)
+        fims_office_inspection_forms (*)
       `)
       .single();
 
@@ -314,6 +312,68 @@ export const reassignInspection = async (id: string, newInspectorId: string): Pr
   }
 };
 
+export const createAdarshShalaForm = async (formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('adarsha_shala')
+      .insert(formData)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error creating adarsh shala form:', error);
+    throw error;
+  }
+};
+
+export const updateAdarshShalaForm = async (inspectionId: string, formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('adarsha_shala')
+      .upsert({
+        inspection_id: inspectionId,
+        ...formData
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error updating adarsh shala form:', error);
+    throw error;
+  }
+};
+
+export const getAdarshShalaForm = async (inspectionId: string): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('adarsha_shala')
+      .select('*')
+      .eq('inspection_id', inspectionId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching adarsh shala form:', error);
+    throw error;
+  }
+};
 export const fetchInspectors = async () => {
   // Return empty array immediately if Supabase is not configured
   if (!isSupabaseConfigured || !supabase) {
@@ -345,5 +405,391 @@ export const fetchInspectors = async () => {
     console.error('Error fetching inspectors:', error);
     // Return empty array instead of throwing to prevent app crash
     return [];
+  }
+};
+
+export const createBandhkamVibhag1Form = async (formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('bandhakam_vibhag1')
+      .insert(formData)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error creating bandhkam vibhag1 form:', error);
+    throw error;
+  }
+};
+
+export const updateBandhkamVibhag1Form = async (inspectionId: string, formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('bandhakam_vibhag1')
+      .upsert({
+        inspection_id: inspectionId,
+        ...formData
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error updating bandhkam vibhag1 form:', error);
+    throw error;
+  }
+};
+
+export const getBandhkamVibhag1Form = async (inspectionId: string): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('bandhakam_vibhag1')
+      .select('*')
+      .eq('inspection_id', inspectionId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching bandhkam vibhag1 form:', error);
+    throw error;
+  }
+};
+
+export const createBandhkamVibhag2Form = async (formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('bandhakam_vibhag2')
+      .insert(formData)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error creating bandhkam vibhag2 form:', error);
+    throw error;
+  }
+};
+
+export const updateBandhkamVibhag2Form = async (inspectionId: string, formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('bandhakam_vibhag2')
+      .upsert({
+        inspection_id: inspectionId,
+        ...formData
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error updating bandhkam vibhag2 form:', error);
+    throw error;
+  }
+};
+
+export const getBandhkamVibhag2Form = async (inspectionId: string): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('bandhakam_vibhag2')
+      .select('*')
+      .eq('inspection_id', inspectionId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching bandhkam vibhag2 form:', error);
+    throw error;
+  }
+};
+
+export const createRajyaTapasaniForm = async (formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('rajya_tapasani')
+      .insert(formData)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error creating rajya tapasani form:', error);
+    throw error;
+  }
+};
+
+export const updateRajyaTapasaniForm = async (inspectionId: string, formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('rajya_tapasani')
+      .upsert({
+        inspection_id: inspectionId,
+        ...formData
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error updating rajya tapasani form:', error);
+    throw error;
+  }
+};
+
+export const getRajyaTapasaniForm = async (inspectionId: string): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('rajya_tapasani')
+      .select('*')
+      .eq('inspection_id', inspectionId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching rajya tapasani form:', error);
+    throw error;
+  }
+};
+
+export const createMumbaiHighCourtForm = async (formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('mumbai_high_court_school_inspection_form')
+      .insert(formData)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error creating mumbai high court form:', error);
+    throw error;
+  }
+};
+
+export const updateMumbaiHighCourtForm = async (inspectionId: string, formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('mumbai_high_court_school_inspection_form')
+      .upsert({
+        inspection_id: inspectionId,
+        ...formData
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error updating mumbai high court form:', error);
+    throw error;
+  }
+};
+
+export const getMumbaiHighCourtForm = async (inspectionId: string): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('mumbai_high_court_school_inspection_form')
+      .select('*')
+      .eq('inspection_id', inspectionId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching mumbai high court form:', error);
+    throw error;
+  }
+};
+
+export const createBhetPraptraForm = async (formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('bhet_praptra')
+      .insert(formData)
+      .select();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error creating bhet praptra form:', error);
+    throw error;
+  }
+};
+
+export const updateBhetPraptraForm = async (inspectionId: string, formData: any[]): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    // Delete existing records
+    const { error: deleteError } = await supabase
+      .from('bhet_praptra')
+      .delete()
+      .eq('inspection_id', inspectionId);
+
+    if (deleteError) throw deleteError;
+
+    // Insert new records
+    if (formData.length > 0) {
+      const { data, error } = await supabase
+        .from('bhet_praptra')
+        .insert(formData)
+        .select();
+
+      if (error) throw error;
+      return data;
+    }
+
+    return [];
+  } catch (error) {
+    console.error('Error updating bhet praptra form:', error);
+    throw error;
+  }
+};
+
+export const getBhetPraptraForm = async (inspectionId: string): Promise<any[]> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('bhet_praptra')
+      .select('*')
+      .eq('inspection_id', inspectionId)
+      .order('row_no');
+
+    if (error && error.code !== 'PGRST116') throw error;
+    return data || [];
+  } catch (error) {
+    console.error('Error fetching bhet praptra form:', error);
+    throw error;
+  }
+};
+
+export const createVeterinaryInspectionForm = async (formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('veterinary_inspection_report_form')
+      .insert(formData)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error creating veterinary inspection form:', error);
+    throw error;
+  }
+};
+
+export const updateVeterinaryInspectionForm = async (inspectionId: string, formData: any): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('veterinary_inspection_report_form')
+      .upsert({
+        inspection_id: inspectionId,
+        ...formData
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error updating veterinary inspection form:', error);
+    throw error;
+  }
+};
+
+export const getVeterinaryInspectionForm = async (inspectionId: string): Promise<any> => {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('veterinary_inspection_report_form')
+      .select('*')
+      .eq('inspection_id', inspectionId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching veterinary inspection form:', error);
+    throw error;
   }
 };

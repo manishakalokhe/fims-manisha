@@ -1,31 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  ArrowLeft,
-  Plus,
-  FileText,
-  Camera,
-  MapPin,
-  Building2,
-  School,
-  Users,
-  BookOpen,
-  GraduationCap,
-  Building,
-  UserCheck,
-  ClipboardList,
-  Award,
-  Target,
-  CheckSquare,
-  FileCheck,
-  UserPlus,
-  Settings,
-  Activity
-} from 'lucide-react';
+import { ArrowLeft, Plus, FileText, Camera, MapPin, Building2, School, Users, BookOpen, GraduationCap, Building, UserCheck, ClipboardList, Award, Target, SquareCheck as CheckSquare, FileCheck, UserPlus, Settings, Activity } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { AnganwadiTapasaniForm } from './AnganwadiTapasaniForm';
 import { FIMSOfficeInspection } from './FIMSOfficeInspection';
 import { RajyaShaishanikPrashikshanForm } from './RajyaShaishanikPrashikshanForm';
+import { BandhkamVibhag1Form } from './BandhkamVibhag1Form';
+import { BandhkamVibhag2Form } from './BandhkamVibhag2Form';
+import { ZPDarMahinyalaSadarKaryachePrapatraForm } from './ZPDarMahinyalaSadarKaryachePrapatraForm';
+import { RajyaGunwattaNirikshakTapasaniForm } from './RajyaGunwattaNirikshakTapasaniForm';
+import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
+import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
+import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
+
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface FIMSNewInspectionProps {
@@ -109,9 +96,93 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       );
     }
 
+    if (selectedInspectionType === 'bandhkam_vibhag1') {
+      return (
+        <BandhkamVibhag1Form
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
+
+    if (selectedInspectionType === 'bandhkam_vibhag2') {
+      return (
+        <BandhkamVibhag2Form
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
+
     if (selectedInspectionType === 'rajya_shaishanik') {
       return (
         <RajyaShaishanikPrashikshanForm
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
+    
+    if (selectedInspectionType === 'zp_dar_mahinyala') {
+      return (
+        <ZPDarMahinyalaSadarKaryachePrapatraForm
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
+
+    if (selectedInspectionType === 'rajya_gunwatta_nirikshak') {
+      return (
+        <RajyaGunwattaNirikshakTapasaniForm
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
+
+    if (selectedInspectionType === 'mahatma_gandhi_rojgar_hami') {
+      return (
+        <MahatmaGandhiRojgarHamiForm
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
+
+    if (selectedInspectionType === 'mumbai_nyayalay') {
+      return (
+        <MumbaiNyayalayTapasaniForm
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
+
+    if (selectedInspectionType === 'pashutapasani') {
+      return (
+        <PahuvaidhakiyaTapasaniForm
           user={user}
           onBack={handleBackToSelection}
           categories={categories}
@@ -264,25 +335,29 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             </div>
           </div>
 
+        
+          
+
           {/* Placeholder cards for the remaining 12 forms */}
           {[
-            { key: 'form_4', title: 'Form 4 Title', subtitle: 'Form 4 Description', color: 'orange' },
-            { key: 'form_5', title: 'Form 5 Title', subtitle: 'Form 5 Description', color: 'indigo' },
-            { key: 'form_6', title: 'Form 6 Title', subtitle: 'Form 6 Description', color: 'pink' },
-            { key: 'form_7', title: 'Form 7 Title', subtitle: 'Form 7 Description', color: 'teal' },
-            { key: 'form_8', title: 'Form 8 Title', subtitle: 'Form 8 Description', color: 'red' },
-            { key: 'form_9', title: 'Form 9 Title', subtitle: 'Form 9 Description', color: 'yellow' },
-            { key: 'form_10', title: 'Form 10 Title', subtitle: 'Form 10 Description', color: 'cyan' },
-            { key: 'form_11', title: 'Form 11 Title', subtitle: 'Form 11 Description', color: 'violet' },
-            { key: 'form_12', title: 'Form 12 Title', subtitle: 'Form 12 Description', color: 'lime' },
-            { key: 'form_13', title: 'Form 13 Title', subtitle: 'Form 13 Description', color: 'amber' },
-            { key: 'form_14', title: 'Form 14 Title', subtitle: 'Form 14 Description', color: 'emerald' },
-            { key: 'form_15', title: 'Form 15 Title', subtitle: 'Form 15 Description', color: 'rose' }
+            { key: 'bandhkam_vibhag1', title: 'बांधकाम विभाग प्रपत्र-1', subtitle: 'Construction Department Form-1', color: 'orange', active: true },
+            { key: 'bandhkam_vibhag2', title: 'बांधकाम विभाग प्रपत्र-2', subtitle: 'Construction Department Form-2', color: 'teal', active: true },
+            { key: 'zp_dar_mahinyala', title: 'दर महिन्याला सादर करावयाचे प्रपत्र', subtitle: 'ZP Monthly Report Form', color: 'indigo', active: true },
+            { key: 'rajya_gunwatta_nirikshak', title: 'राज्य गुणवत्ता निरीक्षक तपासणी', subtitle: 'State Quality Inspector Inspection', color: 'emerald', active: true },
+            { key: 'mahatma_gandhi_rojgar_hami', title: 'महात्मा गांधी रोजगार हमी योजना', subtitle: 'MGNREGA Work Inspection Form', color: 'green', active: true },
+            { key: 'mumbai_nyayalay', title: 'मुंबई न्यायालय तपासणी प्रपत्र', subtitle: 'Mumbai High Court School Inspection Form', color: 'red', active: true },
+            { key: 'pashutapasani', title: 'पशुवैद्यकीय संस्थांचे तांत्रिक निरीक्षण', subtitle: 'Veterinary Institution Technical Inspection Form', color: 'red', active: true },
+         //   { key: 'form_10', title: 'Form 10 Title', subtitle: 'Form 10 Description', color: 'cyan' },
+         //   { key: 'form_11', title: 'Form 11 Title', subtitle: 'Form 11 Description', color: 'violet' },
+         //   { key: 'form_12', title: 'Form 12 Title', subtitle: 'Form 12 Description', color: 'lime' },
+         //   { key: 'form_13', title: 'Form 13 Title', subtitle: 'Form 13 Description', color: 'amber' },
+         //   { key: 'form_14', title: 'Form 14 Title', subtitle: 'Form 14 Description', color: 'emerald' },
+         //   { key: 'form_15', title: 'Form 15 Title', subtitle: 'Form 15 Description', color: 'rose' }
           ].map((form, index) => (
             <div 
               key={form.key}
-              onClick={() => alert(`${form.title} - Coming Soon!`)}
-              className={`bg-gradient-to-br from-${form.color}-100 via-${form.color}-50 to-${form.color}-50 rounded-lg shadow-lg border-2 border-${form.color}-200 p-4 md:p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer hover:border-${form.color}-400 touch-manipulation opacity-75`}
+              onClick={() => form.active ? handleInspectionTypeSelect(form.key) : alert(`${form.title} - Coming Soon!`)}
+              className={`bg-gradient-to-br from-${form.color}-100 via-${form.color}-50 to-${form.color}-50 rounded-lg shadow-lg border-2 border-${form.color}-200 p-4 md:p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer hover:border-${form.color}-400 touch-manipulation ${!form.active ? 'opacity-75' : ''}`}
             >
               <div className="flex items-center space-x-4 mb-4">
                 <div className={`bg-gradient-to-br from-${form.color}-500 to-${form.color}-600 p-3 rounded-xl shadow-lg`}>
@@ -299,15 +374,64 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
               </div>
               
               <div className="space-y-2 text-sm text-gray-600">
-                <p>• Feature 1</p>
-                <p>• Feature 2</p>
-                <p>• Feature 3</p>
-                <p>• Feature 4</p>
+                {form.key === 'bandhkam_vibhag1' ? (
+                  <>
+                    <p>• प्रशासकीय व तांत्रिक मान्यता तपशील</p>
+                    <p>• कारनामा व ठेकेदार माहिती</p>
+                    <p>• कामाची सद्यस्थिती व प्रगती</p>
+                    <p>• देयक व मोजमाप तपशील</p>
+                  </>
+                ) : form.key === 'bandhkam_vibhag2' ? (
+                  <>
+                    <p>• तपासणी दिनांक व उपस्थित अधिकारी</p>
+                    <p>• कामाची सद्यस्थिती व दर्जा</p>
+                    <p>• दोषदायित्व कालावधी</p>
+                    <p>• तपासणी अहवाल</p>
+                  </>
+                ) : form.key === 'zp_dar_mahinyala' ? (
+                  <>
+                    <p>• जिल्हा परिषद मासिक अहवाल</p>
+                    <p>• अंगणवाडी केंद्रांची संख्या</p>
+                    <p>• पर्यवेक्षकांचे उद्दिष्ट साध्यीकरण</p>
+                    <p>• प्रकल्प भेट तपशील</p>
+                  </>
+                ) : form.key === 'rajya_gunwatta_nirikshak' ? (
+                  <>
+                    <p>• राज्य गुणवत्ता निरीक्षक माहिती</p>
+                    <p>• कामा तपासणी दिनांक</p>
+                    <p>• कामाचे नाव</p>
+                    <p>• काम तपासणीवेळी छायाचित्रे</p>
+                  </>
+                ) : form.key === 'mahatma_gandhi_rojgar_hami' ? (
+                  <>
+                    <p>• NREGA Soft नोंदी तपासणी</p>
+                    <p>• मजूर हजेरी आणि सुविधा</p>
+                    <p>• कामाचे मोजमाप आणि गुणवत्ता</p>
+                    <p>• अभिसरण आणि निधी तपशील</p>
+                  </>
+                ) : form.key === 'mumbai_nyayalay' ? (
+                  <>
+                    <p>• शाळा इमारत आणि बांधकाम तपासणी</p>
+                    <p>• विद्यार्थी आणि शिक्षक संख्या</p>
+                    <p>• भौतिक सुविधा मूल्यांकन</p>
+                    <p>• स्वच्छता आणि सुरक्षा तपासणी</p>
+                  </>
+                ) : form.key === 'pashutapasani' ? (
+                  <>
+                    <p>• संस्थेची मूलभूत माहिती व तांत्रिक आढावा</p>
+                    <p>• रुग्ण आकडेवारी व शस्त्रक्रिया तपशील</p>
+                    <p>• कृत्रिम रेतन व गर्भधारणा तपासणी</p>
+                    <p>• रोग माहिती व लसीकरण कार्यक्रम</p>
+                    <p>• योजना प्रगती व तांत्रिक मूल्यांकन</p>
+                    </>
+                ) : (
+                  <></>
+                )}
               </div>
               
               <div className="mt-4 flex items-center justify-between">
                 <span className={`text-sm font-bold text-${form.color}-700 bg-white/50 px-3 py-1 rounded-full`}>
-                  Coming Soon
+                  {form.active ? 'तपासणी सुरू करण्यासाठी निवडा' : 'Coming Soon'}
                 </span>
                 <div className={`bg-gradient-to-r from-${form.color}-500 to-${form.color}-600 p-2 rounded-full shadow-lg`}>
                   <Plus className="h-5 w-5 text-white" />
