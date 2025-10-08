@@ -7,7 +7,7 @@ import type { User } from '@supabase/supabase-js';
 interface PermissionGuardProps {
   user: User | null;
   application: string;
-  permission?: 'read' | 'write' | 'delete' | 'admin';
+  permission?: 'read' | 'write' | 'delete' | 'admin'| 'developer';
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }
