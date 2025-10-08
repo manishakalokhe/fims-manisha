@@ -115,6 +115,13 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
   const [selectedStatus, setSelectedStatus] = useState('');
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [columnFilters, setColumnFilters] = useState({
+    inspectionNumber: '',
+    location: '',
+    category: '',
+    status: '',
+    date: ''
+  });
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [viewingPhotos, setViewingPhotos] = useState<InspectionPhoto[]>([]);
@@ -354,14 +361,34 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
 
   const getFilteredInspections = () => {
     return inspections.filter(inspection => {
-      const matchesSearch = searchTerm === '' || 
+      const matchesSearch = searchTerm === '' ||
         inspection.location_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         inspection.inspection_number?.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
       const matchesCategory = selectedCategory === '' || inspection.category_id === selectedCategory;
       const matchesStatus = selectedStatus === '' || inspection.status === selectedStatus;
 
-      return matchesSearch && matchesCategory && matchesStatus;
+      const matchesInspectionNumber = columnFilters.inspectionNumber === '' ||
+        inspection.inspection_number?.toLowerCase().includes(columnFilters.inspectionNumber.toLowerCase());
+
+      const matchesLocation = columnFilters.location === '' ||
+        inspection.location_name?.toLowerCase().includes(columnFilters.location.toLowerCase());
+
+      const category = categories.find(c => c.id === inspection.category_id);
+      const categoryName = category ? t(`categories.${category.form_type}`, category.name) : '';
+      const matchesCategoryFilter = columnFilters.category === '' ||
+        categoryName.toLowerCase().includes(columnFilters.category.toLowerCase());
+
+      const matchesStatusFilter = columnFilters.status === '' ||
+        getStatusText(inspection.status).toLowerCase().includes(columnFilters.status.toLowerCase());
+
+      const inspectionDate = inspection.inspection_date || inspection.planned_date;
+      const matchesDateFilter = columnFilters.date === '' ||
+        (inspectionDate && new Date(inspectionDate).toLocaleDateString().includes(columnFilters.date));
+
+      return matchesSearch && matchesCategory && matchesStatus &&
+             matchesInspectionNumber && matchesLocation && matchesCategoryFilter &&
+             matchesStatusFilter && matchesDateFilter;
     });
   };
 
@@ -791,25 +818,71 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
         </div>
         
         {/* Desktop Table */}
-        <div className="overflow-x-auto hidden md:block">
+        <div className="overflow-x-auto hidden md:block" style={{ maxHeight: '600px', overflowY: 'auto' }}>
           <table className="w-full bg-gradient-to-br from-blue-50 to-cyan-50 divide-y divide-blue-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 sticky top-0 z-10">
               <tr className="bg-gradient-to-r from-blue-200 via-blue-100 to-cyan-100 border-b-2 border-blue-300">
                 <th className="px-6 py-4 text-left text-xs font-bold text-blue-900 uppercase tracking-wider bg-gradient-to-r from-blue-300 to-blue-200 shadow-sm">
-                  {t('fims.inspectionNumber')}
+                  <div>{t('fims.inspectionNumber')}</div>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    value={columnFilters.inspectionNumber}
+                    onChange={(e) => setColumnFilters({...columnFilters, inspectionNumber: e.target.value})}
+                    className="mt-1 w-full px-2 py-1 text-xs border border-blue-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    onClick={(e) => e.stopPropagation()}
+                  />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('fims.location')}</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('fims.category')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
+                  <div>{t('fims.location')}</div>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    value={columnFilters.location}
+                    onChange={(e) => setColumnFilters({...columnFilters, location: e.target.value})}
+                    className="mt-1 w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
+                  <div>{t('fims.category')}</div>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    value={columnFilters.category}
+                    onChange={(e) => setColumnFilters({...columnFilters, category: e.target.value})}
+                    className="mt-1 w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </th>
                 <th className="px-6 py-4 text-left text-xs font-bold text-blue-900 uppercase tracking-wider bg-gradient-to-r from-blue-300 to-blue-200 shadow-sm">
-                  {t('fims.status')}
+                  <div>{t('fims.status')}</div>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    value={columnFilters.status}
+                    onChange={(e) => setColumnFilters({...columnFilters, status: e.target.value})}
+                    className="mt-1 w-full px-2 py-1 text-xs border border-blue-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    onClick={(e) => e.stopPropagation()}
+                  />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('fims.date')}</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('fims.locationAccuracy')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
+                  <div>{t('fims.date')}</div>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    value={columnFilters.date}
+                    onChange={(e) => setColumnFilters({...columnFilters, date: e.target.value})}
+                    className="mt-1 w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">{t('fims.locationAccuracy')}</th>
                 <th className="px-6 py-4 text-left text-xs font-bold text-blue-900 uppercase tracking-wider bg-gradient-to-r from-blue-300 to-blue-200 shadow-sm">
                   {t('fims.actions')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Photos</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Complete/Revisit</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Photos</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Complete/Revisit</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
