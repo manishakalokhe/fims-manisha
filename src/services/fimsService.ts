@@ -45,7 +45,7 @@ export interface Inspection {
   fims_school_inspection_forms?: any[];
 }
 
-export const getInspections = async (userId?: string): Promise<Inspection[]> => {
+export const getInspections = async (userId?: string, userRole?: string): Promise<Inspection[]> => {
   // Return empty array immediately if Supabase is not configured
   if (!isSupabaseConfigured || !supabase) {
     console.warn('Supabase not configured, returning empty inspections list');
@@ -75,7 +75,8 @@ export const getInspections = async (userId?: string): Promise<Inspection[]> => 
       `)
       .order('created_at', { ascending: false });
 
-    if (userId) {
+    // Developer role can see all inspections, others only see their own
+    if (userId && userRole !== 'developer') {
       query = query.eq('inspector_id', userId);
     }
 

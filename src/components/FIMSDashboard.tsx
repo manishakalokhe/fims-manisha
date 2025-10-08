@@ -102,6 +102,7 @@ interface InspectionPhoto {
 
 export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut }) => {
   const { t, i18n } = useTranslation();
+  const { userRole } = usePermissions(user);
   const [activeTab, setActiveTab] = useState('dashboard');
   
   // Get translation function
@@ -151,7 +152,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
     try {
       // Fetch all data using service functions
       const [inspectionsData, categoriesData, inspectorsData] = await Promise.all([
-        getInspections(user.id),
+        getInspections(user.id, userRole || undefined),
         fetchCategories(),
         fetchInspectors()
       ]);
@@ -585,7 +586,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
           <Target className="h-6 w-6 mr-2 text-blue-600" />
           {t('fims.quickActions')}
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className={`grid grid-cols-1 ${userRole === 'developer' ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-4`}>
           <button
             onClick={() => setActiveTab('newInspection')}
             className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white p-4 rounded-lg transition-all duration-200 flex items-center space-x-3 hover:shadow-lg hover:scale-105"
@@ -593,7 +594,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
             <Plus className="h-5 w-5" />
             <span className="font-medium">{t('fims.newInspection')}</span>
           </button>
-          
+
           <button
             onClick={() => setActiveTab('inspections')}
             className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white p-4 rounded-lg transition-all duration-200 flex items-center space-x-3 hover:shadow-lg hover:scale-105"
@@ -601,14 +602,16 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
             <FileText className="h-5 w-5" />
             <span className="font-medium">{t('fims.inspections')}</span>
           </button>
-          
-          <button
-            onClick={() => setActiveTab('analytics')}
-            className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white p-4 rounded-lg transition-all duration-200 flex items-center space-x-3 hover:shadow-lg hover:scale-105"
-          >
-            <PieChart className="h-5 w-5" />
-            <span className="font-medium">{t('fims.analytics')}</span>
-          </button>
+
+          {userRole === 'developer' && (
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white p-4 rounded-lg transition-all duration-200 flex items-center space-x-3 hover:shadow-lg hover:scale-105"
+            >
+              <PieChart className="h-5 w-5" />
+              <span className="font-medium">{t('fims.analytics')}</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -1127,17 +1130,19 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
                   <span>{t('fims.newInspection')}</span>
                 </button>
                 
-                <button
-                  onClick={() => setActiveTab('analytics')}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-                    activeTab === 'analytics'
-                      ? 'bg-purple-100 text-purple-700'
-                      : 'text-gray-600 hover:text-purple-600 hover:bg-gray-50'
-                  }`}
-                >
-                  <BarChart3 className="h-5 w-5" />
-                  <span>{t('fims.analytics')}</span>
-                </button>
+                {userRole === 'developer' && (
+                  <button
+                    onClick={() => setActiveTab('analytics')}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      activeTab === 'analytics'
+                        ? 'bg-purple-100 text-purple-700'
+                        : 'text-gray-600 hover:text-purple-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <BarChart3 className="h-5 w-5" />
+                    <span>{t('fims.analytics')}</span>
+                  </button>
+                )}
               </nav>
               
               <LanguageSwitcher />
