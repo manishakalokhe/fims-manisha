@@ -649,20 +649,70 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
         <div className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200">
           <h3 className="text-base md:text-lg font-semibold text-gray-900">{t('fims.recentInspections')}</h3>
         </div>
-        <div className="overflow-x-auto hidden md:block">
+        <div className="overflow-x-auto hidden md:block" style={{ maxHeight: '600px', overflowY: 'auto' }}>
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('fims.inspectionNumber')}</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('fims.location')}</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('fims.category')}</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('fims.status')}</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('fims.date')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div>{t('fims.inspectionNumber')}</div>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    value={columnFilters.inspectionNumber}
+                    onChange={(e) => setColumnFilters({...columnFilters, inspectionNumber: e.target.value})}
+                    className="mt-1 w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div>{t('fims.location')}</div>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    value={columnFilters.location}
+                    onChange={(e) => setColumnFilters({...columnFilters, location: e.target.value})}
+                    className="mt-1 w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div>{t('fims.category')}</div>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    value={columnFilters.category}
+                    onChange={(e) => setColumnFilters({...columnFilters, category: e.target.value})}
+                    className="mt-1 w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div>{t('fims.status')}</div>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    value={columnFilters.status}
+                    onChange={(e) => setColumnFilters({...columnFilters, status: e.target.value})}
+                    className="mt-1 w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div>{t('fims.date')}</div>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    value={columnFilters.date}
+                    onChange={(e) => setColumnFilters({...columnFilters, date: e.target.value})}
+                    className="mt-1 w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('fims.actions')}</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {inspections.slice(0, 5).map((inspection) => {
+              {getFilteredInspections().map((inspection) => {
                 const category = categories.find(c => c.id === inspection.category_id);
                 return (
                 <tr key={inspection.id} className="hover:bg-gray-50">
@@ -713,7 +763,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
         
         {/* Mobile Recent Inspections */}
         <div className="md:hidden">
-          {inspections.slice(0, 5).map((inspection) => {
+          {getFilteredInspections().map((inspection) => {
             const category = categories.find(c => c.id === inspection.category_id);
             return (
               <div key={inspection.id} className="border-b border-gray-100 p-4">
