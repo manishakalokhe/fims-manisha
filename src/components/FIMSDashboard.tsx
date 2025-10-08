@@ -102,18 +102,18 @@ interface InspectionPhoto {
 
 export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut }) => {
   const { t, i18n } = useTranslation();
-  const { userRole } = usePermissions(user);
+  const { userRole, isLoading: isLoadingRole } = usePermissions(user);
   const [activeTab, setActiveTab] = useState('dashboard');
-  
+
   // Get translation function
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [inspections, setInspections] = useState<InspectionData[]>([]);
   const [categories, setCategories] = useState<CategoryData[]>([]);
   const [inspectors, setInspectors] = useState<InspectorData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
@@ -142,8 +142,10 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
   }, []);
 
   useEffect(() => {
-    fetchAllData();
-  }, []);
+    if (!isLoadingRole) {
+      fetchAllData();
+    }
+  }, [isLoadingRole, userRole]);
 
   const viewingInspection = editingInspection?.mode === 'view';
 
