@@ -84,6 +84,9 @@ export const RajyaGunwattaNirikshakTapasaniForm: React.FC<RajyaGunwattaNirikshak
     }
   }, [rajyaGunwattaCategory]);
 
+  // State for loaded photos
+  const [existingPhotos, setExistingPhotos] = useState<any[]>([]);
+
   // Load existing inspection data when editing
   useEffect(() => {
     if (editingInspection && editingInspection.id) {
@@ -105,8 +108,29 @@ export const RajyaGunwattaNirikshakTapasaniForm: React.FC<RajyaGunwattaNirikshak
           ...editingInspection.form_data
         });
       }
+
+      // Load photos for view mode
+      if (isViewMode || isEditMode) {
+        loadInspectionPhotos(editingInspection.id);
+      }
     }
   }, [editingInspection]);
+
+  const loadInspectionPhotos = async (inspectionId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('fims_inspection_photos')
+        .select('*')
+        .eq('inspection_id', inspectionId)
+        .order('photo_order');
+
+      if (error) throw error;
+      setExistingPhotos(data || []);
+      console.log('Loaded photos:', data);
+    } catch (error) {
+      console.error('Error loading photos:', error);
+    }
+  };
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -631,18 +655,22 @@ export const RajyaGunwattaNirikshakTapasaniForm: React.FC<RajyaGunwattaNirikshak
       )}
 
       {/* Display existing photos when viewing */}
-      {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
+      {(isViewMode || isEditMode) && existingPhotos && existingPhotos.length > 0 && (
         <div>
           <h4 className="text-md font-medium text-gray-900 mb-3">
-            Inspection Photos ({editingInspection.fims_inspection_photos.length})
+            Inspection Photos ({existingPhotos.length})
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
-              <div key={photo.id} className="relative">
+            {existingPhotos.map((photo: any, index: number) => (
+              <div key={photo.id} className="relative border border-gray-200 rounded-lg p-2">
                 <img
                   src={photo.photo_url}
                   alt={photo.description || `Work inspection photo ${index + 1}`}
                   className="w-full h-32 object-cover rounded-lg"
+                  onError={(e) => {
+                    console.error('Failed to load image:', photo.photo_url);
+                    (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em" font-family="sans-serif" font-size="16"%3EImage not available%3C/text%3E%3C/svg%3E';
+                  }}
                 />
                 <p className="text-xs text-gray-600 mt-1 truncate">
                   {photo.photo_name || `Photo ${index + 1}`}
@@ -659,7 +687,7 @@ export const RajyaGunwattaNirikshakTapasaniForm: React.FC<RajyaGunwattaNirikshak
       )}
 
       {/* Show message when no photos in view mode */}
-      {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
+      {(isViewMode || isEditMode) && (!existingPhotos || existingPhotos.length === 0) && (
         <div className="text-center py-8 text-gray-500">
           <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
           <p>{t('fims.noPhotosFound')}</p>
