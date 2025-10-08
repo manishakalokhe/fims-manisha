@@ -237,7 +237,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
           name,
           roles!inner(name)
         `)
-        .in('roles.name', ['inspector', 'officer', 'admin'])
+        .in('roles.name', ['inspector', 'officer', 'admin','developer'])
         .not('name', 'is', null);
       
       if (error) throw error;
