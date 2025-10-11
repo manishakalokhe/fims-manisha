@@ -12,7 +12,7 @@ import {
   BookOpen,
   Target,
   Award
-} from 'lucide-react';
+} from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { createAdarshShalaForm, updateAdarshShalaForm } from '../services/fimsService';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
