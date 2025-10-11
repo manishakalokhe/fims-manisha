@@ -16,7 +16,6 @@ import {
 import { supabase } from '../lib/supabase';
 import { createAdarshShalaForm, updateAdarshShalaForm } from '../services/fimsService';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
-
 interface RajyaShaishanikPrashikshanFormProps {
   user: SupabaseUser;
   onBack: () => void;
