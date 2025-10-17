@@ -60,7 +60,7 @@ const handleSignIn = async (e: React.FormEvent) => {debugger;
       setError(signInError.message);
     } else if (data.user) {
       // Retrieve role_id from user metadata (set during sign-up or admin update)
-      const roleId = data.user.user_metadata?.role_id;
+      const roleId = data.user.id;
       
       if (roleId !== null) {
         const { data: accessData, error: accessError } = await supabase
