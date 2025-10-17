@@ -22,7 +22,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSignInSuccess }) => {
     return emailRegex.test(email);
   };
 
-  const handleSignIn = async (e: React.FormEvent) => {debugger;
+const handleSignIn = async (e: React.FormEvent) => {
   e.preventDefault();
   setError('');
   
@@ -59,39 +59,28 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSignInSuccess }) => {
     if (signInError) {
       setError(signInError.message);
     } else if (data.user) {
-      // Fetch user profile to get role_id (assuming 'profiles' table with 'id' linking to auth.users.id)
-      const { data: profile, error: profileError } = await supabase
-        .from('user_roles')
-        .select('role_id')
-        .eq('id', data.user.id)
-        .single();
+      // Retrieve role_id from user metadata (set during sign-up or admin update)
+      const roleId = data.user.user_metadata?.role_id;
+      
+      if (roleId !== null) {
+        const { data: accessData, error: accessError } = await supabase
+          .from('application_permissions')
+          .select('id')
+          .eq('role_id', roleId)
+          .eq('application_name', 'fims')
+          .maybeSingle();
 
-      if (profileError || !profile) {
-        setError('Profile not found. Please contact administrator.');
-        await supabase.auth.signOut();
-      } else {
-        const roleId = profile.role_id;
-        
-        if (roleId !== null) {
-          const { data: accessData, error: accessError } = await supabase
-            .from('application_permissions')
-            .select('id')
-            .eq('role_id', roleId)
-            .eq('application_name', 'fims')
-            .maybeSingle();
-
-          if (accessError) {
-            setError('Error checking permissions. Please try again.');
-            await supabase.auth.signOut();
-          } else if (!accessData) {
-            alert(language === 'mr' ? 'आपल्याला FIMS ॲप्लिकेशनचा प्रवेश नाही' : 'You do not have access to FIMS application');
-            await supabase.auth.signOut();
-          } else {
-            onSignInSuccess();
-          }
+        if (accessError) {
+          setError('Error checking permissions. Please try again.');
+          await supabase.auth.signOut();
+        } else if (!accessData) {
+          alert(language === 'mr' ? 'आपल्याला FIMSॲप्लिकेशनचा प्रवेश नाही' : 'You do not have access to FIMS application');
+          await supabase.auth.signOut();
         } else {
           onSignInSuccess();
         }
+      } else {
+        onSignInSuccess();
       }
     }
   } catch (err) {
