@@ -22,7 +22,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSignInSuccess }) => {
     return emailRegex.test(email);
   };
 
-const handleSignIn = async (e: React.FormEvent) => {
+const handleSignIn = async (e: React.FormEvent) => {debugger;
   e.preventDefault();
   setError('');
   
