@@ -23,50 +23,84 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSignInSuccess }) => {
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    
-    // Basic validation
-    if (!email || !password) {
-      setError(t('auth.fillAllFields'));
-      return;
-    }
+  e.preventDefault();
+  setError('');
+  
+  // Basic validation
+  if (!email || !password) {
+    setError(t('auth.fillAllFields'));
+    return;
+  }
 
-    if (!validateEmail(email)) {
-      setError(t('auth.invalidEmail'));
-      return;
-    }
+  if (!validateEmail(email)) {
+    setError(t('auth.invalidEmail'));
+    return;
+  }
 
-    if (password.length < 6) {
-      setError(t('auth.passwordTooShort'));
-      return;
-    }
+  if (password.length < 6) {
+    setError(t('auth.passwordTooShort'));
+    return;
+  }
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    if (!supabase) {
-      setError('Application not properly configured. Please contact administrator.');
-      setIsLoading(false);
-      return;
-    }
+  if (!supabase) {
+    setError('Application not properly configured. Please contact administrator.');
+    setIsLoading(false);
+    return;
+  }
 
-    try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+  try {
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      if (signInError) {
-        setError(signInError.message);
-      } else if (data.user) {
-        onSignInSuccess();
+    if (signInError) {
+      setError(signInError.message);
+    } else if (data.user) {
+      // Fetch user profile to get role_id (assuming 'profiles' table with 'id' linking to auth.users.id)
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role_id')
+        .eq('id', data.user.id)
+        .single();
+
+      if (profileError || !profile) {
+        setError('Profile not found. Please contact administrator.');
+        await supabase.auth.signOut();
+      } else {
+        const roleId = profile.role_id;
+        
+        if (roleId !== null) {
+          const { data: accessData, error: accessError } = await supabase
+            .from('application_permissions')
+            .select('id')
+            .eq('role_id', roleId)
+            .eq('application_name', 'fims')
+            .maybeSingle();
+
+          if (accessError) {
+            setError('Error checking permissions. Please try again.');
+            await supabase.auth.signOut();
+          } else if (!accessData) {
+            alert(language === 'mr' ? 'आपल्याला FIMSॲप्लिकेशनचा प्रवेश नाही' : 'You do not have access to FIMS application');
+            await supabase.auth.signOut();
+          } else {
+            onSignInSuccess();
+          }
+        } else {
+          onSignInSuccess();
+        }
       }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
-    } finally {
-      setIsLoading(false);
     }
-  };
+  } catch (err) {
+    setError('An unexpected error occurred. Please try again.');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handlePasswordReset = async () => {
     if (!email) {
