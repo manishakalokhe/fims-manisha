@@ -61,7 +61,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSignInSuccess }) => {
     } else if (data.user) {
       // Fetch user profile to get role_id (assuming 'profiles' table with 'id' linking to auth.users.id)
       const { data: profile, error: profileError } = await supabase
-        .from('profiles')
+        .from('user_roles')
         .select('role_id')
         .eq('id', data.user.id)
         .single();
