@@ -65,8 +65,7 @@ const handleSignIn = async (e: React.FormEvent) => {debugger;
       if (roleId !== null) {
         const { data: accessData, error: accessError } = await supabase
           .from('application_permissions')
-          .select('id')
-          .eq('role_id', roleId)
+          .select('*')
           .eq('application_name', 'fims')
           .maybeSingle();
 
