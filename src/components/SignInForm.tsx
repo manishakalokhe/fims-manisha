@@ -84,7 +84,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSignInSuccess }) => {
             setError('Error checking permissions. Please try again.');
             await supabase.auth.signOut();
           } else if (!accessData) {
-            alert(language === 'mr' ? 'आपल्याला FIMSॲप्लिकेशनचा प्रवेश नाही' : 'You do not have access to FIMS application');
+            alert(language === 'mr' ? 'आपल्याला FIMS ॲप्लिकेशनचा प्रवेश नाही' : 'You do not have access to FIMS application');
             await supabase.auth.signOut();
           } else {
             onSignInSuccess();
