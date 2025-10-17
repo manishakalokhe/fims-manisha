@@ -22,72 +22,51 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSignInSuccess }) => {
     return emailRegex.test(email);
   };
 
-const handleSignIn = async (e: React.FormEvent) => {debugger;
-  e.preventDefault();
-  setError('');
-  
-  // Basic validation
-  if (!email || !password) {
-    setError(t('auth.fillAllFields'));
-    return;
-  }
+const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    
+    // Basic validation
+    if (!email || !password) {
+      setError(t('auth.fillAllFields'));
+      return;
+    }
 
-  if (!validateEmail(email)) {
-    setError(t('auth.invalidEmail'));
-    return;
-  }
+    if (!validateEmail(email)) {
+      setError(t('auth.invalidEmail'));
+      return;
+    }
 
-  if (password.length < 6) {
-    setError(t('auth.passwordTooShort'));
-    return;
-  }
+    if (password.length < 6) {
+      setError(t('auth.passwordTooShort'));
+      return;
+    }
 
-  setIsLoading(true);
+    setIsLoading(true);
 
-  if (!supabase) {
-    setError('Application not properly configured. Please contact administrator.');
-    setIsLoading(false);
-    return;
-  }
+    if (!supabase) {
+      setError('Application not properly configured. Please contact administrator.');
+      setIsLoading(false);
+      return;
+    }
 
-  try {
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (signInError) {
-      setError(signInError.message);
-    } else if (data.user) {
-      // Retrieve role_id from user metadata (set during sign-up or admin update)
-      const roleId = data.user.id;
-      
-      if (roleId !== null) {
-        const { data: accessData, error: accessError } = await supabase
-          .from('application_permissions')
-          .select('*')
-          .eq('application_name', 'fims')
-          .maybeSingle();
-
-        if (accessError) {
-          setError('Error checking permissions. Please try again.');
-          await supabase.auth.signOut();
-        } else if (!accessData) {
-          alert('You do not have access to FIMS application');
-          await supabase.auth.signOut();
-        } else {
-          onSignInSuccess();
-        }
-      } else {
+      if (signInError) {
+        setError(signInError.message);
+      } else if (data.user) {
         onSignInSuccess();
       }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-  } catch (err) {
-    setError('An unexpected error occurred. Please try again.');
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
 
   const handlePasswordReset = async () => {
