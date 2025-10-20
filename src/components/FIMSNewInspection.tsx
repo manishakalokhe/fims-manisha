@@ -12,7 +12,6 @@ import { RajyaGunwattaNirikshakTapasaniForm } from './RajyaGunwattaNirikshakTapa
 import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
 import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
 import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
-import { PahuvaidhakiyaTapasaniForm } from './JilhastariyaTapasaniSuchiForm.tsx';
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
