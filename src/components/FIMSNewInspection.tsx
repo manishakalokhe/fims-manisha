@@ -353,7 +353,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
          //   { key: 'form_13', title: 'Form 13 Title', subtitle: 'Form 13 Description', color: 'amber' },
          //   { key: 'form_14', title: 'Form 14 Title', subtitle: 'Form 14 Description', color: 'emerald' },
          //   { key: 'form_15', title: 'Form 15 Title', subtitle: 'Form 15 Description', color: 'rose' }
-      //   { key: 'form_16', title: 'Form 16 Title', subtitle: 'Form 16 Description', color: 'rose' }
+      
           ].map((form, index) => (
             <div 
               key={form.key}
@@ -424,14 +424,6 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
                     <p>• कृत्रिम रेतन व गर्भधारणा तपासणी</p>
                     <p>• रोग माहिती व लसीकरण कार्यक्रम</p>
                     <p>• योजना प्रगती व तांत्रिक मूल्यांकन</p>
-                    </>
-              ) : form.key === 'Jilhastariya_Tapasani_Suchi_Form' ? (
-                  <>
-                    <p>• राष्ट्रीय कुटुंब कल्याण कार्यक्रम</p>
-                    <p>• राष्ट्रीय माताबाल संगोपन कार्यक्रम</p>
-                    <p>• संशयित कुष्ठरुग्ण नोंदणी</p>
-                    <p>• एक्स रे तपासणी</p>
-                    <p>• एकुण क्रियाशिल रुग्ण</p>
                     </>
                 ) : (
                   <></>
