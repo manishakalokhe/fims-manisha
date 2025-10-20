@@ -192,18 +192,6 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       );
     }
 
-    if (selectedInspectionType === 'Jilhastariya_Tapasani_Suchi_Form') {
-      return (
-        <PahuvaidhakiyaTapasaniForm
-          user={user}
-          onBack={handleBackToSelection}
-          categories={categories}
-          onInspectionCreated={onInspectionCreated}
-          editingInspection={editingInspection}
-        />
-      );
-    }
-
     return null;
   };
 
