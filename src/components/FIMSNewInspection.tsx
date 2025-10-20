@@ -195,7 +195,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
 
     if (selectedInspectionType === 'Jilhastariya_Tapasani_Suchi_Form') {
       return (
-        <PahuvaidhakiyaTapasaniForm
+        <JilhastariyaTapasaniSuchiForm
           user={user}
           onBack={handleBackToSelection}
           categories={categories}
