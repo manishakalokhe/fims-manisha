@@ -28,18 +28,17 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
 }) => {
   const { t } = useTranslation();
   
-  // Check if we're in view mode
   const isViewMode = editingInspection?.mode === 'view';
   const isEditMode = editingInspection?.mode === 'edit';
   
-  // State for yes/no radio buttons and other inputs
+  // State for yes/no radio buttons
   const [monthlyMeetings, setMonthlyMeetings] = useState('');
   const [agendaUpToDate, setAgendaUpToDate] = useState('');
   const [receiptUpToDate, setReceiptUpToDate] = useState('');
   const [reassessmentDone, setReassessmentDone] = useState('');
   const [reassessmentAction, setReassessmentAction] = useState('');
 
-  // States for other form fields (blanks)
+  // States for form fields
   const [gpName, setGpName] = useState('');
   const [psName, setPsName] = useState('');
   const [inspectionDate, setInspectionDate] = useState('');
@@ -58,7 +57,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   
-  // Basic inspection data
   const [inspectionData, setInspectionData] = useState({
     category_id: '',
     location_name: '',
@@ -69,7 +67,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     location_detected: ''
   });
 
-  // Get grampanchayat inspection category
   const grampanchayatCategory = categories.find(cat => cat.form_type === 'grampanchayat');
 
   useEffect(() => {
@@ -81,11 +78,8 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     }
   }, [grampanchayatCategory]);
 
-  // Load existing inspection data when editing
   useEffect(() => {
     if (editingInspection && editingInspection.id) {
-      console.log('Loading existing inspection data:', editingInspection);
-      
       setInspectionData({
         category_id: editingInspection.category_id || '',
         location_name: editingInspection.location_name || '',
@@ -117,7 +111,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     }
   }, [editingInspection]);
 
-  // Get current GPS location
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser');
@@ -183,7 +176,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     );
   };
 
-  // Handle photo upload
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     if (uploadedPhotos.length + files.length > 5) {
@@ -193,12 +185,10 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     setUploadedPhotos(prev => [...prev, ...files]);
   };
 
-  // Remove photo
   const removePhoto = (index: number) => {
     setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
   };
 
-  // Upload photos to Supabase
   const uploadPhotosToSupabase = async (inspectionId: string) => {
     if (uploadedPhotos.length === 0) return;
     
@@ -240,7 +230,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     }
   };
 
-  // Generate inspection number
   const generateInspectionNumber = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -250,7 +239,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     return `GP-${year}${month}${day}-${time}`;
   };
 
-  // Handle form submission
   const handleSubmit = async (isDraft: boolean = false) => {
     try {
       setIsLoading(true);
@@ -350,7 +338,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header with Back Button */}
+        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <button
             onClick={onBack}
@@ -378,9 +366,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           <div className="p-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  स्थानाचे नाव *
-                </label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">स्थानाचे नाव *</label>
                 <input
                   type="text"
                   value={inspectionData.location_name}
@@ -393,9 +379,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
               </div>
               
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  नियोजित तारीख
-                </label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">नियोजित तारीख</label>
                 <input
                   type="date"
                   value={inspectionData.planned_date}
@@ -430,9 +414,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
             )}
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">
-                शोधलेले स्थान (Location Detected)
-              </label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">शोधलेले स्थान</label>
               <input
                 type="text"
                 value={inspectionData.location_detected}
@@ -445,7 +427,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           </div>
         </section>
 
-        {/* Form Title Section */}
+        {/* Title Section */}
         <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 px-8 py-16 text-white relative">
             <div className="absolute inset-0 bg-black/10"></div>
@@ -456,9 +438,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                   <FileText className="w-16 h-16 text-white" />
                 </div>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">
-                परिशिष्ट-चार
-              </h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">परिशिष्ट-चार</h1>
               <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 inline-block shadow-lg border border-white/30">
                 <p className="text-lg font-medium">(नियम 80 पहा)</p>
                 <p className="text-lg font-medium">(ख)ग्राम पंचायतांची सर्वसाधारण तपासणीचा नमुना</p>
@@ -467,17 +447,16 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           </div>
         </div>
 
-        {/* Form Content Section */}
+        {/* Basic Information Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6">
             <div className="flex items-center text-white">
               <FileText className="w-8 h-8 mr-4" />
-              <h3 className="text-2xl font-bold">तपासणी माहिती</h3>
+              <h3 className="text-2xl font-bold">मूळ माहिती (Basic Information)</h3>
             </div>
           </div>
           <div className="p-10">
             <div className="space-y-6">
-              {/* Question 1 */}
               <div className="p-6 bg-gray-50 rounded-xl">
                 <p className="mb-4 text-gray-800 font-medium">
                   १. ग्राम पंचायतिचे नांव - 
@@ -499,7 +478,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                 </p>
               </div>
 
-              {/* Question 2 */}
               <div className="p-6 bg-gray-50 rounded-xl">
                 <p className="mb-4 text-gray-800 font-medium">
                   २. (क) सर्वसाधारण तपासणीची तारीख - 
@@ -513,7 +491,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                 </p>
               </div>
 
-              {/* Question 3 */}
               <div className="p-6 bg-gray-50 rounded-xl">
                 <p className="mb-4 text-gray-800 font-medium">
                   ३. (ख) सर्वसाधारण तपासणीचे ठिकाण - 
@@ -527,7 +504,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                 </p>
               </div>
 
-              {/* Question 4 */}
               <div className="p-6 bg-gray-50 rounded-xl">
                 <p className="mb-4 text-gray-800 font-medium">
                   ४. तपासणी अधिकारीाचे नांव व हुद्दा - 
@@ -549,7 +525,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                 </p>
               </div>
 
-              {/* Question 5 */}
               <div className="p-6 bg-gray-50 rounded-xl">
                 <p className="mb-4 text-gray-800 font-medium">
                   ५. सचिवाचे नांव व तो सदस्य पंचायतीत केलेला पासून काम करीत आहे - 
@@ -571,13 +546,12 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                 </p>
               </div>
 
-              {/* Question 6 */}
               <div className="p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200">
                 <p className="mb-4 text-gray-800 font-medium text-lg">
                   ६. मासिक सभा नियमांनुसार नियमितपणे होतात काय ?
                 </p>
                 <div className="flex gap-8 pl-4">
-                  <label className="flex items-center cursor-pointer group">
+                  <label className="flex items-center cursor-pointer">
                     <input 
                       type="radio" 
                       name="monthlyMeetings" 
@@ -589,7 +563,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     /> 
                     <span className="text-green-700 font-semibold text-lg">होय</span>
                   </label>
-                  <label className="flex items-center cursor-pointer group">
+                  <label className="flex items-center cursor-pointer">
                     <input 
                       type="radio" 
                       name="monthlyMeetings" 
@@ -604,13 +578,12 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                 </div>
               </div>
 
-              {/* Sub-question */}
               <div className="p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200 ml-8">
                 <p className="mb-4 text-gray-800 font-medium text-lg">
                   सभेची कार्यसूची व सभेची नोंदवही ईत्यादी अद्यावत आहे काय ?
                 </p>
                 <div className="flex gap-8 pl-4">
-                  <label className="flex items-center cursor-pointer group">
+                  <label className="flex items-center cursor-pointer">
                     <input 
                       type="radio" 
                       name="agendaUpToDate" 
@@ -622,7 +595,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     /> 
                     <span className="text-green-700 font-semibold text-lg">होय</span>
                   </label>
-                  <label className="flex items-center cursor-pointer group">
+                  <label className="flex items-center cursor-pointer">
                     <input 
                       type="radio" 
                       name="agendaUpToDate" 
@@ -636,72 +609,99 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                   </label>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
 
-              {/* Tables */}
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse border-2 border-gray-300 rounded-lg overflow-hidden">
-                  <thead>
-                    <tr className="bg-gradient-to-r from-gray-100 to-gray-200">
-                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">अ.क्र.</th>
-                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">नोंदवहीचे नाव</th>
-                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">तपासणीच्या तारखेला शिल्लक</th>
-                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">बँकेतिल शिल्लक</th>
-                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">पोस्टातिल शिल्लक</th>
-                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">हाती असलेली शिल्लक</th>
-                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">चेक</th>
+        {/* Financial Records Table Section */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <FileText className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">७. रोकड वहीचा तपशील (Cash Book Details)</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border-2 border-gray-300 rounded-lg overflow-hidden">
+                <thead>
+                  <tr className="bg-gradient-to-r from-gray-100 to-gray-200">
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">अ.क्र.</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">नोंदवहीचे नाव</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">तपासणीच्या तारखेला शिल्लक</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">बँकेतिल शिल्लक</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">पोस्टातिल शिल्लक</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">हाती असलेली शिल्लक</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">चेक</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["1", "ग्रामनिधी"],
+                    ["2", "पाणी पुरवठा"],
+                    ["3", "14 वा वित्त आयोग"],
+                    ["4", "इं.गा.यो."],
+                    ["5", "अ.जा.विकास"],
+                    ["6", "मजगारोहयो"],
+                    ["7", "ठक्कर बाप्पा"],
+                    ["8", "ग्रामकोष पैसा"],
+                    ["9", "नागरी सुविधा"],
+                    ["10", "दलित वस्ती विकास"],
+                    ["11", "तंटा मुक्त योजना"],
+                    ["12", "जनसुविधा"],
+                    ["13", "पायका"],
+                    ["14", "प.सं.योजना"],
+                    ["15", "SBM"],
+                    ["16", "तीर्थक्षेत्र विकास निधी"],
+                    ["17", "अल्पसंख्यांक विकास निधी"]
+                  ].map((row, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="border-2 border-gray-300 px-4 py-3 text-center">{row[0]}</td>
+                      <td className="border-2 border-gray-300 px-4 py-3">{row[1]}</td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      ["1", "ग्रामनिधी"],
-                      ["2", "पाणी पुरवठा"],
-                      ["3", "14 वा वित्त आयोग"],
-                      ["4", "इं.गा.यो."],
-                      ["5", "अ.जा.विकास"],
-                      ["6", "मजगारोहयो"],
-                      ["7", "ठक्कर बाप्पा"],
-                      ["8", "ग्रामकोष पैसा"],
-                      ["9", "नागरी सुविधा"],
-                      ["10", "दलित वस्ती विकास"],
-                      ["11", "तंटा मुक्त योजना"],
-                      ["12", "जनसुविधा"],
-                      ["13", "पायका"],
-                      ["14", "प.सं.योजना"],
-                      ["15", "SBM"],
-                      ["16", "तीर्थक्षेत्र विकास निधी"],
-                      ["17", "अल्पसंख्यांक विकास निधी"]
-                    ].map((row, index) => (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td className="border-2 border-gray-300 px-4 py-3 text-center">{row[0]}</td>
-                        <td className="border-2 border-gray-300 px-4 py-3">{row[1]}</td>
-                        <td className="border-2 border-gray-300 px-2 py-2">
-                          <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
-                        </td>
-                        <td className="border-2 border-gray-300 px-2 py-2">
-                          <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
-                        </td>
-                        <td className="border-2 border-gray-300 px-2 py-2">
-                          <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
-                        </td>
-                        <td className="border-2 border-gray-300 px-2 py-2">
-                          <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
-                        </td>
-                        <td className="border-2 border-gray-300 px-2 py-2">
-                          <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* Tax Assessment Section */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-orange-500 to-red-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <FileText className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">८. कर आकारणी माहिती (Tax Assessment Information)</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="space-y-6">
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <h4 className="font-bold text-gray-800 mb-4">(क) कर आकारणी नोंदवही (नमुना 8) :- नाही</h4>
+                <p className="mb-2">१. कराच्या मागणीचे नोंदणी पुस्तक (नमुना 9) :-</p>
               </div>
 
-              {/* More radio questions */}
               <div className="p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200">
                 <p className="mb-4 text-gray-800 font-medium text-lg">
-                  २. कराची पावती (नमुना 10) - हे अद्यावत आहे काय ?
+                  २. कराची पावती (नमुना 10) :- हे अद्यावत आहे काय ?
                 </p>
                 <div className="flex gap-8 pl-4">
-                  <label className="flex items-center cursor-pointer group">
+                  <label className="flex items-center cursor-pointer">
                     <input 
                       type="radio" 
                       name="receiptUpToDate" 
@@ -713,7 +713,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     /> 
                     <span className="text-green-700 font-semibold text-lg">होय</span>
                   </label>
-                  <label className="flex items-center cursor-pointer group">
+                  <label className="flex items-center cursor-pointer">
                     <input 
                       type="radio" 
                       name="receiptUpToDate" 
@@ -735,7 +735,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     type="text" 
                     value={resolutionNo} 
                     onChange={(e) => setResolutionNo(e.target.value)} 
-                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500" 
                     disabled={isViewMode}
                   />
                 </p>
@@ -746,7 +746,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                   (ग) चार वर्षे पूर्ण झालेली असल्यास, नटल्याने फेर आकारणी करण्यासाठी कार्यवाही चालू आहे किंवा नाही ?
                 </p>
                 <div className="flex gap-8 pl-4">
-                  <label className="flex items-center cursor-pointer group">
+                  <label className="flex items-center cursor-pointer">
                     <input 
                       type="radio" 
                       name="reassessmentAction" 
@@ -758,7 +758,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     /> 
                     <span className="text-green-700 font-semibold text-lg">होय</span>
                   </label>
-                  <label className="flex items-center cursor-pointer group">
+                  <label className="flex items-center cursor-pointer">
                     <input 
                       type="radio" 
                       name="reassessmentAction" 
@@ -776,6 +776,247 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           </div>
         </section>
 
+        {/* Tax Collection Progress Section */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <FileText className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">९. तपासणी तारखेस कर वसुलीची प्रगती</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="space-y-4">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(1) मागील येणे रक्कम :- गृहकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /> पाणीकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(2) चालू वर्षात मागणी :- गृहकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /> पाणीकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(3) एकुण मागणी :- गृहकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /> पाणीकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(4) एकुण वसूली :- गृहकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /> पाणीकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(5) शिल्लक वसूली :- गृहकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /> पाणीकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(6) टक्केवारी :- गृहकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /> पाणीकर - <input type="number" className="ml-2 px-2 py-1 border rounded" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(7) शेरा :- <input type="text" className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg w-full max-w-md" disabled={isViewMode} /></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 15% Fund Expenditure Section */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-green-500 to-teal-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <FileText className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">१०. मागास वर्गीयाकरीता राखून ठेवलेल्या 15% निधीच्या खर्चाचा तपशील</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="space-y-4">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(1) ग्राम पंचायतीचे एकुण उत्पन्न :- <input type="number" className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(2) 15% रक्कम :- <input type="number" className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(3) मागील अनुशेष :- <input type="number" className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(4) करावयाचा एकुण खर्च :- <input type="number" className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(5) तपासणीत्या दिनांक पर्यंत झालेला खर्च :- <input type="number" className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg" disabled={isViewMode} /></p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p>(6) शिल्लक खर्च :- <input type="number" className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg" disabled={isViewMode} /></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Projects Undertaken Table */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <FileText className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">१२. हात घेतलेल्या कामांचा तपशील (Projects Details)</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border-2 border-gray-300 rounded-lg overflow-hidden mb-6">
+                <thead>
+                  <tr className="bg-gradient-to-r from-gray-100 to-gray-200">
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">अ.क्र.</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">योजनेचे नांव</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">कामाचा प्रकार</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">अंदाजित रक्कम</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">मिळालेले अनुदान</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">झालेला खर्च</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[1, 2, 3].map((row) => (
+                    <tr key={row} className="hover:bg-gray-50">
+                      <td className="border-2 border-gray-300 px-2 py-2 text-center">
+                        <input type="text" className="w-full px-2 py-1 border rounded text-center" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="number" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="number" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="number" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <table className="w-full border-collapse border-2 border-gray-300 rounded-lg overflow-hidden">
+                <thead>
+                  <tr className="bg-gradient-to-r from-gray-100 to-gray-200">
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">काम सुरु झाल्याची तारीख</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">काम पूर्ण झाल्याची तारीख</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">प्रगतीवर असलेल्या कामाची सद्य:स्थिती</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">पूर्णत्वाचे प्रमाणपत्र प्राप्त केले किंवा नाही</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">शेरा</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[1, 2, 3].map((row) => (
+                    <tr key={row} className="hover:bg-gray-50">
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="date" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="date" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2 text-center">
+                        <label className="mr-2"><input type="radio" name={`certificate${row}`} value="होय" disabled={isViewMode} /> होय</label>
+                        <label><input type="radio" name={`certificate${row}`} value="नाही" disabled={isViewMode} /> नाही</label>
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* Scheme Progress Table */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-pink-500 to-rose-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <FileText className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">१३. इतर योजनामध्ये केलेली प्रगती</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border-2 border-gray-300 rounded-lg overflow-hidden">
+                <thead>
+                  <tr className="bg-gradient-to-r from-gray-100 to-gray-200">
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">अ.क्र.</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">योजनेचे नाव</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">दिलेली उद्दिष्टे</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">तपासणीच्या दिनांकास</th>
+                    <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">शेरा</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["1", "एगाविका."],
+                    ["2", "बॉयोगॅस"],
+                    ["3", "निर्धूर चुल"],
+                    ["4", "कुंटुंब कल्याण"],
+                    ["5", "अल्पवचत"],
+                    ["6", ""],
+                    ["7", ""]
+                  ].map((row, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="border-2 border-gray-300 px-4 py-3 text-center">{row[0]}</td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        {row[1] ? row[1] : <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />}
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                      <td className="border-2 border-gray-300 px-2 py-2">
+                        <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* Inspector's Opinion Section */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <FileText className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">तपासणी अधिकार्‍याचा अभिप्राय (Inspector's Opinion)</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                <div key={num} className="p-4 bg-gray-50 rounded-lg">
+                  <p className="text-gray-800">
+                    {num}) {num === 1 ? 'नमुना - - - - - अपूर्ण आहेत.' : '--- .'} 
+                    <input 
+                      type="text" 
+                      className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg w-full max-w-2xl mt-2" 
+                      disabled={isViewMode} 
+                    />
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Copy To Section */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="p-10">
+            <div className="space-y-2 text-gray-800">
+              <p className="font-bold text-lg mb-4">प्रतिलिपी:-</p>
+              <p>१) मा.मुख्य कार्यकारी अधिकारी जिल्हा परिषद, चंद्रपूर यांना माहितीस सविनय सादर.</p>
+              <p>२) गट विकास अधिकारी, पंचायत समिती--------------------- यांना माहितीस सादर.</p>
+              <p>३) सचिव ग्रामपंचायत--------------------- यांना माहितीस व उचित कार्यवाहीस अवगत.</p>
+            </div>
+          </div>
+        </section>
+
         {/* Photo Upload Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
@@ -788,9 +1029,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
             {!isViewMode && (
               <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center mb-6 hover:border-purple-400 transition-colors">
                 <Camera size={48} className="text-gray-400 mx-auto mb-4" />
-                <h4 className="text-xl font-semibold text-gray-700 mb-2">
-                  ग्रामपंचायत फोटो अपलोड करा
-                </h4>
+                <h4 className="text-xl font-semibold text-gray-700 mb-2">ग्रामपंचायत फोटो अपलोड करा</h4>
                 <p className="text-gray-600 mb-4">
                   {uploadedPhotos.length > 0
                     ? `${uploadedPhotos.length}/5 फोटो निवडले आहेत`
@@ -820,7 +1059,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
               </div>
             )}
 
-            {/* Photo Previews */}
             {uploadedPhotos.length > 0 && (
               <div>
                 <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -847,12 +1085,8 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                         </button>
                       )}
                       <div className="p-4">
-                        <p className="font-semibold text-gray-800 text-sm truncate">
-                          {file.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {(file.size / 1024 / 1024).toFixed(2)} MB
-                        </p>
+                        <p className="font-semibold text-gray-800 text-sm truncate">{file.name}</p>
+                        <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                       </div>
                     </div>
                   ))}
@@ -860,13 +1094,10 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
               </div>
             )}
 
-            {/* Upload Progress */}
             {isUploading && (
               <div className="mt-6 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm font-semibold text-blue-800">
-                    फोटो अपलोड करत आहे...
-                  </span>
+                  <span className="text-sm font-semibold text-blue-800">फोटो अपलोड करत आहे...</span>
                   <span className="text-sm text-blue-600">{uploadProgress}%</span>
                 </div>
                 <div className="w-full bg-blue-200 rounded-full h-2">
@@ -878,7 +1109,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
               </div>
             )}
 
-            {/* Display existing photos when viewing */}
             {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
               <div>
                 <h4 className="text-lg font-semibold mb-4">
@@ -900,9 +1130,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                           {photo.photo_name || `Photo ${index + 1}`}
                         </p>
                         {photo.description && (
-                          <p className="text-xs text-gray-500 truncate">
-                            {photo.description}
-                          </p>
+                          <p className="text-xs text-gray-500 truncate">{photo.description}</p>
                         )}
                       </div>
                     </div>
@@ -911,7 +1139,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
               </div>
             )}
 
-            {/* No photos message */}
             {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
               <div className="text-center py-12">
                 <Camera size={48} className="text-gray-300 mx-auto mb-4" />
@@ -923,7 +1150,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
 
         {/* Submit Buttons */}
         {!isViewMode && (
-          <div className="flex justify-center gap-6 mt-8">
+          <div className="flex justify-center gap-6 mt-8 mb-12">
             <button
               type="button"
               onClick={() => handleSubmit(true)}
