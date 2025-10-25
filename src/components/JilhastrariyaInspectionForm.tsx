@@ -83,7 +83,7 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
     { program: 'व्हिसीबल बर्थ डिफेक्ट', target: '', achieved: '', percentage: '' },
     { program: '5) मॅटर्नल हेल्थ', target: '', achieved: '', percentage: '' },
     { program: 'मॅटर्नल डेथ', target: '', achieved: '', percentage: '' },
-    { program: 'प्रसुती कक्ष', target: '', achieved: '', percentage: '' },
+    { program: 'प्रसूती कक्ष', target: '', achieved: '', percentage: '' },
     { program: 'ए.एम.बी कार्यक्रम', target: '', achieved: '', percentage: '' },
     { program: 'भरती प्रक्रिया/डिस्चार्ज कार्ड', target: '', achieved: '', percentage: '' },
     { program: 'JSSK कार्यक्रम', target: '', achieved: '', percentage: '' },
@@ -140,6 +140,7 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
     { program: 'एकुण स्तनाच्या कर्करोगाचे रुग्ण', target: '', achieved: '', percentage: '' },
     { program: 'एकुण गर्भाशयाच्या कर्करोगाचे रुग्ण', target: '', achieved: '', percentage: '' }
   ]);
+  
   const [formData, setFormData] = useState({
     health_center_name: '',
     location_name: '',
