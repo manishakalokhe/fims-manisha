@@ -38,6 +38,12 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
   const [reassessmentDone, setReassessmentDone] = useState('');
   const [reassessmentAction, setReassessmentAction] = useState('');
 
+  // States for basic information fields
+  const [anganwadiName, setAnganwadiName] = useState('');
+  const [anganwadiNumber, setAnganwadiNumber] = useState('');
+  const [supervisorName, setSupervisorName] = useState('');
+  const [helperName, setHelperName] = useState('');
+
   // States for form fields
   const [gpName, setGpName] = useState('');
   const [psName, setPsName] = useState('');
@@ -92,6 +98,10 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
 
       const formData = editingInspection.form_data;
       if (formData) {
+        setAnganwadiName(formData.anganwadiName || '');
+        setAnganwadiNumber(formData.anganwadiNumber || '');
+        setSupervisorName(formData.supervisorName || '');
+        setHelperName(formData.helperName || '');
         setMonthlyMeetings(formData.monthlyMeetings || '');
         setAgendaUpToDate(formData.agendaUpToDate || '');
         setReceiptUpToDate(formData.receiptUpToDate || '');
@@ -244,6 +254,10 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
       setIsLoading(true);
 
       const formData = {
+        anganwadiName,
+        anganwadiNumber,
+        supervisorName,
+        helperName,
         monthlyMeetings,
         agendaUpToDate,
         receiptUpToDate,
@@ -355,6 +369,100 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           )}
         </div>
 
+        {/* Title Section */}
+        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 px-8 py-16 text-white relative">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+            <div className="relative z-10 text-center">
+              <div className="flex justify-center mb-8">
+                <div className="bg-white/20 backdrop-blur-sm rounded-full p-6 shadow-lg">
+                  <FileText className="w-16 h-16 text-white" />
+                </div>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">परिशिष्ट-चार</h1>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 inline-block shadow-lg border border-white/30">
+                <p className="text-lg font-medium">(नियम 80 पहा)</p>
+                <p className="text-lg font-medium">(ख)ग्राम पंचायतांची सर्वसाधारण तपासणीचा नमुना</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Basic Information Section - BEFORE Location */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <FileText className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">मूळ माहिती (Basic Information)</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Anganwadi Name */}
+              <div>
+                <label className="block mb-2 text-sm font-semibold text-gray-700">
+                  अंगणवाडीचे नाव *
+                </label>
+                <input
+                  type="text"
+                  value={anganwadiName}
+                  onChange={(e) => setAnganwadiName(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300"
+                  placeholder="अंगणवाडीचे नाव प्रविष्ट करा"
+                  required
+                  disabled={isViewMode}
+                />
+              </div>
+
+              {/* Anganwadi Number */}
+              <div>
+                <label className="block mb-2 text-sm font-semibold text-gray-700">
+                  अंगणवाडी क्रमांक
+                </label>
+                <input
+                  type="text"
+                  value={anganwadiNumber}
+                  onChange={(e) => setAnganwadiNumber(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300"
+                  placeholder="अंगणवाडी क्रमांक प्रविष्ट करा"
+                  disabled={isViewMode}
+                />
+              </div>
+
+              {/* Supervisor Name */}
+              <div>
+                <label className="block mb-2 text-sm font-semibold text-gray-700">
+                  पर्यवेक्षकाचे नाव
+                </label>
+                <input
+                  type="text"
+                  value={supervisorName}
+                  onChange={(e) => setSupervisorName(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300"
+                  placeholder="पर्यवेक्षकाचे नाव प्रविष्ट करा"
+                  disabled={isViewMode}
+                />
+              </div>
+
+              {/* Helper Name */}
+              <div>
+                <label className="block mb-2 text-sm font-semibold text-gray-700">
+                  सहाय्यकाचे नाव
+                </label>
+                <input
+                  type="text"
+                  value={helperName}
+                  onChange={(e) => setHelperName(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300"
+                  placeholder="सहाय्यकाचे नाव प्रविष्ट करा"
+                  disabled={isViewMode}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Location Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
@@ -427,32 +535,13 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           </div>
         </section>
 
-        {/* Title Section */}
-        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 px-8 py-16 text-white relative">
-            <div className="absolute inset-0 bg-black/10"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
-            <div className="relative z-10 text-center">
-              <div className="flex justify-center mb-8">
-                <div className="bg-white/20 backdrop-blur-sm rounded-full p-6 shadow-lg">
-                  <FileText className="w-16 h-16 text-white" />
-                </div>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">परिशिष्ट-चार</h1>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 inline-block shadow-lg border border-white/30">
-                <p className="text-lg font-medium">(नियम 80 पहा)</p>
-                <p className="text-lg font-medium">(ख)ग्राम पंचायतांची सर्वसाधारण तपासणीचा नमुना</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        {/* Rest of the form sections remain exactly the same... */}
         {/* Basic Information Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6">
+          <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
             <div className="flex items-center text-white">
               <FileText className="w-8 h-8 mr-4" />
-              <h3 className="text-2xl font-bold">मूळ माहिती (Basic Information)</h3>
+              <h3 className="text-2xl font-bold">तपासणी माहिती (Inspection Information)</h3>
             </div>
           </div>
           <div className="p-10">
@@ -464,7 +553,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     type="text" 
                     value={gpName} 
                     onChange={(e) => setGpName(e.target.value)} 
-                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500" 
                     disabled={isViewMode}
                   />
                   {' '}पंचायत समिती -{' '}
@@ -472,7 +561,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     type="text" 
                     value={psName} 
                     onChange={(e) => setPsName(e.target.value)} 
-                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500" 
                     disabled={isViewMode}
                   />
                 </p>
@@ -485,7 +574,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     type="date" 
                     value={inspectionDate} 
                     onChange={(e) => setInspectionDate(e.target.value)} 
-                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500" 
                     disabled={isViewMode}
                   />
                 </p>
@@ -498,7 +587,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     type="text" 
                     value={inspectionPlace} 
                     onChange={(e) => setInspectionPlace(e.target.value)} 
-                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 w-full max-w-md" 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 w-full max-w-md" 
                     disabled={isViewMode}
                   />
                 </p>
@@ -511,7 +600,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     type="text" 
                     value={officerName} 
                     onChange={(e) => setOfficerName(e.target.value)} 
-                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500" 
                     disabled={isViewMode}
                   />
                   {' / '}
@@ -519,7 +608,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     type="text" 
                     value={officerPost} 
                     onChange={(e) => setOfficerPost(e.target.value)} 
-                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500" 
                     disabled={isViewMode}
                   />
                 </p>
@@ -532,7 +621,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     type="text" 
                     value={secretaryName} 
                     onChange={(e) => setSecretaryName(e.target.value)} 
-                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500" 
                     disabled={isViewMode}
                   />
                   {' / '}
@@ -540,7 +629,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     type="text" 
                     value={secretaryTenure} 
                     onChange={(e) => setSecretaryTenure(e.target.value)} 
-                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500" 
                     disabled={isViewMode}
                   />
                 </p>
@@ -615,7 +704,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
 
         {/* Financial Records Table Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
+          <div className="bg-gradient-to-r from-orange-500 to-red-600 px-8 py-6">
             <div className="flex items-center text-white">
               <FileText className="w-8 h-8 mr-4" />
               <h3 className="text-2xl font-bold">७. रोकड वहीचा तपशील (Cash Book Details)</h3>
@@ -683,7 +772,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
 
         {/* Tax Assessment Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-orange-500 to-red-600 px-8 py-6">
+          <div className="bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-6">
             <div className="flex items-center text-white">
               <FileText className="w-8 h-8 mr-4" />
               <h3 className="text-2xl font-bold">८. कर आकारणी माहिती (Tax Assessment Information)</h3>
@@ -735,7 +824,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                     type="text" 
                     value={resolutionNo} 
                     onChange={(e) => setResolutionNo(e.target.value)} 
-                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500" 
+                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500" 
                     disabled={isViewMode}
                   />
                 </p>
@@ -778,7 +867,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
 
         {/* Tax Collection Progress Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-6">
+          <div className="bg-gradient-to-r from-green-500 to-teal-600 px-8 py-6">
             <div className="flex items-center text-white">
               <FileText className="w-8 h-8 mr-4" />
               <h3 className="text-2xl font-bold">९. तपासणी तारखेस कर वसुलीची प्रगती</h3>
@@ -813,7 +902,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
 
         {/* 15% Fund Expenditure Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-green-500 to-teal-600 px-8 py-6">
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
             <div className="flex items-center text-white">
               <FileText className="w-8 h-8 mr-4" />
               <h3 className="text-2xl font-bold">१०. मागास वर्गीयाकरीता राखून ठेवलेल्या 15% निधीच्या खर्चाचा तपशील</h3>
@@ -845,7 +934,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
 
         {/* Projects Undertaken Table */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
+          <div className="bg-gradient-to-r from-pink-500 to-rose-600 px-8 py-6">
             <div className="flex items-center text-white">
               <FileText className="w-8 h-8 mr-4" />
               <h3 className="text-2xl font-bold">१२. हात घेतलेल्या कामांचा तपशील (Projects Details)</h3>
@@ -929,7 +1018,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
 
         {/* Scheme Progress Table */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-pink-500 to-rose-600 px-8 py-6">
+          <div className="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
             <div className="flex items-center text-white">
               <FileText className="w-8 h-8 mr-4" />
               <h3 className="text-2xl font-bold">१३. इतर योजनामध्ये केलेली प्रगती</h3>
@@ -981,7 +1070,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
 
         {/* Inspector's Opinion Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
+          <div className="bg-gradient-to-r from-red-500 to-pink-600 px-8 py-6">
             <div className="flex items-center text-white">
               <FileText className="w-8 h-8 mr-4" />
               <h3 className="text-2xl font-bold">तपासणी अधिकार्‍याचा अभिप्राय (Inspector's Opinion)</h3>
