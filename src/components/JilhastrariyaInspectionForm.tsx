@@ -39,13 +39,13 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
     { program: 'PPIUCD', target: '', achieved: '', percentage: '' },
     { program: '2) राष्ट्रीय माताबाल संगोपन कार्यक्रम', target: '', achieved: '', percentage: '' },
     { program: 'एकुण गरोदर माता नोंदणी', target: '', achieved: '', percentage: '' },
-    { program: '१२ आठवडयाच्या आत नोंदणी', target: '', achieved: '', percentage: '' },
-    { program: 'गरोदर माता १८० लोहगोळया', target: '', achieved: '', percentage: '' },
-    { program: 'गरोदर माता ३६० कॅल्शियम गोळया', target: '', achieved: '', percentage: '' },
+    { program: '१२ आठवड्याच्या आत नोंदणी', target: '', achieved: '', percentage: '' },
+    { program: 'गरोदर माता १८० लोहगोळ्या', target: '', achieved: '', percentage: '' },
+    { program: 'गरोदर माता ३६० कॅल्शियम गोळ्या', target: '', achieved: '', percentage: '' },
     { program: 'गरोदर माता ४ वेळा तपासणी', target: '', achieved: '', percentage: '' },
     { program: 'एकुण अतिजोखमीच्या माता नोंद', target: '', achieved: '', percentage: '' },
     { program: 'गर्भपात', target: '', achieved: '', percentage: '' },
-    { program: 'वैद्यकिय गर्भपात', target: '', achieved: '', percentage: '' },
+    { program: 'वैद्यकीय गर्भपात', target: '', achieved: '', percentage: '' },
     { program: 'एकुण प्रसूती', target: '', achieved: '', percentage: '' },
     { program: 'संस्थात्मक प्रसूती', target: '', achieved: '', percentage: '' },
     { program: 'घरी झालेली प्रसूती', target: '', achieved: '', percentage: '' },
@@ -55,16 +55,16 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
     { program: 'लसीकरण विभाग', target: '', achieved: '', percentage: '' },
     { program: 'बिसीजी', target: '', achieved: '', percentage: '' },
     { program: 'विटॅमीन के', target: '', achieved: '', percentage: '' },
-    { program: 'पेंन्टॅवॅलंट १', target: '', achieved: '', percentage: '' },
+    { program: 'पेंन्टॅवॅलेंट १', target: '', achieved: '', percentage: '' },
     { program: 'ओपीव्ही १', target: '', achieved: '', percentage: '' },
-    { program: 'पेंन्टॅवॅलंट ३', target: '', achieved: '', percentage: '' },
+    { program: 'पेंन्टॅवॅलेंट ३', target: '', achieved: '', percentage: '' },
     { program: 'ओपीव्ही ३', target: '', achieved: '', percentage: '' },
     { program: 'आयपीव्ही १', target: '', achieved: '', percentage: '' },
     { program: 'आयपीव्ही २', target: '', achieved: '', percentage: '' },
     { program: 'रोटाव्हायरस ३', target: '', achieved: '', percentage: '' },
     { program: 'पिसीव्ही १', target: '', achieved: '', percentage: '' },
     { program: 'पिसीव्ही २', target: '', achieved: '', percentage: '' },
-    { program: 'संपुर्ण लसीकरण (एम आर १)', target: '', achieved: '', percentage: '' },
+    { program: 'संपूर्ण लसीकरण (एम आर १)', target: '', achieved: '', percentage: '' },
     { program: 'एम आर २', target: '', achieved: '', percentage: '' },
     { program: 'डिपीटी बुस्टर', target: '', achieved: '', percentage: '' },
     { program: 'पोलिओ बुस्टर', target: '', achieved: '', percentage: '' },
@@ -73,10 +73,10 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
     { program: 'वि.पी.डी', target: '', achieved: '', percentage: '' },
     { program: 'ए.ई.एफ.आय', target: '', achieved: '', percentage: '' },
     { program: 'एएनसी टीडी', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण आरोग्य सेवा सत्रांची संख्या', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण आयोजित सत्रे', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण सॅम बालके', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण मॅम बालके', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण आरोग्य सेवा सत्रांची संख्या', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण आयोजित सत्रे', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण सॅम बालके', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण मॅम बालके', target: '', achieved: '', percentage: '' },
     { program: '4) चाईल्ड हेल्थ', target: '', achieved: '', percentage: '' },
     { program: '० ते १ वर्षातील बालमृत्यू', target: '', achieved: '', percentage: '' },
     { program: '१ ते ५ वर्षातील बालमृत्यू', target: '', achieved: '', percentage: '' },
@@ -91,56 +91,55 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
     { program: '6) RISE APP', target: '', achieved: '', percentage: '' },
     { program: '7) RCH Portal', target: '', achieved: '', percentage: '' },
     { program: '8) सुधारित राष्ट्रीय क्षयरोग नियंत्रण कार्यक्रम', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण संशयित क्षयरोग नोंदणी', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण संशयित क्षयरोग नोंदणी', target: '', achieved: '', percentage: '' },
     { program: 'संशयित क्षयरुग्णाची थुकी नमूना तपासणी', target: '', achieved: '', percentage: '' },
     { program: 'एक्स रे तपासणी', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण आढळलेले क्षयरुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण आढळलेले क्षयरुग्ण', target: '', achieved: '', percentage: '' },
     { program: 'निक्क्षय पोर्टलवर क्षयरुग्णांची नोंदणी', target: '', achieved: '', percentage: '' },
     { program: 'लाभार्थ्याला DBT लाभ देण्यात आला आहे काय', target: '', achieved: '', percentage: '' },
-    { program: 'उपचार सुरु केलेले क्षयरुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण मृत्यू झालेले क्षयरुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'उपचार सुरू केलेले क्षयरुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण मृत्यू झालेले क्षयरुग्ण', target: '', achieved: '', percentage: '' },
     { program: '9) राष्ट्रीय कुष्ठरोग दूरिकरण कार्यक्रम', target: '', achieved: '', percentage: '' },
     { program: 'संशयित कुष्ठरुग्ण नोंदणी', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण क्रियाशिल रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण क्रियाशील रुग्ण', target: '', achieved: '', percentage: '' },
     { program: 'पीबी', target: '', achieved: '', percentage: '' },
     { program: 'एमबी', target: '', achieved: '', percentage: '' },
-    { program: 'उपचार सुरु केलेले कुष्ठरुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'उपचार सुरू केलेले कुष्ठरुग्ण', target: '', achieved: '', percentage: '' },
     { program: 'आरएफटी झालेले कुष्ठरुग्ण', target: '', achieved: '', percentage: '' },
     { program: '10) राष्ट्रीय किटकजन्य आजार नियंत्रण कार्यक्रम', target: '', achieved: '', percentage: '' },
-    { program: 'बाहयरुग्ण विभागात एकुण नवीन नोंदणी झालेल रुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण रक्त नमूना गोळा केलेले रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'बाह्यरुग्ण विभागात एकूण नवीन नोंदणी झालेल रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण रक्त नमूना गोळा केलेले रुग्ण', target: '', achieved: '', percentage: '' },
     { program: 'हिवताप आढळलेले रुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'पीव्हि', target: '', achieved: '', percentage: '' },
+    { program: 'पीव्ही', target: '', achieved: '', percentage: '' },
     { program: 'पीएफ', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण उपचार केलेले रुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण मृत्यू झालेले हिवताप रुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'प्रा.आ.केंद्रामार्फत अंडवृध्दि शिबीराचे आयोजन', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण उपचार केलेले रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण मृत्यू झालेले हिवताप रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'प्रा.आ.केंद्रामार्फत अंडवृध्दी शिबीराचे आयोजन', target: '', achieved: '', percentage: '' },
     { program: 'हत्तीरोग क्लिनिक व पायधूनी कार्यक्रम', target: '', achieved: '', percentage: '' },
     { program: 'पायधूनी किट वाटप', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण संशयित रुग्णाची डेंग्यू नमूना तपासणी', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण डेंग्यूचे रुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण डेंग्यू रुग्णाचा मृत्यू', target: '', achieved: '', percentage: '' },
-    { program: '11) एकात्मिक साथरोग सर्व्हेक्षण कार्यक्रम', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण उपकेंद्राची संख्या', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण भरलेले एस फार्म', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण भरलेले पी फार्म', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण भरलेले एल फार्म', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण पाणी नमूने तपासणी', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण संशयित रुग्णाची डेंग्यू नमूना तपासणी', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण डेंग्यूचे रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण डेंग्यू रुग्णाचा मृत्यू', target: '', achieved: '', percentage: '' },
+    { program: '11) एकात्मिक साथरोग सर्वेक्षण कार्यक्रम', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण उपकेंद्राची संख्या', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण भरलेले एस फार्म', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण भरलेले पी फार्म', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण भरलेले एल फार्म', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण पाणी नमूने तपासणी', target: '', achieved: '', percentage: '' },
     { program: 'दूषीत आढळलेले पाणी नमूने', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण ब्लिचिंग पावडर नमूने तपासणी', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण ब्लिचिंग पावडर नमूने तपासणी', target: '', achieved: '', percentage: '' },
     { program: 'दूषीत आढळलेले ब्लिचिंग पावडर नमूने', target: '', achieved: '', percentage: '' },
-    { program: 'हिरवे कार्ड देण्यात आलेल्या ग्रामपचांयतीची संख्या', target: '', achieved: '', percentage: '' },
-    { program: 'पिवळे कार्ड देण्यात आलेल्या ग्रामपचांयतीची संख्या', target: '', achieved: '', percentage: '' },
-    { program: 'लाल कार्ड देण्यात आलेल्या ग्रामपचांयतीची संख्या', target: '', achieved: '', percentage: '' },
+    { program: 'हिरवे कार्ड देण्यात आलेल्या ग्रामपंचायतीची संख्या', target: '', achieved: '', percentage: '' },
+    { program: 'पिवळे कार्ड देण्यात आलेल्या ग्रामपंचायतीची संख्या', target: '', achieved: '', percentage: '' },
+    { program: 'लाल कार्ड देण्यात आलेल्या ग्रामपंचायतीची संख्या', target: '', achieved: '', percentage: '' },
     { program: '12) राष्ट्रीय असांसर्गिक रोग नियंत्रण कार्यक्रम', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण आढळलेले रक्तदाबाचे रुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण आढळलेले मधुमेह रुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण आढळलेले रुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण तोंडाच्या कर्करोगाचे रुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण स्तनाच्या कर्करोगाचे रुग्ण', target: '', achieved: '', percentage: '' },
-    { program: 'एकुण गर्भाशयाच्या कर्करोगाचे रुग्ण', target: '', achieved: '', percentage: '' }
+    { program: 'एकूण आढळलेले रक्तदाबाचे रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण आढळलेले मधुमेह रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण आढळलेले रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण तोंडाच्या कर्करोगाचे रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण स्तनाच्या कर्करोगाचे रुग्ण', target: '', achieved: '', percentage: '' },
+    { program: 'एकूण गर्भाशयाच्या कर्करोगाचे रुग्ण', target: '', achieved: '', percentage: '' }
   ]);
-  
   const [formData, setFormData] = useState({
     health_center_name: '',
     location_name: '',
@@ -363,31 +362,31 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
 
   const questions = [
     { num: 1, text: 'ओपीडी मध्ये आवश्यक उपकरणे व साधनसामुग्री उपलब्ध आहे काय ?' },
-    { num: 2, text: 'नोंदणी प्रक्रियेदरम्यान रुग्णांना नोंदणी क्रमांक तसेच संपुर्ण तपशिल लिहीला जातो काय ?' },
+    { num: 2, text: 'नोंदणी प्रक्रियेदरम्यान रुग्णांना नोंदणी क्रमांक तसेच संपूर्ण तपशील लिहीला जातो काय ?' },
     { num: 3, text: 'ओपीडी स्लिपमध्ये रुग्णांचा इतिहास, तक्रारी, तात्पुरते निदान नोंदविले जातात काय ?' },
     { num: 4, text: 'गरोदर मातेसाठी औषधीची सुविधा उपलब्ध आहे काय ?' },
     { num: 5, text: 'दररोज लागणारे उपकरणे व अत्यावश्यक औषधांची यादी आहे काय ?' },
-    { num: 6, text: 'PIH (Pregnancy induced Hypertension) ची लक्षणे व त्यादरम्यान करण्याच्या उपायाबाबत माहीती आहे काय व त्याबाबत किट उपलब्ध आहे काय ?' },
-    { num: 7, text: 'लसीकरण बाबत संपुर्ण माहीती आहे काय ? आयएलआर चे तापमान नोदींचे रजिस्टर उपलब्ध आहे काय ?' },
-    { num: 8, text: 'Emergency Drug tray मधील औषधाच्या Expiry date चा चार्ट अद्यावत करण्यात येतो काय ?' },
+    { num: 6, text: 'PIH (Pregnancy induced Hypertension) ची लक्षणे व त्यादरम्यान करण्याच्या उपायांबाबत माहिती आहे काय व त्याबाबत किट उपलब्ध आहे काय ?' },
+    { num: 7, text: 'लसीकरण बाबत संपूर्ण माहिती आहे काय ? आयएलआर चे तापमान नोंदींचे रजिस्टर उपलब्ध आहे काय ?' },
+    { num: 8, text: 'Emergency Drug tray मधील औषधाच्या Expiry date चा चार्ट अद्ययावत करण्यात येतो काय ?' },
     { num: 9, text: 'आरोग्य सेविकेचे एनएसएसके, आयुसीडी, एसबीए (Skill Birth Attendant) प्रशिक्षण घेऊन याबाबत कौशल्य प्राप्त केले आहे ?' },
     { num: 10, text: 'कुटुंब कल्याण कार्यक्रमामधील पाळणा लांबविण्याकरिता अंतरा, छाया संस्थेमध्ये उपलब्ध आहे काय, तसेच आयुसिडी व पीपीआययुसीडी बसविल्या जातात काय ?' },
-    { num: 11, text: 'PMMVY, JSY, MVM, MAY ई योजने अंतर्गत प्रा.आ.केंद्र स्तरावर लाभार्थ्यांची नोंदणी व रजिस्टर अद्यावत ठेवण्यात आलेले आहे काय ? लाभार्थ्यांना विहित वेळेत आर्थीक लाभ देण्यात आला आहे काय ?' },
+    { num: 11, text: 'PMMVY, JSY, MVM, MAY ई योजने अंतर्गत प्रा.आ.केंद्र स्तरावर लाभार्थ्यांची नोंदणी व रजिस्टर अद्ययावत ठेवण्यात आलेले आहे काय ? लाभार्थ्यांना विहित वेळेत आर्थिक लाभ देण्यात आला आहे काय ?' },
     { num: 12, text: 'दर महिन्याचे २८ ते ३० तारखेला उपकेंद्र स्तरावर, १ तारखेला प्रा.आ.केंद्र स्तरावर HMIS Data Validation Meeting नियमित घेतली जाते काय ?' },
-    { num: 14, text: 'BMW/IMEP चे वर्गीकरणाबाबत माहीती अवगत आहे काय असल्यास त्यानुसार पिवळी व लाल बकेट तसेच निळा व पांढरा बॉक्समध्ये वर्गीकरण करता येते काय ? Biomedical waste साठी संस्था रजिस्टर्ड आहे काय ?' },
-    { num: 15, text: 'Emergency Drug tray मध्ये ठेवण्यात येणाऱ्या औषधीबाबत वापर करण्याबाबतची माहीती आहे काय ?' },
+    { num: 13, text: 'BMW/IMEP चे वर्गीकरणाबाबत माहिती अवगत आहे काय असल्यास त्यानुसार पिवळी व लाल बकेट तसेच निळा व पांढरा बॉक्समध्ये वर्गीकरण करता येते काय ? Biomedical waste साठी संस्था रजिस्टर्ड आहे काय ?' },
+    { num: 14, text: 'Emergency Drug tray मध्ये ठेवण्यात येणाऱ्या औषधीबाबत वापर करण्याबाबतची माहिती आहे काय ?' },
     { num: 15, text: 'संस्थेतील प्रसाधन गृहे स्वच्छ आहे काय. स्वच्छतेची चेकलिस्ट लावण्यात आलेली आहे काय ?' },
-    { num: 16, text: 'वयोवृध्द रुणांकरिता रुग्णालयात प्रवेश करतांना हातधरण्याकरिता रॅम्प (Ramp) व हॅडंल (Handle) उपलब्धआहे काय ?' },
-    { num: 17, text: 'कार्यक्रमाबाबत देण्यात येणाऱ्या सुविधेबाबत माहीती त्यामध्ये विषयाबाबत समुपदेशन करणे व त्याबाबतची माहीती ठळकपणे प्रदर्शित करण्यात आली आहे काय ?' },
-    { num: 18, text: 'प्रा.आ.केंद्र स्तरावर CRS Software मध्ये Online जन्म म≡त्युच्या नोंदी करुन लाभार्थ्यांना प्रमाणपत्र दिल्या जाते काय ?' },
-    { num: 19, text: 'प्रा.आ. केद्रस्तरावर Biomedical Waste, Fire extinguisher वापराबाबत कर्मचाऱ्यांचे प्रशिक्षण झाले आहे ?' },
-    { num: 20, text: 'संस्थेतील विविध विभागाचे मुल्यमापन चॅकलिस्ट नुसार करण्याचा कृती आराखडा उपलब्ध आहे काय व त्यानुसार कार्यवाही करण्यात येते काय ?' },
-    { num: 21, text: 'विविध राष्ट्रीय कार्यक्रमाचे रेकॉर्ड अद्यावत आहे काय ?' },
-    { num: 22, text: 'आरोग्य केंद्रातील तपासणी करिता लागणारे उपकरणे व साधनसामुग्री वापरण्याबाबत व त्याची काळजी घेण्याबाबत माहीती आहे काय ?' },
-    { num: 23, text: 'आरोग्य केंद्रातील संस्थेत संदर्भ सेवा देणे आवश्यक असल्यास त्याबाबत ज्या संस्थेत रुग्ण संदर्भित होणार आहे त्या संस्थेला आधिच कळविणे गरजेचे आहे त्याबाबत आरोग्य सेविकेला माहीती आहे काय ?' },
-    { num: 24, text: 'रेफर आऊट आणि रेफर इन रजिस्टर अद्यावत ठेवणे (Refferal Audit) याबाबत कर्मचाऱ्यांना माहिती आहे काय ?)' },
-    { num: 25, text: '५ आर विषयी आरोग्य सेविकेला माहीती आहे काय ? ज्यामध्ये Right Patient, Right Drug, Right Route, Right time, Right documentation' },
-    { num: 26, text: 'एनसीडी कार्यक्रमानुसार Hypertension, Blood Sugar Cervical cancer इत्यादी आजाराबाबत तपासणी केली जाते काय व त्याबाबत गोषवारा संस्थेत उपलब्ध आहे काय ?' },
+    { num: 16, text: 'वयोवृद्ध रुग्णांकरिता रुग्णालयात प्रवेश करतांना हातधारण्याकरिता रॅम्प (Ramp) व हँडल (Handle) उपलब्ध आहे काय ?' },
+    { num: 17, text: 'कार्यक्रमाबाबत देण्यात येणाऱ्या सुविधेबाबत माहिती त्यामध्ये विषयाबाबत समुपदेशन करणे व त्याबाबतची माहिती ठळकपणे प्रदर्शित करण्यात आली आहे काय ?' },
+    { num: 18, text: 'प्रा.आ.केंद्र स्तरावर CRS Software मध्ये Online जन्म मृत्यूच्या नोंदी करून लाभार्थ्यांना प्रमाणपत्र दिले जाते काय ?' },
+    { num: 19, text: 'प्रा.आ.केंद्रस्तरावर Biomedical Waste, Fire extinguisher वापराबाबत कर्मचाऱ्यांचे प्रशिक्षण झाले आहे ?' },
+    { num: 20, text: 'संस्थेतील विविध विभागाचे मूल्यमापन चेकलिस्ट नुसार करण्याचा कृती आराखडा उपलब्ध आहे काय व त्यानुसार कार्यवाही करण्यात येते काय ?' },
+    { num: 21, text: 'विविध राष्ट्रीय कार्यक्रमाचे रेकॉर्ड अद्ययावत आहे काय ?' },
+    { num: 22, text: 'आरोग्य केंद्रातील तपासणी करिता लागणारे उपकरणे व साधनसामुग्री वापरण्याबाबत व त्याची काळजी घेण्याबाबत माहिती आहे काय ?' },
+    { num: 23, text: 'आरोग्य केंद्रातील संस्थेत संदर्भ सेवा देणे आवश्यक असल्यास त्याबाबत ज्या संस्थेत रुग्ण संदर्भित होणार आहे त्या संस्थेला आधीच कळविणे गरजेचे आहे त्याबाबत आरोग्य सेविकेला माहिती आहे काय ?' },
+    { num: 24, text: 'रेफर आऊट आणि रेफर इन रजिस्टर अद्ययावत ठेवणे (Referral Audit) याबाबत कर्मचाऱ्यांना माहिती आहे काय ?' },
+    { num: 25, text: '५ आर विषयी आरोग्य सेविकेला माहिती आहे काय ? ज्यामध्ये Right Patient, Right Drug, Right Route, Right time, Right documentation' },
+    { num: 26, text: 'एनसीडी कार्यक्रमानुसार Hypertension, Blood Sugar Cervical cancer इत्यादी आजाराबाबत तपासणी केली जाते काय व त्याबाबत गोशवारा संस्थेत उपलब्ध आहे काय ?' },
     { num: 27, text: 'प्रा.आ.केंद्रात गप्पीमासे पैदास केंद्रे कार्यरत आहे काय ?' }
   ];
 
@@ -435,7 +434,7 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
           </div>
 
           <div className="p-8">
-            {/* Basic Details Section - Added */}
+            {/* Basic Details Section */}
             <section className="mb-8">
               <h2 className="text-xl font-semibold mb-4">Basic Details</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -494,11 +493,6 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="bg-gray-50">
-                      <td className="border border-gray-300 px-4 py-3 text-center font-medium">१</td>
-                      <td className="border border-gray-300 px-4 py-3 font-medium">२</td>
-                      <td className="border border-gray-300 px-4 py-3 text-center"></td>
-                    </tr>
                     {questions.map((q, index) => (
                       <tr key={q.num} className={index % 2 === 0 ? 'bg-white hover:bg-blue-50' : 'bg-gray-50 hover:bg-blue-50'}>
                         <td className="border border-gray-300 px-4 py-3 text-center font-medium">{q.num}</td>
@@ -534,9 +528,7 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
                   <tbody>
                     {programsData.map((row, index) => (
                       <tr key={index} className={index % 2 === 0 ? 'bg-white hover:bg-blue-50' : 'bg-gray-50 hover:bg-blue-50'}>
-                        <td className="border border-gray-300 px-4 py-3 text-gray-700">
-                          {row.program}
-                        </td>
+                        <td className="border border-gray-300 px-4 py-3 text-gray-700">{row.program}</td>
                         <td className="border border-gray-300 px-2 py-2">
                           <input
                             type="number"
@@ -574,7 +566,7 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
               </div>
             </div>
 
-            {/* Photo Upload Section - Added */}
+            {/* Photo Upload Section */}
             <section className="mb-8">
               <h2 className="text-xl font-semibold mb-4">Photo Upload</h2>
               <input
@@ -609,7 +601,7 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
               )}
             </section>
 
-            {/* Additional Fields - Added */}
+            {/* Additional Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               <input
                 type="text"
