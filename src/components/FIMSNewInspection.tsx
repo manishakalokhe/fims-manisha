@@ -195,7 +195,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
 
     if (selectedInspectionType === 'gram_panchayat') {
       return (
-        <GramPanchayatInspectionForm
+        <GrampanchayatInspectionForm
           user={user}
           onBack={handleBackToSelection}
           categories={categories}
