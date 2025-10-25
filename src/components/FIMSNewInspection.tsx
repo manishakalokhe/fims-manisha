@@ -207,16 +207,16 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
     }
 
     if (selectedInspectionType === 'jilhastariya_inspection_form') {
-      return (
-        <jilhastariya_inspection_form
-          user={user}
-          onBack={handleBackToSelection}
-          categories={categories}
-          onInspectionCreated={onInspectionCreated}
-          editingInspection={editingInspection}
-        />
-      );
-    }
+  return (
+    <JilhastrariyaInspectionForm  // ← Capital J (PascalCase)
+      user={user}
+      onBack={handleBackToSelection}
+      categories={categories}
+      onInspectionCreated={onInspectionCreated}
+      editingInspection={editingInspection}
+    />
+  );
+}
 
     return null;
   };
