@@ -12,7 +12,7 @@ import { RajyaGunwattaNirikshakTapasaniForm } from './RajyaGunwattaNirikshakTapa
 import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
 import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
 import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
-import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm.tsx';
+import { GramPanchayatInspectionForm } from './GrampanchayatInspectionForm.tsx';
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
@@ -195,7 +195,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
 
     if (selectedInspectionType === 'gram_panchayat') {
       return (
-        <GrampanchayatInspectionForm
+        <GramPanchayatInspectionForm
           user={user}
           onBack={handleBackToSelection}
           categories={categories}
