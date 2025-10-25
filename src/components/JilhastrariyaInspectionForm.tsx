@@ -686,5 +686,4 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
     </div>
   );
 };
-
 export default JilhastrariyaInspectionForm;
