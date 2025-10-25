@@ -462,7 +462,7 @@ const GrampanchayatInspectionForm: React.FC<GramPanchayatFormProps> = ({
             <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center flex-1">
               {isViewMode ? 'View Inspection' : 
                isEditMode ? 'Edit Inspection' : 
-               'fims.newInspection'} - ग्राम पंचायत तपासणी 
+               'नवीन तपासणी'} - ग्राम पंचायत तपासणी नमुना
             </h1>
             <div className="w-20"></div>
           </div>
