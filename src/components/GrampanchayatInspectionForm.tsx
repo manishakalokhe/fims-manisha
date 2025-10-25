@@ -260,7 +260,7 @@ const GramPanchayatInspectionForm: React.FC<GramPanchayatFormProps> = ({
           .update({
             location_name: sanitizedInspectionData.location_name,
             latitude: sanitizedInspectionData.latitude,
-            longitude: sanitizedInspectionData.longitude,
+            longitude: v.longitude,
             location_accuracy: sanitizedInspectionData.location_accuracy,
             address: sanitizedInspectionData.address,
             planned_date: sanitizedInspectionData.planned_date,
