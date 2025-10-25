@@ -24,6 +24,58 @@ interface FIMSNewInspectionProps {
   editingInspection?: any;
 }
 
+// Color theme configuration
+const colorThemes = {
+  orange: {
+    card: 'from-orange-100 via-orange-50 to-orange-50',
+    border: 'border-orange-200 hover:border-orange-400',
+    gradient: 'from-orange-500 to-orange-600',
+    text: 'text-orange-700',
+    badge: 'text-orange-700',
+    hover: 'hover:from-orange-200 hover:via-orange-100 hover:to-orange-100'
+  },
+  teal: {
+    card: 'from-teal-100 via-teal-50 to-teal-50',
+    border: 'border-teal-200 hover:border-teal-400',
+    gradient: 'from-teal-500 to-teal-600',
+    text: 'text-teal-700',
+    badge: 'text-teal-700',
+    hover: 'hover:from-teal-200 hover:via-teal-100 hover:to-teal-100'
+  },
+  indigo: {
+    card: 'from-indigo-100 via-indigo-50 to-indigo-50',
+    border: 'border-indigo-200 hover:border-indigo-400',
+    gradient: 'from-indigo-500 to-indigo-600',
+    text: 'text-indigo-700',
+    badge: 'text-indigo-700',
+    hover: 'hover:from-indigo-200 hover:via-indigo-100 hover:to-indigo-100'
+  },
+  emerald: {
+    card: 'from-emerald-100 via-emerald-50 to-emerald-50',
+    border: 'border-emerald-200 hover:border-emerald-400',
+    gradient: 'from-emerald-500 to-emerald-600',
+    text: 'text-emerald-700',
+    badge: 'text-emerald-700',
+    hover: 'hover:from-emerald-200 hover:via-emerald-100 hover:to-emerald-100'
+  },
+  green: {
+    card: 'from-green-100 via-green-50 to-green-50',
+    border: 'border-green-200 hover:border-green-400',
+    gradient: 'from-green-500 to-green-600',
+    text: 'text-green-700',
+    badge: 'text-green-700',
+    hover: 'hover:from-green-200 hover:via-green-100 hover:to-green-100'
+  },
+  red: {
+    card: 'from-red-100 via-red-50 to-red-50',
+    border: 'border-red-200 hover:border-red-400',
+    gradient: 'from-red-500 to-red-600',
+    text: 'text-red-700',
+    badge: 'text-red-700',
+    hover: 'hover:from-red-200 hover:via-red-100 hover:to-red-100'
+  }
+};
+
 export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
   user,
   onBack,
@@ -348,10 +400,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             </div>
           </div>
 
-        
-          
-
-          {/* Placeholder cards for the remaining 12 forms */}
+          {/* Remaining forms with proper color themes */}
           {[
             { key: 'bandhkam_vibhag1', title: 'बांधकाम विभाग प्रपत्र-1', subtitle: 'Construction Department Form-1', color: 'orange', active: true },
             { key: 'bandhkam_vibhag2', title: 'बांधकाम विभाग प्रपत्र-2', subtitle: 'Construction Department Form-2', color: 'teal', active: true },
@@ -360,108 +409,105 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             { key: 'mahatma_gandhi_rojgar_hami', title: 'महात्मा गांधी रोजगार हमी योजना', subtitle: 'MGNREGA Work Inspection Form', color: 'green', active: true },
             { key: 'mumbai_nyayalay', title: 'मुंबई न्यायालय तपासणी प्रपत्र', subtitle: 'Mumbai High Court School Inspection Form', color: 'red', active: true },
             { key: 'pashutapasani', title: 'पशुवैद्यकीय संस्थांचे तांत्रिक निरीक्षण', subtitle: 'Veterinary Institution Technical Inspection Form', color: 'red', active: true },
-      { key: 'gram_panchayat', title: 'ग्राम पंचायतांची तपासणीचा नमुना', subtitle: 'Grampanchayat Inspection Form', color: 'red', active: true },
-         //   { key: 'form_10', title: 'Form 10 Title', subtitle: 'Form 10 Description', color: 'cyan' },
-         //   { key: 'form_11', title: 'Form 11 Title', subtitle: 'Form 11 Description', color: 'violet' },
-         //   { key: 'form_12', title: 'Form 12 Title', subtitle: 'Form 12 Description', color: 'lime' },
-         //   { key: 'form_13', title: 'Form 13 Title', subtitle: 'Form 13 Description', color: 'amber' },
-         //   { key: 'form_14', title: 'Form 14 Title', subtitle: 'Form 14 Description', color: 'emerald' },
-         //   { key: 'form_15', title: 'Form 15 Title', subtitle: 'Form 15 Description', color: 'rose' }
-      
-          ].map((form, index) => (
-            <div 
-              key={form.key}
-              onClick={() => form.active ? handleInspectionTypeSelect(form.key) : alert(`${form.title} - Coming Soon!`)}
-              className={`bg-gradient-to-br from-${form.color}-100 via-${form.color}-50 to-${form.color}-50 rounded-lg shadow-lg border-2 border-${form.color}-200 p-4 md:p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer hover:border-${form.color}-400 touch-manipulation ${!form.active ? 'opacity-75' : ''}`}
-            >
-              <div className="flex items-center space-x-4 mb-4">
-                <div className={`bg-gradient-to-br from-${form.color}-500 to-${form.color}-600 p-3 rounded-xl shadow-lg`}>
-                  <FileCheck className="h-6 w-6 md:h-8 md:w-8 text-white" />
+            { key: 'gram_panchayat', title: 'ग्राम पंचायतांची तपासणीचा नमुना', subtitle: 'Grampanchayat Inspection Form', color: 'red', active: true },
+          ].map((form) => {
+            const theme = colorThemes[form.color as keyof typeof colorThemes];
+            
+            return (
+              <div 
+                key={form.key}
+                onClick={() => form.active ? handleInspectionTypeSelect(form.key) : alert(`${form.title} - Coming Soon!`)}
+                className={`bg-gradient-to-br ${theme.card} rounded-lg shadow-lg border-2 ${theme.border} p-4 md:p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer touch-manipulation ${theme.hover} ${!form.active ? 'opacity-75' : ''}`}
+              >
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className={`bg-gradient-to-br ${theme.gradient} p-3 rounded-xl shadow-lg`}>
+                    <FileCheck className="h-6 w-6 md:h-8 md:w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg md:text-xl font-semibold text-gray-900">
+                      {form.title}
+                    </h3>
+                    <p className={`text-sm md:text-base ${theme.text} font-medium`}>
+                      {form.subtitle}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg md:text-xl font-semibold text-gray-900">
-                    {form.title}
-                  </h3>
-                  <p className={`text-sm md:text-base text-${form.color}-700 font-medium`}>
-                    {form.subtitle}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="space-y-2 text-sm text-gray-600">
-                {form.key === 'bandhkam_vibhag1' ? (
-                  <>
-                    <p>• प्रशासकीय व तांत्रिक मान्यता तपशील</p>
-                    <p>• कारनामा व ठेकेदार माहिती</p>
-                    <p>• कामाची सद्यस्थिती व प्रगती</p>
-                    <p>• देयक व मोजमाप तपशील</p>
-                  </>
-                ) : form.key === 'bandhkam_vibhag2' ? (
-                  <>
-                    <p>• तपासणी दिनांक व उपस्थित अधिकारी</p>
-                    <p>• कामाची सद्यस्थिती व दर्जा</p>
-                    <p>• दोषदायित्व कालावधी</p>
-                    <p>• तपासणी अहवाल</p>
-                  </>
-                ) : form.key === 'zp_dar_mahinyala' ? (
-                  <>
-                    <p>• जिल्हा परिषद मासिक अहवाल</p>
-                    <p>• अंगणवाडी केंद्रांची संख्या</p>
-                    <p>• पर्यवेक्षकांचे उद्दिष्ट साध्यीकरण</p>
-                    <p>• प्रकल्प भेट तपशील</p>
-                  </>
-                ) : form.key === 'rajya_gunwatta_nirikshak' ? (
-                  <>
-                    <p>• राज्य गुणवत्ता निरीक्षक माहिती</p>
-                    <p>• कामा तपासणी दिनांक</p>
-                    <p>• कामाचे नाव</p>
-                    <p>• काम तपासणीवेळी छायाचित्रे</p>
-                  </>
-                ) : form.key === 'mahatma_gandhi_rojgar_hami' ? (
-                  <>
-                    <p>• NREGA Soft नोंदी तपासणी</p>
-                    <p>• मजूर हजेरी आणि सुविधा</p>
-                    <p>• कामाचे मोजमाप आणि गुणवत्ता</p>
-                    <p>• अभिसरण आणि निधी तपशील</p>
-                  </>
-                ) : form.key === 'mumbai_nyayalay' ? (
-                  <>
-                    <p>• शाळा इमारत आणि बांधकाम तपासणी</p>
-                    <p>• विद्यार्थी आणि शिक्षक संख्या</p>
-                    <p>• भौतिक सुविधा मूल्यांकन</p>
-                    <p>• स्वच्छता आणि सुरक्षा तपासणी</p>
-                  </>
-                ) : form.key === 'pashutapasani' ? (
-                  <>
-                    <p>• संस्थेची मूलभूत माहिती व तांत्रिक आढावा</p>
-                    <p>• रुग्ण आकडेवारी व शस्त्रक्रिया तपशील</p>
-                    <p>• कृत्रिम रेतन व गर्भधारणा तपासणी</p>
-                    <p>• रोग माहिती व लसीकरण कार्यक्रम</p>
-                    <p>• योजना प्रगती व तांत्रिक मूल्यांकन</p>
+                
+                <div className="space-y-2 text-sm text-gray-600">
+                  {form.key === 'bandhkam_vibhag1' ? (
+                    <>
+                      <p>• प्रशासकीय व तांत्रिक मान्यता तपशील</p>
+                      <p>• कारनामा व ठेकेदार माहिती</p>
+                      <p>• कामाची सद्यस्थिती व प्रगती</p>
+                      <p>• देयक व मोजमाप तपशील</p>
                     </>
-              ) : form.key === 'gram_panchayat' ? (
-                  <>
-                    <p>• पंचायत समिती</p>
-                    <p>• तपासणी अधिकारीाचे नांव</p>
-                    <p>• सभेची कार्यसूची व सभेची नोंदवही</p>
-                    <p>• मासिक सभा</p>
-                    <p>• सर्वसाधारण तपासणीचे ठिकाण</p>
+                  ) : form.key === 'bandhkam_vibhag2' ? (
+                    <>
+                      <p>• तपासणी दिनांक व उपस्थित अधिकारी</p>
+                      <p>• कामाची सद्यस्थिती व दर्जा</p>
+                      <p>• दोषदायित्व कालावधी</p>
+                      <p>• तपासणी अहवाल</p>
                     </>
-                ) : (
-                  <></>
-                )}
-              </div>
-              
-              <div className="mt-4 flex items-center justify-between">
-                <span className={`text-sm font-bold text-${form.color}-700 bg-white/50 px-3 py-1 rounded-full`}>
-                  {form.active ? 'तपासणी सुरू करण्यासाठी निवडा' : 'Coming Soon'}
-                </span>
-                <div className={`bg-gradient-to-r from-${form.color}-500 to-${form.color}-600 p-2 rounded-full shadow-lg`}>
-                  <Plus className="h-5 w-5 text-white" />
+                  ) : form.key === 'zp_dar_mahinyala' ? (
+                    <>
+                      <p>• जिल्हा परिषद मासिक अहवाल</p>
+                      <p>• अंगणवाडी केंद्रांची संख्या</p>
+                      <p>• पर्यवेक्षकांचे उद्दिष्ट साध्यीकरण</p>
+                      <p>• प्रकल्प भेट तपशील</p>
+                    </>
+                  ) : form.key === 'rajya_gunwatta_nirikshak' ? (
+                    <>
+                      <p>• राज्य गुणवत्ता निरीक्षक माहिती</p>
+                      <p>• कामा तपासणी दिनांक</p>
+                      <p>• कामाचे नाव</p>
+                      <p>• काम तपासणीवेळी छायाचित्रे</p>
+                    </>
+                  ) : form.key === 'mahatma_gandhi_rojgar_hami' ? (
+                    <>
+                      <p>• NREGA Soft नोंदी तपासणी</p>
+                      <p>• मजूर हजेरी आणि सुविधा</p>
+                      <p>• कामाचे मोजमाप आणि गुणवत्ता</p>
+                      <p>• अभिसरण आणि निधी तपशील</p>
+                    </>
+                  ) : form.key === 'mumbai_nyayalay' ? (
+                    <>
+                      <p>• शाळा इमारत आणि बांधकाम तपासणी</p>
+                      <p>• विद्यार्थी आणि शिक्षक संख्या</p>
+                      <p>• भौतिक सुविधा मूल्यांकन</p>
+                      <p>• स्वच्छता आणि सुरक्षा तपासणी</p>
+                    </>
+                  ) : form.key === 'pashutapasani' ? (
+                    <>
+                      <p>• संस्थेची मूलभूत माहिती व तांत्रिक आढावा</p>
+                      <p>• रुग्ण आकडेवारी व शस्त्रक्रिया तपशील</p>
+                      <p>• कृत्रिम रेतन व गर्भधारणा तपासणी</p>
+                      <p>• रोग माहिती व लसीकरण कार्यक्रम</p>
+                      <p>• योजना प्रगती व तांत्रिक मूल्यांकन</p>
+                    </>
+                  ) : form.key === 'gram_panchayat' ? (
+                    <>
+                      <p>• पंचायत समिती</p>
+                      <p>• तपासणी अधिकारीाचे नांव</p>
+                      <p>• सभेची कार्यसूची व सभेची नोंदवही</p>
+                      <p>• मासिक सभा</p>
+                      <p>• सर्वसाधारण तपासणीचे ठिकाण</p>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                
+                <div className="mt-4 flex items-center justify-between">
+                  <span className={`text-sm font-bold ${theme.badge} bg-white/50 px-3 py-1 rounded-full`}>
+                    {form.active ? 'तपासणी सुरू करण्यासाठी निवडा' : 'Coming Soon'}
+                  </span>
+                  <div className={`bg-gradient-to-r ${theme.gradient} p-2 rounded-full shadow-lg`}>
+                    <Plus className="h-5 w-5 text-white" />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Additional Information */}
