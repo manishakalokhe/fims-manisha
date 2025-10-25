@@ -67,7 +67,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     location_detected: ''
   });
 
-  const grampanchayatCategory = categories.find(cat => cat.form_type === 'gram_panchayat');
+  const grampanchayatCategory = categories.find(cat => cat.form_type === 'grampanchayat');
 
   useEffect(() => {
     if (grampanchayatCategory) {
@@ -355,78 +355,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           )}
         </div>
 
-        {/* Location Section */}
-        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
-            <div className="flex items-center text-white">
-              <MapPin className="w-8 h-8 mr-4" />
-              <h3 className="text-2xl font-bold">स्थान माहिती (Location Information)</h3>
-            </div>
-          </div>
-          <div className="p-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">स्थानाचे नाव *</label>
-                <input
-                  type="text"
-                  value={inspectionData.location_name}
-                  onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
-                  placeholder="स्थानाचे नाव भरा"
-                  required
-                  disabled={isViewMode}
-                />
-              </div>
-              
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">नियोजित तारीख</label>
-                <input
-                  type="date"
-                  value={inspectionData.planned_date}
-                  onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
-                  disabled={isViewMode}
-                />
-              </div>
-            </div>
-
-            {!isViewMode && (
-              <button
-                type="button"
-                onClick={getCurrentLocation}
-                disabled={isGettingLocation}
-                className="w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all duration-200 flex items-center justify-center gap-3 mb-6 shadow-lg hover:shadow-xl font-medium"
-              >
-                <MapPin size={20} />
-                <span>{isGettingLocation ? 'Getting Location...' : 'Get Current GPS Location'}</span>
-              </button>
-            )}
-
-            {inspectionData.latitude && inspectionData.longitude && (
-              <div className="p-4 bg-green-50 border-2 border-green-200 rounded-xl mb-6">
-                <p className="font-bold text-green-800 mb-2">Location Captured</p>
-                <p className="text-sm text-green-700">
-                  Latitude: {inspectionData.latitude.toFixed(6)}<br />
-                  Longitude: {inspectionData.longitude.toFixed(6)}<br />
-                  Accuracy: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
-                </p>
-              </div>
-            )}
-
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">शोधलेले स्थान</label>
-              <input
-                type="text"
-                value={inspectionData.location_detected}
-                onChange={(e) => setInspectionData(prev => ({...prev, location_detected: e.target.value}))}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
-                placeholder="GPS द्वारे शोधलेले स्थान येथे दिसेल"
-                readOnly={isViewMode}
-              />
-            </div>
-          </div>
-        </section>
-
         {/* Title Section */}
         <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 px-8 py-16 text-white relative">
@@ -447,7 +375,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           </div>
         </div>
 
-        {/* Form Content Section */}
+        {/* मूळ माहिती (Basic Information) Section - FIRST */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6">
             <div className="flex items-center text-white">
@@ -622,6 +550,79 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           </div>
         </section>
 
+        {/* Location Section - SECOND (After Basic Information) */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <MapPin className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">स्थान माहिती (Location Information)</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">स्थानाचे नाव *</label>
+                <input
+                  type="text"
+                  value={inspectionData.location_name}
+                  onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                  placeholder="स्थानाचे नाव भरा"
+                  required
+                  disabled={isViewMode}
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">नियोजित तारीख</label>
+                <input
+                  type="date"
+                  value={inspectionData.planned_date}
+                  onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                  disabled={isViewMode}
+                />
+              </div>
+            </div>
+
+            {!isViewMode && (
+              <button
+                type="button"
+                onClick={getCurrentLocation}
+                disabled={isGettingLocation}
+                className="w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all duration-200 flex items-center justify-center gap-3 mb-6 shadow-lg hover:shadow-xl font-medium"
+              >
+                <MapPin size={20} />
+                <span>{isGettingLocation ? 'Getting Location...' : 'Get Current GPS Location'}</span>
+              </button>
+            )}
+
+            {inspectionData.latitude && inspectionData.longitude && (
+              <div className="p-4 bg-green-50 border-2 border-green-200 rounded-xl mb-6">
+                <p className="font-bold text-green-800 mb-2">Location Captured</p>
+                <p className="text-sm text-green-700">
+                  Latitude: {inspectionData.latitude.toFixed(6)}<br />
+                  Longitude: {inspectionData.longitude.toFixed(6)}<br />
+                  Accuracy: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                </p>
+              </div>
+            )}
+
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">शोधलेले स्थान</label>
+              <input
+                type="text"
+                value={inspectionData.location_detected}
+                onChange={(e) => setInspectionData(prev => ({...prev, location_detected: e.target.value}))}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                placeholder="GPS द्वारे शोधलेले स्थान येथे दिसेल"
+                readOnly={isViewMode}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Rest of all sections remain the same - continuing with section 7 onwards... */}
         {/* Financial Records Table Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
@@ -1048,7 +1049,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           </div>
         </section>
 
-        {/* Photo Upload Section */}
+                {/* Photo Upload Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
             <div className="flex items-center text-white">
