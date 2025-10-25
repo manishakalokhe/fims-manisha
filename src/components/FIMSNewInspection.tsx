@@ -208,7 +208,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
 
     if (selectedInspectionType === 'jilhastariya_inspection_form') {
   return (
-    <JilhastrariyaInspectionForm  // ← Capital J (PascalCase)
+    <JilhastrariyaInspectionForm
       user={user}
       onBack={handleBackToSelection}
       categories={categories}
@@ -217,7 +217,6 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
     />
   );
 }
-
     return null;
   };
 
