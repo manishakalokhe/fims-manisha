@@ -51,7 +51,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
   const [resolutionNo, setResolutionNo] = useState('');
   const [resolutionDate, setResolutionDate] = useState('');
   
-  // Location and Photo states (added from Angavadi form)
+  // Location and Photo states
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -86,7 +86,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     if (editingInspection && editingInspection.id) {
       console.log('Loading existing inspection data:', editingInspection);
       
-      // Load basic inspection data
       setInspectionData({
         category_id: editingInspection.category_id || '',
         location_name: editingInspection.location_name || '',
@@ -97,7 +96,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
         location_detected: editingInspection.location_detected || ''
       });
 
-      // Load form data
       const formData = editingInspection.form_data;
       if (formData) {
         setMonthlyMeetings(formData.monthlyMeetings || '');
@@ -133,7 +131,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
         const lng = position.coords.longitude;
         const accuracy = position.coords.accuracy;
         
-        // Get location name using reverse geocoding
         try {
           const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`
@@ -258,7 +255,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     try {
       setIsLoading(true);
 
-      // Collect all form data
       const formData = {
         monthlyMeetings,
         agendaUpToDate,
@@ -285,7 +281,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
       let inspectionResult;
 
       if (editingInspection && editingInspection.id) {
-        // Update existing inspection
         const { data: updateResult, error: updateError } = await supabase
           .from('fims_inspections')
           .update({
@@ -306,7 +301,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
         if (updateError) throw updateError;
         inspectionResult = updateResult;
       } else {
-        // Create new inspection
         const inspectionNumber = generateInspectionNumber();
 
         const { data: createResult, error: createError } = await supabase
@@ -332,7 +326,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
         inspectionResult = createResult;
       }
 
-      // Upload photos if any
       if (uploadedPhotos.length > 0) {
         await uploadPhotosToSupabase(inspectionResult.id);
       }
@@ -355,947 +348,602 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
   };
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', direction: 'ltr', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      {/* Header with Back Button */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <button
-          onClick={onBack}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '8px 16px',
-            backgroundColor: '#6b7280',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer'
-          }}
-        >
-          <ArrowLeft size={20} />
-          <span>Back</span>
-        </button>
-        
-        {isViewMode && (
-          <span style={{ 
-            padding: '8px 16px', 
-            backgroundColor: '#3b82f6', 
-            color: 'white', 
-            borderRadius: '8px',
-            fontWeight: 'bold'
-          }}>
-            View Mode
-          </span>
-        )}
-      </div>
-
-      {/* Location Section */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '12px', 
-        padding: '20px', 
-        marginBottom: '20px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-      }}>
-        <h3 style={{ 
-          color: '#1f2937', 
-          marginBottom: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}>
-          <MapPin size={24} />
-          स्थान माहिती (Location Information)
-        </h3>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-              स्थानाचे नाव *
-            </label>
-            <input
-              type="text"
-              value={inspectionData.location_name}
-              onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
-              style={{ 
-                width: '100%', 
-                padding: '8px', 
-                border: '1px solid #d1d5db', 
-                borderRadius: '8px' 
-              }}
-              placeholder="स्थानाचे नाव भरा"
-              required
-              disabled={isViewMode}
-            />
-          </div>
-          
-          <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-              नियोजित तारीख
-            </label>
-            <input
-              type="date"
-              value={inspectionData.planned_date}
-              onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
-              style={{ 
-                width: '100%', 
-                padding: '8px', 
-                border: '1px solid #d1d5db', 
-                borderRadius: '8px' 
-              }}
-              disabled={isViewMode}
-            />
-          </div>
-        </div>
-
-        {!isViewMode && (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header with Back Button */}
+        <div className="flex items-center justify-between mb-8">
           <button
-            type="button"
-            onClick={getCurrentLocation}
-            disabled={isGettingLocation}
-            style={{
-              width: '100%',
-              padding: '12px',
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              marginBottom: '16px'
-            }}
+            onClick={onBack}
+            className="flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
           >
-            <MapPin size={20} />
-            <span>{isGettingLocation ? 'Getting Location...' : 'Get Current GPS Location'}</span>
+            <ArrowLeft size={20} />
+            <span className="font-medium">Back</span>
           </button>
-        )}
-
-        {inspectionData.latitude && inspectionData.longitude && (
-          <div style={{ 
-            padding: '12px', 
-            backgroundColor: '#d1fae5', 
-            border: '1px solid #6ee7b7', 
-            borderRadius: '8px',
-            marginBottom: '16px'
-          }}>
-            <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: '#065f46' }}>Location Captured</p>
-            <p style={{ margin: '4px 0', fontSize: '14px', color: '#047857' }}>
-              Latitude: {inspectionData.latitude.toFixed(6)}<br />
-              Longitude: {inspectionData.longitude.toFixed(6)}<br />
-              Accuracy: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
-            </p>
-          </div>
-        )}
-
-        <div>
-          <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-            शोधलेले स्थान (Location Detected)
-          </label>
-          <input
-            type="text"
-            value={inspectionData.location_detected}
-            onChange={(e) => setInspectionData(prev => ({...prev, location_detected: e.target.value}))}
-            style={{ 
-              width: '100%', 
-              padding: '8px', 
-              border: '1px solid #d1d5db', 
-              borderRadius: '8px' 
-            }}
-            placeholder="GPS द्वारे शोधलेले स्थान येथे दिसेल"
-            readOnly={isViewMode}
-          />
+          
+          {isViewMode && (
+            <span className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg">
+              View Mode
+            </span>
+          )}
         </div>
-      </div>
 
-      {/* Original Form Content */}
-      <h1 style={{ textAlign: 'center', color: '#333' }}>परिशिष्ट-चार</h1>
-      <p style={{ textAlign: 'center', fontWeight: 'bold' }}>(नियम 80 पहा)</p>
-      <p style={{ textAlign: 'center', fontWeight: 'bold' }}>(ख)ग्राम पंचायतांची सर्वसाधारण तपासणीचा नमुना</p>
-
-      <ol style={{ marginLeft: '20px' }}>
-        <li>
-          ग्राम पंचायतिचे नांव- 
-          <input 
-            type="text" 
-            value={gpName} 
-            onChange={(e) => setGpName(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-          पंचायत समिती - 
-          <input 
-            type="text" 
-            value={psName} 
-            onChange={(e) => setPsName(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </li>
-        <li>
-          (क) सर्वसाधारण तपासणीची तारीख - 
-          <input 
-            type="date" 
-            value={inspectionDate} 
-            onChange={(e) => setInspectionDate(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </li>
-        <li>
-          (ख) सर्वसाधारण तपासणीचे ठिकाण :- 
-          <input 
-            type="text" 
-            value={inspectionPlace} 
-            onChange={(e) => setInspectionPlace(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </li>
-        <li>
-          तपासणी अधिकारीाचे नांव व हुद्दा :- 
-          <input 
-            type="text" 
-            value={officerName} 
-            onChange={(e) => setOfficerName(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-          /
-          <input 
-            type="text" 
-            value={officerPost} 
-            onChange={(e) => setOfficerPost(e.target.value)} 
-            style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </li>
-        <li>
-          सचिवाचे नांव व तो सदस्य पंचायतीत केलेला पासून काम करीत आहे :- 
-          <input 
-            type="text" 
-            value={secretaryName} 
-            onChange={(e) => setSecretaryName(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-          /
-          <input 
-            type="text" 
-            value={secretaryTenure} 
-            onChange={(e) => setSecretaryTenure(e.target.value)} 
-            style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </li>
-        <li>
-          मासिक सभा नियमांनुसार नियमितपणे होतात काय ? 
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="monthlyMeetings" 
-              value="होय" 
-              checked={monthlyMeetings === 'होय'} 
-              onChange={(e) => setMonthlyMeetings(e.target.value)} 
-              disabled={isViewMode}
-            /> 
-            होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="monthlyMeetings" 
-              value="नाही" 
-              checked={monthlyMeetings === 'नाही'} 
-              onChange={(e) => setMonthlyMeetings(e.target.value)} 
-              disabled={isViewMode}
-            /> 
-            नाही
-          </label>
-        </li>
-        <ul style={{ marginLeft: '20px' }}>
-          <li>
-            सभेची कार्यसूची व सभेची नोंदवही ईत्यादी अद्यावत आहे काय ? 
-            <label style={{ marginLeft: '10px' }}>
-              <input 
-                type="radio" 
-                name="agendaUpToDate" 
-                value="होय" 
-                checked={agendaUpToDate === 'होय'} 
-                onChange={(e) => setAgendaUpToDate(e.target.value)} 
-                disabled={isViewMode}
-              /> 
-              होय
-            </label>
-            <label style={{ marginLeft: '10px' }}>
-              <input 
-                type="radio" 
-                name="agendaUpToDate" 
-                value="नाही" 
-                checked={agendaUpToDate === 'नाही'} 
-                onChange={(e) => setAgendaUpToDate(e.target.value)} 
-                disabled={isViewMode}
-              /> 
-              नाही
-            </label>
-          </li>
-        </ul>
-        <br />
-        <br />
-      </ol>
-
-      <table border={1} style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-        <thead>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अ.क्र.</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>नोंदवहीचे नाव</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>तपासणीच्या तारखेला शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>बँकेतिल शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>पोस्टातिल शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>हाती असलेली शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>चेक</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>1</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>ग्रामनिधी</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>2</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>पाणी पुरवठा</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <table border={1} style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-        <thead>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
-            <th colSpan={7} style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>(7) रोकड वहीचा तपशील</th>
-          </tr>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अ.क्र.</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>नोंदवहीचे नाव</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>तपासणीच्या तारीखेला शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>बँकेतिल शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>पोस्टातिल शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>हाती असलेली शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>चेक</th>
-          </tr>
-        </thead>
-        <tbody>
-          {[
-            ["1", "ग्रामनिधी"],
-            ["2", "पाणी पुरवठा"],
-            ["3", "14 वा वित्त आयोग"],
-            ["4", "इं.गा.यो."],
-            ["5", "अ.जा.विकास"],
-            ["6", "मजगारोहयो"],
-            ["7", "ठक्कर बाप्पा"],
-            ["8", "ग्रामकोष पैसा"],
-            ["9", "नागरी सुविधा"],
-            ["10", "दलित वस्ती विकास"],
-            ["11", "तंटा मुक्त योजना"],
-            ["12", "जनसुविधा"],
-            ["13", "पायका"],
-            ["14", "प.सं.योजना"],
-            ["15", "SBM"],
-            ["16", "तीर्थक्षेत्र विकास निधी"],
-            ["17", "अल्पसंख्यांक विकास निधी"]
-          ].map((row, index) => (
-            <tr key={index}>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>{row[0]}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{row[1]}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>(8)(क) कर आकारणी नोंदवही(नमुना 8) :- नाही</h3>
-        <p>1.कराच्या मागणीचे नोंदणी पुस्तक (नमुना 9):-</p>
-        <p>
-          2.कराची पावती (नमुना 10):-हे अद्यावत आहे काय ? 
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="receiptUpToDate" 
-              value="होय" 
-              checked={receiptUpToDate === 'होय'} 
-              onChange={(e) => setReceiptUpToDate(e.target.value)} 
-              disabled={isViewMode}
-            /> 
-            होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="receiptUpToDate" 
-              value="नाही" 
-              checked={receiptUpToDate === 'नाही'} 
-              onChange={(e) => setReceiptUpToDate(e.target.value)} 
-              disabled={isViewMode}
-            /> 
-            नाही
-          </label>
-        </p>
-        <p>(ख) मागील फेर आकारणी केलेली झाली ? दिनांक 
-          <input type="date" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /> 
-          / / ठराव क्रमांक - 
-          <input 
-            type="text" 
-            value={resolutionNo} 
-            onChange={(e) => setResolutionNo(e.target.value)} 
-            style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </p>
-        <p>नाही</p>
-        <p>(ग) चार वर्षे पूर्ण झालेली असल्यास ,नटल्याने फेर आकारणी करण्यासाठी कार्यवाही चालू आहे किंवा नाही ?</p>
-        <p>
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="reassessmentAction" 
-              value="होय" 
-              checked={reassessmentAction === 'होय'} 
-              onChange={(e) => setReassessmentAction(e.target.value)} 
-              disabled={isViewMode}
-            /> 
-            होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="reassessmentAction" 
-              value="नाही" 
-              checked={reassessmentAction === 'नाही'} 
-              onChange={(e) => setReassessmentAction(e.target.value)} 
-              disabled={isViewMode}
-            /> 
-            नाही
-          </label>
-        </p>
-      </div>
-
-      <h3 style={{ color: '#333', marginBottom: '10px' }}>(9) तपासणी तारखेस कर वसुलीची प्रगती खालीलप्रमाणे आहे :-</h3>
-      <ul style={{ marginLeft: '20px' }}>
-        <li>(1) मागील येणे रक्कम :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(2) चालू वर्षात मागणी :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(3) एकुण मागणी :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(4) एकुण वसूली :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(5) शिल्लक वसूली :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(6) टक्केवारी :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(7) शेरा :- <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-      </ul>
-
-      <h3 style={{ color: '#333', marginBottom: '10px' }}>(10) मागास वर्गीयाकरीता राखून ठेवलेल्या 15% निधीच्या खर्चाचा तपशील:-</h3>
-      <ul style={{ marginLeft: '20px' }}>
-        <li>(1) ग्राम पंचायतीचे एकुण उत्पन्न :- <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(2) 15% रक्कम :- <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(3) मागील अनुशेष <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(4) करावयाचा एकुण खर्च <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(5) तपासणीत्या दिनांक पर्यंत झालेला खर्च: <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-        <li>(6) शिल्लक खर्च <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></li>
-      </ul>
-
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>(7) सूचना-</h3>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>(11) आर्थिक व्यवहारात निर्देशानुसार आलेल्या नियमबाह्यता -</h3>
-        <p>(क) कोणत्याही चालू खरेदी करणाऱ्यापूर्वी अंदाजपत्रकात योग्य तरतूद केली आहे काय ? 
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="budgetProvision" value="होय" disabled={isViewMode} /> होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="budgetProvision" value="नाही" disabled={isViewMode} /> नाही
-          </label>
-        </p>
-        <p>(ख) ग्राम पंचायत खरेदीसाठी मान्यता दिली आहे काय ? ठराव क्र.          
-          <input type="text" style={{ padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /> 
-          दि.         
-          <input type="date" style={{ padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /> 
-          / 
-        </p>
-        <p>(ग) खरेदी करण्यासाठी नियमप्रमाणे दरपत्रके मागविली होती काय ? 
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="tendersCalled" value="होय" disabled={isViewMode} /> होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="tendersCalled" value="नाही" disabled={isViewMode} /> नाही
-          </label>
-        </p>
-        <p>(घ) खरेदी केलेल्या साहित्याचा नमुना 9,15 व 16 मधील नोंदवहीत नोंदी घेण्यात आल्या आहेत काय ?</p>
-        <p>
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="entriesMade" value="होय" disabled={isViewMode} /> होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="entriesMade" value="नाही" disabled={isViewMode} /> नाही
-          </label>
-        </p>
-      </div>
-
-      <div style={{ marginBottom: '20px' }}>
-        <p>(12) ग्राम पंचायताने स्वतःच्या निधीतून किंवा शासकीय/जिल्हा परिषद योजनेंतर्गत हात घेतलेल्या कामांचा तपशील-</p>
-        <table border={1} style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अ.क्र.</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>योजनेचे नांव</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>कामाचा प्रकार</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अंदाजित रक्कम</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>मिळालेले अनुदान</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>झालेला खर्च</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Add rows as needed with inputs */}
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none', textAlign: 'center' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            </tr>
-            {/* Repeat for additional rows */}
-          </tbody>
-        </table>
-
-        <table border={1} style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>काम सुरु झाल्याची तारीख</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>काम पूर्ण झाल्याची तारीख</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>प्रगतीवर असलेल्या कामाची सद्य:स्थिती</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>पूर्णत्वाचे प्रमाणपत्र प्राप्त केले किंवा नाही</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>शेरा</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="date" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="date" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <label><input type="radio" name="certificate1" value="होय" disabled={isViewMode} /> होय</label>
-                <label style={{ marginLeft: '10px' }}><input type="radio" name="certificate1" value="नाही" disabled={isViewMode} /> नाही</label>
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            </tr>
-            {/* Additional rows */}
-          </tbody>
-        </table>
-      </div>
-
-      <div style={{ marginBottom: '20px' }}>
-        <p>(13) ग्राम पंचायतांनी इतर योजनामध्ये केलेली प्रगती</p>
-        <table border={1} style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अ.क्र.</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>योजनेचे नाव</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>दिलेली उद्दिष्टे</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>तपासणीच्या दिनांकास</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>शेरा</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>1</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>एगाविका.</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>2</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>बॉयोगॅस</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>3</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>निर्धूर चुल</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>4</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>कुंटुंब कल्याण</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>5</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>अल्पवचत</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            </tr>
-            {/* Add rows 6 and 7 as empty */}
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>6</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>7</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} /></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div style={{ marginBottom: '20px' }}>
-        <h1 style={{ textAlign: 'center', color: '#333' }}>तपासणी अधिकार्‍याचा अभिप्राय</h1>
-        <p>1) नमुना - - - - -  अपूर्ण आहेत. <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></p>
-        <p>2) - ----- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></p>
-        <br />
-        <p>3) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></p>
-        <p>4) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></p>
-        <p>5) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></p>
-        <p>6) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></p>
-        <p>7) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></p>
-        <p>8) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} disabled={isViewMode} /></p>
-      </div>
-
-      {/* Photo Upload Section */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '12px', 
-        padding: '20px', 
-        marginBottom: '20px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-      }}>
-        <h3 style={{ 
-          color: '#1f2937', 
-          marginBottom: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}>
-          <Camera size={24} />
-          फोटो अपलोड करा (Photo Upload)
-        </h3>
-
-        {!isViewMode && (
-          <div style={{ 
-            border: '2px dashed #d1d5db', 
-            borderRadius: '8px', 
-            padding: '24px', 
-            textAlign: 'center',
-            marginBottom: '16px'
-          }}>
-            <Camera size={48} style={{ color: '#9ca3af', margin: '0 auto 16px' }} />
-            <h4 style={{ fontSize: '18px', fontWeight: '500', color: '#1f2937', marginBottom: '8px' }}>
-              ग्रामपंचायत फोटो अपलोड करा
-            </h4>
-            <p style={{ color: '#6b7280', marginBottom: '16px' }}>
-              {uploadedPhotos.length > 0
-                ? `${uploadedPhotos.length}/5 फोटो निवडले आहेत`
-                : 'फोटो निवडा (जास्तीत जास्त 5)'}
-            </p>
-            
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handlePhotoUpload}
-              disabled={uploadedPhotos.length >= 5}
-              id="photo-upload"
-              style={{ display: 'none' }}
-            />
-            <label
-              htmlFor="photo-upload"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '12px 24px',
-                backgroundColor: uploadedPhotos.length >= 5 ? '#9ca3af' : '#6366f1',
-                color: 'white',
-                borderRadius: '8px',
-                cursor: uploadedPhotos.length >= 5 ? 'not-allowed' : 'pointer',
-                border: 'none',
-                fontSize: '16px'
-              }}
-            >
-              <Camera size={20} />
-              {uploadedPhotos.length >= 5 ? 'जास्तीत जास्त फोटो पोहोचले' : 'फोटो निवडा'}
-            </label>
-          </div>
-        )}
-
-        {/* Photo Previews */}
-        {uploadedPhotos.length > 0 && (
-          <div>
-            <h4 style={{ 
-              fontSize: '16px', 
-              fontWeight: '500', 
-              color: '#1f2937', 
-              marginBottom: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <Camera size={20} style={{ color: '#6366f1' }} />
-              निवडलेले फोटो ({uploadedPhotos.length}/5)
-            </h4>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-              gap: '16px' 
-            }}>
-              {uploadedPhotos.map((file, index) => (
-                <div
-                  key={index}
-                  style={{
-                    position: 'relative',
-                    backgroundColor: 'white',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                    border: '1px solid #e5e7eb',
-                    overflow: 'hidden'
-                  }}
-                >
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`Preview ${index + 1}`}
-                    style={{ width: '100%', height: '160px', objectFit: 'cover' }}
-                  />
-                  {!isViewMode && (
-                    <button
-                      onClick={() => removePhoto(index)}
-                      style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        backgroundColor: '#ef4444',
-                        color: 'white',
-                        borderRadius: '50%',
-                        width: '24px',
-                        height: '24px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: '18px',
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      ×
-                    </button>
-                  )}
-                  <div style={{ padding: '12px' }}>
-                    <p style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '500', 
-                      color: '#1f2937', 
-                      marginBottom: '4px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      {file.name}
-                    </p>
-                    <p style={{ fontSize: '12px', color: '#6b7280' }}>
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                </div>
-              ))}
+        {/* Location Section */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <MapPin className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">स्थान माहिती (Location Information)</h3>
             </div>
           </div>
-        )}
-
-        {/* Upload Progress */}
-        {isUploading && (
-          <div style={{ 
-            marginTop: '16px', 
-            padding: '16px', 
-            backgroundColor: '#dbeafe', 
-            border: '1px solid #93c5fd', 
-            borderRadius: '8px' 
-          }}>
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              marginBottom: '8px' 
-            }}>
-              <span style={{ fontSize: '14px', fontWeight: '500', color: '#1e40af' }}>
-                फोटो अपलोड करत आहे...
-              </span>
-              <span style={{ fontSize: '14px', color: '#2563eb' }}>{uploadProgress}%</span>
+          <div className="p-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                  स्थानाचे नाव *
+                </label>
+                <input
+                  type="text"
+                  value={inspectionData.location_name}
+                  onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                  placeholder="स्थानाचे नाव भरा"
+                  required
+                  disabled={isViewMode}
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                  नियोजित तारीख
+                </label>
+                <input
+                  type="date"
+                  value={inspectionData.planned_date}
+                  onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                  disabled={isViewMode}
+                />
+              </div>
             </div>
-            <div style={{ 
-              width: '100%', 
-              backgroundColor: '#bfdbfe', 
-              borderRadius: '4px', 
-              height: '8px' 
-            }}>
-              <div
-                style={{
-                  backgroundColor: '#2563eb',
-                  height: '8px',
-                  borderRadius: '4px',
-                  width: `${uploadProgress}%`,
-                  transition: 'width 0.3s'
-                }}
+
+            {!isViewMode && (
+              <button
+                type="button"
+                onClick={getCurrentLocation}
+                disabled={isGettingLocation}
+                className="w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all duration-200 flex items-center justify-center gap-3 mb-6 shadow-lg hover:shadow-xl font-medium"
+              >
+                <MapPin size={20} />
+                <span>{isGettingLocation ? 'Getting Location...' : 'Get Current GPS Location'}</span>
+              </button>
+            )}
+
+            {inspectionData.latitude && inspectionData.longitude && (
+              <div className="p-4 bg-green-50 border-2 border-green-200 rounded-xl mb-6">
+                <p className="font-bold text-green-800 mb-2">Location Captured</p>
+                <p className="text-sm text-green-700">
+                  Latitude: {inspectionData.latitude.toFixed(6)}<br />
+                  Longitude: {inspectionData.longitude.toFixed(6)}<br />
+                  Accuracy: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                </p>
+              </div>
+            )}
+
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                शोधलेले स्थान (Location Detected)
+              </label>
+              <input
+                type="text"
+                value={inspectionData.location_detected}
+                onChange={(e) => setInspectionData(prev => ({...prev, location_detected: e.target.value}))}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                placeholder="GPS द्वारे शोधलेले स्थान येथे दिसेल"
+                readOnly={isViewMode}
               />
             </div>
           </div>
-        )}
+        </section>
 
-        {/* Display existing photos when viewing */}
-        {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
-          <div style={{ marginTop: '16px' }}>
-            <h4 style={{ 
-              fontSize: '16px', 
-              fontWeight: '500', 
-              marginBottom: '12px' 
-            }}>
-              तपासणी फोटो ({editingInspection.fims_inspection_photos.length})
-            </h4>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-              gap: '16px' 
-            }}>
-              {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
-                <div
-                  key={photo.id}
-                  style={{
-                    backgroundColor: 'white',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                    border: '1px solid #e5e7eb',
-                    overflow: 'hidden'
-                  }}
-                >
-                  <img
-                    src={photo.photo_url}
-                    alt={photo.description || `Grampanchayat photo ${index + 1}`}
-                    style={{ width: '100%', height: '160px', objectFit: 'cover' }}
-                  />
-                  <div style={{ padding: '12px' }}>
-                    <p style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '500', 
-                      color: '#1f2937', 
-                      marginBottom: '4px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      {photo.photo_name || `Photo ${index + 1}`}
-                    </p>
-                    {photo.description && (
-                      <p style={{ 
-                        fontSize: '12px', 
-                        color: '#6b7280',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}>
-                        {photo.description}
-                      </p>
-                    )}
-                  </div>
+        {/* Form Title Section */}
+        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 px-8 py-16 text-white relative">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+            <div className="relative z-10 text-center">
+              <div className="flex justify-center mb-8">
+                <div className="bg-white/20 backdrop-blur-sm rounded-full p-6 shadow-lg">
+                  <FileText className="w-16 h-16 text-white" />
                 </div>
-              ))}
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">
+                परिशिष्ट-चार
+              </h1>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 inline-block shadow-lg border border-white/30">
+                <p className="text-lg font-medium">(नियम 80 पहा)</p>
+                <p className="text-lg font-medium">(ख)ग्राम पंचायतांची सर्वसाधारण तपासणीचा नमुना</p>
+              </div>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* No photos message for view mode */}
-        {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
-          <div style={{ textAlign: 'center', padding: '32px', color: '#6b7280' }}>
-            <Camera size={48} style={{ color: '#d1d5db', margin: '0 auto 8px' }} />
-            <p>कोणतेही फोटो सापडले नाहीत</p>
+        {/* Form Content Section */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <FileText className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">तपासणी माहिती</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            <div className="space-y-6">
+              {/* Question 1 */}
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <p className="mb-4 text-gray-800 font-medium">
+                  १. ग्राम पंचायतिचे नांव - 
+                  <input 
+                    type="text" 
+                    value={gpName} 
+                    onChange={(e) => setGpName(e.target.value)} 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    disabled={isViewMode}
+                  />
+                  {' '}पंचायत समिती -{' '}
+                  <input 
+                    type="text" 
+                    value={psName} 
+                    onChange={(e) => setPsName(e.target.value)} 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    disabled={isViewMode}
+                  />
+                </p>
+              </div>
+
+              {/* Question 2 */}
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <p className="mb-4 text-gray-800 font-medium">
+                  २. (क) सर्वसाधारण तपासणीची तारीख - 
+                  <input 
+                    type="date" 
+                    value={inspectionDate} 
+                    onChange={(e) => setInspectionDate(e.target.value)} 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    disabled={isViewMode}
+                  />
+                </p>
+              </div>
+
+              {/* Question 3 */}
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <p className="mb-4 text-gray-800 font-medium">
+                  ३. (ख) सर्वसाधारण तपासणीचे ठिकाण - 
+                  <input 
+                    type="text" 
+                    value={inspectionPlace} 
+                    onChange={(e) => setInspectionPlace(e.target.value)} 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 w-full max-w-md" 
+                    disabled={isViewMode}
+                  />
+                </p>
+              </div>
+
+              {/* Question 4 */}
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <p className="mb-4 text-gray-800 font-medium">
+                  ४. तपासणी अधिकारीाचे नांव व हुद्दा - 
+                  <input 
+                    type="text" 
+                    value={officerName} 
+                    onChange={(e) => setOfficerName(e.target.value)} 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    disabled={isViewMode}
+                  />
+                  {' / '}
+                  <input 
+                    type="text" 
+                    value={officerPost} 
+                    onChange={(e) => setOfficerPost(e.target.value)} 
+                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    disabled={isViewMode}
+                  />
+                </p>
+              </div>
+
+              {/* Question 5 */}
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <p className="mb-4 text-gray-800 font-medium">
+                  ५. सचिवाचे नांव व तो सदस्य पंचायतीत केलेला पासून काम करीत आहे - 
+                  <input 
+                    type="text" 
+                    value={secretaryName} 
+                    onChange={(e) => setSecretaryName(e.target.value)} 
+                    className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    disabled={isViewMode}
+                  />
+                  {' / '}
+                  <input 
+                    type="text" 
+                    value={secretaryTenure} 
+                    onChange={(e) => setSecretaryTenure(e.target.value)} 
+                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    disabled={isViewMode}
+                  />
+                </p>
+              </div>
+
+              {/* Question 6 */}
+              <div className="p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200">
+                <p className="mb-4 text-gray-800 font-medium text-lg">
+                  ६. मासिक सभा नियमांनुसार नियमितपणे होतात काय ?
+                </p>
+                <div className="flex gap-8 pl-4">
+                  <label className="flex items-center cursor-pointer group">
+                    <input 
+                      type="radio" 
+                      name="monthlyMeetings" 
+                      value="होय" 
+                      checked={monthlyMeetings === 'होय'} 
+                      onChange={(e) => setMonthlyMeetings(e.target.value)} 
+                      disabled={isViewMode}
+                      className="mr-3 w-5 h-5 text-green-600"
+                    /> 
+                    <span className="text-green-700 font-semibold text-lg">होय</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer group">
+                    <input 
+                      type="radio" 
+                      name="monthlyMeetings" 
+                      value="नाही" 
+                      checked={monthlyMeetings === 'नाही'} 
+                      onChange={(e) => setMonthlyMeetings(e.target.value)} 
+                      disabled={isViewMode}
+                      className="mr-3 w-5 h-5 text-red-600"
+                    /> 
+                    <span className="text-red-700 font-semibold text-lg">नाही</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Sub-question */}
+              <div className="p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200 ml-8">
+                <p className="mb-4 text-gray-800 font-medium text-lg">
+                  सभेची कार्यसूची व सभेची नोंदवही ईत्यादी अद्यावत आहे काय ?
+                </p>
+                <div className="flex gap-8 pl-4">
+                  <label className="flex items-center cursor-pointer group">
+                    <input 
+                      type="radio" 
+                      name="agendaUpToDate" 
+                      value="होय" 
+                      checked={agendaUpToDate === 'होय'} 
+                      onChange={(e) => setAgendaUpToDate(e.target.value)} 
+                      disabled={isViewMode}
+                      className="mr-3 w-5 h-5 text-green-600"
+                    /> 
+                    <span className="text-green-700 font-semibold text-lg">होय</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer group">
+                    <input 
+                      type="radio" 
+                      name="agendaUpToDate" 
+                      value="नाही" 
+                      checked={agendaUpToDate === 'नाही'} 
+                      onChange={(e) => setAgendaUpToDate(e.target.value)} 
+                      disabled={isViewMode}
+                      className="mr-3 w-5 h-5 text-red-600"
+                    /> 
+                    <span className="text-red-700 font-semibold text-lg">नाही</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Tables */}
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border-2 border-gray-300 rounded-lg overflow-hidden">
+                  <thead>
+                    <tr className="bg-gradient-to-r from-gray-100 to-gray-200">
+                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">अ.क्र.</th>
+                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">नोंदवहीचे नाव</th>
+                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">तपासणीच्या तारखेला शिल्लक</th>
+                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">बँकेतिल शिल्लक</th>
+                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">पोस्टातिल शिल्लक</th>
+                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">हाती असलेली शिल्लक</th>
+                      <th className="border-2 border-gray-300 px-4 py-3 text-center font-bold">चेक</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ["1", "ग्रामनिधी"],
+                      ["2", "पाणी पुरवठा"],
+                      ["3", "14 वा वित्त आयोग"],
+                      ["4", "इं.गा.यो."],
+                      ["5", "अ.जा.विकास"],
+                      ["6", "मजगारोहयो"],
+                      ["7", "ठक्कर बाप्पा"],
+                      ["8", "ग्रामकोष पैसा"],
+                      ["9", "नागरी सुविधा"],
+                      ["10", "दलित वस्ती विकास"],
+                      ["11", "तंटा मुक्त योजना"],
+                      ["12", "जनसुविधा"],
+                      ["13", "पायका"],
+                      ["14", "प.सं.योजना"],
+                      ["15", "SBM"],
+                      ["16", "तीर्थक्षेत्र विकास निधी"],
+                      ["17", "अल्पसंख्यांक विकास निधी"]
+                    ].map((row, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="border-2 border-gray-300 px-4 py-3 text-center">{row[0]}</td>
+                        <td className="border-2 border-gray-300 px-4 py-3">{row[1]}</td>
+                        <td className="border-2 border-gray-300 px-2 py-2">
+                          <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                        </td>
+                        <td className="border-2 border-gray-300 px-2 py-2">
+                          <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                        </td>
+                        <td className="border-2 border-gray-300 px-2 py-2">
+                          <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                        </td>
+                        <td className="border-2 border-gray-300 px-2 py-2">
+                          <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                        </td>
+                        <td className="border-2 border-gray-300 px-2 py-2">
+                          <input type="text" className="w-full px-2 py-1 border rounded" disabled={isViewMode} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* More radio questions */}
+              <div className="p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200">
+                <p className="mb-4 text-gray-800 font-medium text-lg">
+                  २. कराची पावती (नमुना 10) - हे अद्यावत आहे काय ?
+                </p>
+                <div className="flex gap-8 pl-4">
+                  <label className="flex items-center cursor-pointer group">
+                    <input 
+                      type="radio" 
+                      name="receiptUpToDate" 
+                      value="होय" 
+                      checked={receiptUpToDate === 'होय'} 
+                      onChange={(e) => setReceiptUpToDate(e.target.value)} 
+                      disabled={isViewMode}
+                      className="mr-3 w-5 h-5 text-green-600"
+                    /> 
+                    <span className="text-green-700 font-semibold text-lg">होय</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer group">
+                    <input 
+                      type="radio" 
+                      name="receiptUpToDate" 
+                      value="नाही" 
+                      checked={receiptUpToDate === 'नाही'} 
+                      onChange={(e) => setReceiptUpToDate(e.target.value)} 
+                      disabled={isViewMode}
+                      className="mr-3 w-5 h-5 text-red-600"
+                    /> 
+                    <span className="text-red-700 font-semibold text-lg">नाही</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <p className="mb-4 text-gray-800 font-medium">
+                  (ख) मागील फेर आकारणी केलेली झाली ? ठराव क्रमांक - 
+                  <input 
+                    type="text" 
+                    value={resolutionNo} 
+                    onChange={(e) => setResolutionNo(e.target.value)} 
+                    className="ml-2 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" 
+                    disabled={isViewMode}
+                  />
+                </p>
+              </div>
+
+              <div className="p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200">
+                <p className="mb-4 text-gray-800 font-medium text-lg">
+                  (ग) चार वर्षे पूर्ण झालेली असल्यास, नटल्याने फेर आकारणी करण्यासाठी कार्यवाही चालू आहे किंवा नाही ?
+                </p>
+                <div className="flex gap-8 pl-4">
+                  <label className="flex items-center cursor-pointer group">
+                    <input 
+                      type="radio" 
+                      name="reassessmentAction" 
+                      value="होय" 
+                      checked={reassessmentAction === 'होय'} 
+                      onChange={(e) => setReassessmentAction(e.target.value)} 
+                      disabled={isViewMode}
+                      className="mr-3 w-5 h-5 text-green-600"
+                    /> 
+                    <span className="text-green-700 font-semibold text-lg">होय</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer group">
+                    <input 
+                      type="radio" 
+                      name="reassessmentAction" 
+                      value="नाही" 
+                      checked={reassessmentAction === 'नाही'} 
+                      onChange={(e) => setReassessmentAction(e.target.value)} 
+                      disabled={isViewMode}
+                      className="mr-3 w-5 h-5 text-red-600"
+                    /> 
+                    <span className="text-red-700 font-semibold text-lg">नाही</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Photo Upload Section */}
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
+            <div className="flex items-center text-white">
+              <Camera className="w-8 h-8 mr-4" />
+              <h3 className="text-2xl font-bold">फोटो अपलोड करा (Photo Upload)</h3>
+            </div>
+          </div>
+          <div className="p-10">
+            {!isViewMode && (
+              <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center mb-6 hover:border-purple-400 transition-colors">
+                <Camera size={48} className="text-gray-400 mx-auto mb-4" />
+                <h4 className="text-xl font-semibold text-gray-700 mb-2">
+                  ग्रामपंचायत फोटो अपलोड करा
+                </h4>
+                <p className="text-gray-600 mb-4">
+                  {uploadedPhotos.length > 0
+                    ? `${uploadedPhotos.length}/5 फोटो निवडले आहेत`
+                    : 'फोटो निवडा (जास्तीत जास्त 5)'}
+                </p>
+                
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  disabled={uploadedPhotos.length >= 5}
+                  id="photo-upload"
+                  className="hidden"
+                />
+                <label
+                  htmlFor="photo-upload"
+                  className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl text-white font-semibold cursor-pointer transition-all duration-200 ${
+                    uploadedPhotos.length >= 5 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-purple-600 hover:bg-purple-700 shadow-lg hover:shadow-xl'
+                  }`}
+                >
+                  <Camera size={20} />
+                  {uploadedPhotos.length >= 5 ? 'जास्तीत जास्त फोटो पोहोचले' : 'फोटो निवडा'}
+                </label>
+              </div>
+            )}
+
+            {/* Photo Previews */}
+            {uploadedPhotos.length > 0 && (
+              <div>
+                <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <Camera size={20} className="text-purple-600" />
+                  निवडलेले फोटो ({uploadedPhotos.length}/5)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {uploadedPhotos.map((file, index) => (
+                    <div
+                      key={index}
+                      className="relative bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden hover:shadow-xl transition-shadow"
+                    >
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-48 object-cover"
+                      />
+                      {!isViewMode && (
+                        <button
+                          onClick={() => removePhoto(index)}
+                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg transition-colors"
+                        >
+                          ×
+                        </button>
+                      )}
+                      <div className="p-4">
+                        <p className="font-semibold text-gray-800 text-sm truncate">
+                          {file.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {(file.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Upload Progress */}
+            {isUploading && (
+              <div className="mt-6 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
+                <div className="flex justify-between mb-2">
+                  <span className="text-sm font-semibold text-blue-800">
+                    फोटो अपलोड करत आहे...
+                  </span>
+                  <span className="text-sm text-blue-600">{uploadProgress}%</span>
+                </div>
+                <div className="w-full bg-blue-200 rounded-full h-2">
+                  <div
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Display existing photos when viewing */}
+            {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
+              <div>
+                <h4 className="text-lg font-semibold mb-4">
+                  तपासणी फोटो ({editingInspection.fims_inspection_photos.length})
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
+                    <div
+                      key={photo.id}
+                      className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden"
+                    >
+                      <img
+                        src={photo.photo_url}
+                        alt={photo.description || `Grampanchayat photo ${index + 1}`}
+                        className="w-full h-48 object-cover"
+                      />
+                      <div className="p-4">
+                        <p className="font-semibold text-gray-800 text-sm truncate">
+                          {photo.photo_name || `Photo ${index + 1}`}
+                        </p>
+                        {photo.description && (
+                          <p className="text-xs text-gray-500 truncate">
+                            {photo.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* No photos message */}
+            {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
+              <div className="text-center py-12">
+                <Camera size={48} className="text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500">कोणतेही फोटो सापडले नाहीत</p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Submit Buttons */}
+        {!isViewMode && (
+          <div className="flex justify-center gap-6 mt-8">
+            <button
+              type="button"
+              onClick={() => handleSubmit(true)}
+              disabled={isLoading || isUploading}
+              className="flex items-center gap-3 px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Save size={20} />
+              <span>{isLoading ? 'सेव्ह करत आहे...' : 'मसुदा म्हणून जतन करा'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSubmit(false)}
+              disabled={isLoading || isUploading}
+              className="flex items-center gap-3 px-8 py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Send size={20} />
+              <span>{isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}</span>
+            </button>
           </div>
         )}
-      </div>
-
-      {/* Submit Buttons */}
-      {!isViewMode && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '24px' }}>
-          <button
-            type="button"
-            onClick={() => handleSubmit(true)}
-            disabled={isLoading || isUploading}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '12px 24px',
-              backgroundColor: '#6b7280',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: isLoading || isUploading ? 'not-allowed' : 'pointer',
-              opacity: isLoading || isUploading ? 0.5 : 1,
-              fontSize: '16px'
-            }}
-          >
-            <Save size={20} />
-            <span>{isLoading ? 'सेव्ह करत आहे...' : 'मसुदा म्हणून जतन करा'}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSubmit(false)}
-            disabled={isLoading || isUploading}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '12px 24px',
-              backgroundColor: '#10b981',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: isLoading || isUploading ? 'not-allowed' : 'pointer',
-              opacity: isLoading || isUploading ? 0.5 : 1,
-              fontSize: '16px'
-            }}
-          >
-            <Send size={20} />
-            <span>{isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}</span>
-          </button>
-        </div>
-      )}
-
-      <div>
-        <p>प्रतिलिपी:-</p>
-        <p>1) मा.मुख्य कार्यकारी अधिकारी जिल्हा परिषद,चंद्रपूर यांना माहितीस सविनय सादर.</p>
-        <p>2) गट विकास अधिकारी,पंचायत समिती---------------------यांना माहितीस सादर.</p>
-        <p>3) सचिव ग्रामपंचायत---------------------यांना माहितीस व उचित कार्यवाहीस अवगत.</p>
       </div>
     </div>
   );
