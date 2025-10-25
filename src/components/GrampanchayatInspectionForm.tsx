@@ -1048,40 +1048,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
           </div>
         </section>
 
-        {/* Inspector's Opinion Section */}
-        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-red-500 to-pink-600 px-8 py-6">
-            <div className="flex items-center text-white">
-              <FileText className="w-8 h-8 mr-4" />
-              <h3 className="text-2xl font-bold">तपासणी अधिकार्‍याचा अभिप्राय</h3>
-            </div>
-          </div>
-          <div className="p-10">
-            <div className="space-y-4">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-gray-800">1) नमुना - - - - -  अपूर्ण आहेत. <input type="text" className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg w-full max-w-2xl mt-2" disabled={isViewMode} /></p>
-              </div>
-              {[2, 3, 4, 5, 6, 7, 8].map((num) => (
-                <div key={num} className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-gray-800">{num}) --- . <input type="text" className="ml-3 px-3 py-2 border-2 border-gray-200 rounded-lg w-full max-w-2xl mt-2" disabled={isViewMode} /></p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Copy To Section */}
-        <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-          <div className="p-10">
-            <div className="space-y-2 text-gray-800">
-              <p className="font-bold text-lg mb-4">प्रतिलिपी:-</p>
-              <p>१) मा.मुख्य कार्यकारी अधिकारी जिल्हा परिषद,चंद्रपूर यांना माहितीस सविनय सादर.</p>
-              <p>२) गट विकास अधिकारी,पंचायत समिती---------------------यांना माहितीस सादर.</p>
-              <p>३) सचिव ग्रामपंचायत---------------------यांना माहितीस व उचित कार्यवाहीस अवगत.</p>
-            </div>
-          </div>
-        </section>
-
         {/* Photo Upload Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
