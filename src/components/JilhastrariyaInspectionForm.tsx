@@ -338,7 +338,7 @@ const JilhastrariyaInspectionForm: React.FC<JilhastrariyaInspectionFormProps> = 
           .from('fims_inspections')
           .insert({
             inspection_number: inspectionNumber,
-            category_id: 'jilhastariya inspection form',
+            category_id: 'jilhastariya_inspection_form',
             inspector_id: user.id,
             ...fullData
           })
