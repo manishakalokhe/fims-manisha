@@ -338,7 +338,7 @@ const HealthInspectionForm: React.FC<HealthInspectionFormProps> = ({
           .from('fims_inspections')
           .insert({
             inspection_number: inspectionNumber,
-            category_id: 'health_inspection',
+            category_id: 'jilhastariya_inspection',
             inspector_id: user.id,
             ...fullData
           })
