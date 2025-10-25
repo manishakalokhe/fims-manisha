@@ -206,7 +206,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       );
     }
 
-    if (selectedInspectionType === 'jilhastariya inspection form') {
+    if (selectedInspectionType === 'jilhastariya_inspection_form') {
       return (
         <jilhastariya_inspection_form
           user={user}
