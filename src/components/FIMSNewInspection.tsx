@@ -373,9 +373,9 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             { key: 'mumbai_nyayalay', title: 'मुंबई न्यायालय तपासणी प्रपत्र', subtitle: 'Mumbai High Court School Inspection Form', color: 'red', active: true },
            { key: 'pashutapasani', title: 'पशुवैद्यकीय संस्थांचे तांत्रिक निरीक्षण', subtitle: 'Veterinary Institution Technical Inspection Form', color: 'red', active: true },
 { key: 'gram_panchayat', title: 'ग्राम पंचायत तपासणी', subtitle: 'Grampanchayat Inspection Form', color: 'red', active: true },
+{ key: 'gram_panchayat', title: 'ग्राम पंचायत तपासणी', subtitle: 'Grampanchayat Inspection Form', color: 'red', active: true },
 { 
-  key: 'jilhastariya_inspection_form', 
-  title: 'जिल्हास्तरीय अधिकारी तपासणी', subtitle: 'Jilhastrariya Inspection Form', color: 'purple', active: true },
+  key: 'jilhastariya_inspection_form',  title: 'जिल्हास्तरीय अधिकारी तपासणी', subtitle: 'Jilhastrariya Inspection Form', color: 'purple',  active: true },
    
          //   { key: 'form_10', title: 'Form 10 Title', subtitle: 'Form 10 Description', color: 'cyan' },
          //   { key: 'form_11', title: 'Form 11 Title', subtitle: 'Form 11 Description', color: 'violet' },
