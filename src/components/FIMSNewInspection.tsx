@@ -12,7 +12,7 @@ import { RajyaGunwattaNirikshakTapasaniForm } from './RajyaGunwattaNirikshakTapa
 import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
 import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
 import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
-import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm.tsx';
+import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm';
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
