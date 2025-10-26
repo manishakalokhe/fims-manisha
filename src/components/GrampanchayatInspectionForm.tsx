@@ -1206,4 +1206,4 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
   );
 };
 
-export default InspectionForm;
+export default GrampanchayatInspectionForm;
