@@ -66,7 +66,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
     location_accuracy: null as number | null,
     location_detected: ''
   });
-
   const grampanchayatCategory = categories.find(cat => cat.form_type === 'grampanchayat');
 
   useEffect(() => {
