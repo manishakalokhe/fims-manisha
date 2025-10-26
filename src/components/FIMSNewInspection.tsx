@@ -12,6 +12,7 @@ import { RajyaGunwattaNirikshakTapasaniForm } from './RajyaGunwattaNirikshakTapa
 import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
 import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
 import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
+import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm';
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
@@ -192,6 +193,18 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       );
     }
 
+    if (selectedInspectionType === 'gram_panchayat') {
+      return (
+        <GrampanchayatInspectionForm
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
+
     return null;
   };
 
@@ -335,9 +348,42 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             </div>
           </div>
 
-        
+          {/* Grampanchayat Inspection */}
+          <div 
+            onClick={() => handleInspectionTypeSelect('gram_panchayat')}
+            className="bg-gradient-to-br from-indigo-100 via-indigo-50 to-purple-50 rounded-lg shadow-lg border-2 border-indigo-200 p-4 md:p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer hover:border-indigo-400 touch-manipulation hover:from-indigo-200 hover:via-indigo-100 hover:to-purple-100"
+          >
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 rounded-xl shadow-lg">
+                <Users className="h-6 w-6 md:h-8 md:w-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg md:text-xl font-semibold text-gray-900">
+                  ग्राम पंचायत तपासणी
+                </h3>
+                <p className="text-sm md:text-base text-indigo-700 font-medium">
+                  ग्राम पंचायत निरीक्षण प्रपत्र
+                </p>
+              </div>
+            </div>
+            
+            <div className="space-y-2 text-sm text-indigo-800">
+              <p>• पंचायत समिती व सभा नोंदी</p>
+              <p>• आर्थिक व्यवहार व कर संकलन</p>
+              <p>• विकासकामे व प्रकल्प प्रगती</p>
+              <p>• कर्मचारी व प्रशासकीय माहिती</p>
+            </div>
+            
+            <div className="mt-4 flex items-center justify-between">
+              <span className="text-sm font-bold text-indigo-700 bg-white/50 px-3 py-1 rounded-full">
+                तपासणी सुरू करण्यासाठी निवडा
+              </span>
+              <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 p-2 rounded-full shadow-lg">
+                <Plus className="h-5 w-5 text-white" />
+              </div>
+            </div>
+          </div>
           
-
           {/* Placeholder cards for the remaining 12 forms */}
           {[
             { key: 'bandhkam_vibhag1', title: 'बांधकाम विभाग प्रपत्र-1', subtitle: 'Construction Department Form-1', color: 'orange', active: true },
