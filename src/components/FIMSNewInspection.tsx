@@ -363,7 +363,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
          //   { key: 'form_12', title: 'Form 12 Title', subtitle: 'Form 12 Description', color: 'lime' },
          //   { key: 'form_13', title: 'Form 13 Title', subtitle: 'Form 13 Description', color: 'amber' },
          //   { key: 'form_14', title: 'Form 14 Title', subtitle: 'Form 14 Description', color: 'emerald' },
-         //   { key: 'form_15', title: 'Form 15 Title', subtitle: 'Form 15 Description', color: 'rose' }
+         //   { key: 'form_15', title: 'Form 15 Title', subtitle: 'Form 15 Description', color: 'rose' },
       
           ].map((form, index) => (
             <div 
