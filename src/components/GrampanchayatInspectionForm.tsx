@@ -434,7 +434,6 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
                   disabled={isViewMode}
                 />
               </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="p-6 bg-gray-50 rounded-xl">
                   <label className="block mb-2 text-sm font-semibold text-gray-700">४. तपासणी अधिकारीाचे नांव</label>
