@@ -445,7 +445,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
                     <p>• सर्वसाधारण तपासणीचे ठिकाण</p>
                     </>
                 ) : (
-                  <></>
+                 
                 )}
               </div>
               
