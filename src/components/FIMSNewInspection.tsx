@@ -11,7 +11,7 @@ import { ZPDarMahinyalaSadarKaryachePrapatraForm } from './ZPDarMahinyalaSadarKa
 import { RajyaGunwattaNirikshakTapasaniForm } from './RajyaGunwattaNirikshakTapasaniForm';
 import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
 import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
-import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
+import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm';
 import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm.tsx';
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
