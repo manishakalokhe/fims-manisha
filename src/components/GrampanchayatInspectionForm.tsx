@@ -172,7 +172,7 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
 
   const handleSubmit = async (isDraft: boolean = false) => {
     if (!gpName.trim()) {
-      alert('ग्राम पंचायतिचे नांव आवश्यक आहे');
+      alert('à¤—à¥à¤°à¤¾à¤® à¤ªà¤‚à¤šà¤¾à¤¯à¤¤à¤¿à¤šà¥‡ à¤¨à¤¾à¤‚à¤µ à¤†à¤µà¤¶à¥à¤¯à¤• à¤†à¤¹à¥‡');
       return;
     }
 
@@ -279,7 +279,7 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
                   inspection_id: inspectionResult.id,
                   photo_url: publicUrl,
                   photo_name: file.name,
-                  description: `ग्रामपंचायत तपासणी फोटो ${i + 1}`,
+                  description: `à¤—à¥à¤°à¤¾à¤®à¤ªà¤‚à¤šà¤¾à¤¯à¤¤ à¤¤à¤ªà¤¾à¤¸à¤£à¥€ à¤«à¥‹à¤Ÿà¥‹ ${i + 1}`,
                   photo_order: i + 1,
                 });
             }
@@ -290,8 +290,8 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
       }
 
       const message = isDraft 
-        ? (editingInspection?.id ? 'मसुदा अपडेट झाला' : 'मसुदा सेव्ह झाला')
-        : (editingInspection?.id ? 'तपासणी अपडेट झाली' : 'तपासणी सबमिट झाली');
+        ? (editingInspection?.id ? 'à¤®à¤¸à¥à¤¦à¤¾ à¤…à¤ªà¤¡à¥‡à¤Ÿ à¤à¤¾à¤²à¤¾' : 'à¤®à¤¸à¥à¤¦à¤¾ à¤¸à¥‡à¤µà¥à¤¹ à¤à¤¾à¤²à¤¾')
+        : (editingInspection?.id ? 'à¤¤à¤ªà¤¾à¤¸à¤£à¥€ à¤…à¤ªà¤¡à¥‡à¤Ÿ à¤à¤¾à¤²à¥€' : 'à¤¤à¤ªà¤¾à¤¸à¤£à¥€ à¤¸à¤¬à¤®à¤¿à¤Ÿ à¤à¤¾à¤²à¥€');
       
       alert(message);
       onInspectionCreated();
@@ -299,726 +299,540 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
 
     } catch (error: any) {
       console.error('Error saving inspection:', error);
-      alert('तपासणी सेव्ह करताना त्रुटी: ' + (error.message || 'अज्ञात त्रुटी'));
+      alert('à¤¤à¤ªà¤¾à¤¸à¤£à¥€ à¤¸à¥‡à¤µà¥à¤¹ à¤•à¤°à¤¤à¤¾à¤¨à¤¾ à¤¤à¥à¤°à¥à¤Ÿà¥€: ' + (error.message || 'à¤…à¤œà¥à¤žà¤¾à¤¤ à¤¤à¥à¤°à¥à¤Ÿà¥€'));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
-            >
-              <ArrowLeft className="h-5 w-5" />
-              <span>Back</span>
-            </button>
-            <h1 className="text-lg md:text-2xl font-bold text-gray-900">
-              ग्राम पंचायत तपासणी
-            </h1>
-            <div className="w-20"></div>
-          </div>
-          
-          <p className="text-sm md:text-base text-gray-600 text-center">
-            ग्राम पंचायत निरीक्षण प्रपत्र भरा
-          </p>
-        </div>
-
-        {/* Form Content */}
-                        <div style={{ fontFamily: 'Arial, sans-serif', direction: 'ltr', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', color: '#333' }}>परिशिष्ट-चार</h1>
-      <p style={{ textAlign: 'center', fontWeight: 'bold' }}>(नियम 80 पहा)</p>
-      <p style={{ textAlign: 'center', fontWeight: 'bold' }}>(ख)ग्राम पंचायतांची सर्वसाधारण तपासणीचा नमुना</p>
-
-      <ol style={{ marginLeft: '20px' }}>
-        <li>
-          ग्राम पंचायतिचे नांव- 
-          <input 
-            type="text" 
-            value={gpName} 
-            onChange={(e) => setGpName(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-          />
-          पंचायत समिती - 
-          <input 
-            type="text" 
-            value={psName} 
-            onChange={(e) => setPsName(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-          />
-        </li>
-        <li>
-          (क) सर्वसाधारण तपासणीची तारीख - 
-          <input 
-            type="date" 
-            value={inspectionDate} 
-            onChange={(e) => setInspectionDate(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-          />
-        </li>
-        <li>
-          (ख) सर्वसाधारण तपासणीचे ठिकाण :- 
-          <input 
-            type="text" 
-            value={inspectionPlace} 
-            onChange={(e) => setInspectionPlace(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-          />
-        </li>
-        <li>
-          तपासणी अधिकारीाचे नांव व हुद्दा :- 
-          <input 
-            type="text" 
-            value={officerName} 
-            onChange={(e) => setOfficerName(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-          />
-          /
-          <input 
-            type="text" 
-            value={officerPost} 
-            onChange={(e) => setOfficerPost(e.target.value)} 
-            style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-          />
-        </li>
-        <li>
-          सचिवाचे नांव व तो सदस्य पंचायतीत केलेला पासून काम करीत आहे :- 
-          <input 
-            type="text" 
-            value={secretaryName} 
-            onChange={(e) => setSecretaryName(e.target.value)} 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-          />
-          /
-          <input 
-            type="text" 
-            value={secretaryTenure} 
-            onChange={(e) => setSecretaryTenure(e.target.value)} 
-            style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-          />
-        </li>
-        <li>
-          मासिक सभा नियमांनुसार नियमितपणे होतात काय ? 
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="monthlyMeetings" 
-              value="होय" 
-              checked={monthlyMeetings === 'होय'} 
-              onChange={(e) => setMonthlyMeetings(e.target.value)} 
-            /> 
-            होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="monthlyMeetings" 
-              value="नाही" 
-              checked={monthlyMeetings === 'नाही'} 
-              onChange={(e) => setMonthlyMeetings(e.target.value)} 
-            /> 
-            नाही
-          </label>
-        </li>
-        <ul style={{ marginLeft: '20px' }}>
-          <li>
-            सभेची कार्यसूची व सभेची नोंदवही ईत्यादी अद्यावत आहे काय ? 
-            <label style={{ marginLeft: '10px' }}>
-              <input 
-                type="radio" 
-                name="agendaUpToDate" 
-                value="होय" 
-                checked={agendaUpToDate === 'होय'} 
-                onChange={(e) => setAgendaUpToDate(e.target.value)} 
-              /> 
-              होय
-            </label>
-            <label style={{ marginLeft: '10px' }}>
-              <input 
-                type="radio" 
-                name="agendaUpToDate" 
-                value="नाही" 
-                checked={agendaUpToDate === 'नाही'} 
-                onChange={(e) => setAgendaUpToDate(e.target.value)} 
-              /> 
-              नाही
-            </label>
-          </li>
-        </ul>
-        <br />
-        <br />
-      </ol>
-
-      <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-        <thead>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अ.क्र.</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>नोंदवहीचे नाव</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>तपासणीच्या तारखेला शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>बँकेतिल शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>पोस्टातिल शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>हाती असलेली शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>चेक</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>1</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>ग्रामनिधी</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>2</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>पाणी पुरवठा</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-        <thead>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
-            <th colSpan="7" style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>(7) रोकड वहीचा तपशील</th>
-          </tr>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अ.क्र.</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>नोंदवहीचे नाव</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>तपासणीच्या तारीखेला शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>बँकेतिल शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>पोस्टातिल शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>हाती असलेली शिल्लक</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>चेक</th>
-          </tr>
-        </thead>
-        <tbody>
-          {[
-            ["1", "ग्रामनिधी"],
-            ["2", "पाणी पुरवठा"],
-            ["3", "14 वा वित्त आयोग"],
-            ["4", "इं.गा.यो."],
-            ["5", "अ.जा.विकास"],
-            ["6", "मजगारोहयो"],
-            ["7", "ठक्कर बाप्पा"],
-            ["8", "ग्रामकोष पैसा"],
-            ["9", "नागरी सुविधा"],
-            ["10", "दलित वस्ती विकास"],
-            ["11", "तंटा मुक्त योजना"],
-            ["12", "जनसुविधा"],
-            ["13", "पायका"],
-            ["14", "प.सं.योजना"],
-            ["15", "SBM"],
-            ["16", "तीर्थक्षेत्र विकास निधी"],
-            ["17", "अल्पसंख्यांक विकास निधी"]
-          ].map((row, index) => (
-            <tr key={index}>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>{row[0]}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{row[1]}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>(8)(क) कर आकारणी नोंदवही(नमुना 8) :- नाही</h3>
-        <p>1.कराच्या मागणीचे नोंदणी पुस्तक (नमुना 9):-</p>
-        <p>
-          2.कराची पावती (नमुना 10):-हे अद्यावत आहे काय ? 
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="receiptUpToDate" 
-              value="होय" 
-              checked={receiptUpToDate === 'होय'} 
-              onChange={(e) => setReceiptUpToDate(e.target.value)} 
-            /> 
-            होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="receiptUpToDate" 
-              value="नाही" 
-              checked={receiptUpToDate === 'नाही'} 
-              onChange={(e) => setReceiptUpToDate(e.target.value)} 
-            /> 
-            नाही
-          </label>
-        </p>
-        <p>(ख) मागील फेर आकारणी केलेली झाली ? दिनांक 
-          <input type="date" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> 
-          / / ठराव क्रमांक - 
-          <input 
-            type="text" 
-            value={resolutionNo} 
-            onChange={(e) => setResolutionNo(e.target.value)} 
-            style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-          />
-        </p>
-        <p>नाही</p>
-        <p>(ग) चार वर्षे पूर्ण झालेली असल्यास ,नटल्याने फेर आकारणी करण्यासाठी कार्यवाही चालू आहे किंवा नाही ?</p>
-        <p>
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="reassessmentAction" 
-              value="होय" 
-              checked={reassessmentAction === 'होय'} 
-              onChange={(e) => setReassessmentAction(e.target.value)} 
-            /> 
-            होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input 
-              type="radio" 
-              name="reassessmentAction" 
-              value="नाही" 
-              checked={reassessmentAction === 'नाही'} 
-              onChange={(e) => setReassessmentAction(e.target.value)} 
-            /> 
-            नाही
-          </label>
-        </p>
-      </div>
-
-      <h3 style={{ color: '#333', marginBottom: '10px' }}>(9) तपासणी तारखेस कर वसुलीची प्रगती खालीलप्रमाणे आहे :-</h3>
-      <ul style={{ marginLeft: '20px' }}>
-        <li>(1) मागील येणे रक्कम :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(2) चालू वर्षात मागणी :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(3) एकुण मागणी :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(4) एकुण वसूली :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(5) शिल्लक वसूली :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(6) टक्केवारी :- गृहकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> पाणीकर- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(7) शेरा :- <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-      </ul>
-
-      <h3 style={{ color: '#333', marginBottom: '10px' }}>(10) मागास वर्गीयाकरीता राखून ठेवलेल्या 15% निधीच्या खर्चाचा तपशील:-</h3>
-      <ul style={{ marginLeft: '20px' }}>
-        <li>(1) ग्राम पंचायतीचे एकुण उत्पन्न :- <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(2) 15% रक्कम :- <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(3) मागील अनुशेष <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(4) करावयाचा एकुण खर्च <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(5) तपासणीत्या दिनांक पर्यंत झालेला खर्च: <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-        <li>(6) शिल्लक खर्च <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
-      </ul>
-
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>(7) सूचना-</h3>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>(11) आर्थिक व्यवहारात निर्देशानुसार आलेल्या नियमबाह्यता -</h3>
-        <p>(क) कोणत्याही चालू खरेदी करणाऱ्यापूर्वी अंदाजपत्रकात योग्य तरतूद केली आहे काय ? 
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="budgetProvision" value="होय" /> होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="budgetProvision" value="नाही" /> नाही
-          </label>
-        </p>
-        <p>(ख) ग्राम पंचायत खरेदीसाठी मान्यता दिली आहे काय ? ठराव क्र.          
-          <input type="text" style={{ padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> 
-          दि.         
-          <input type="date" style={{ padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> 
-          / 
-        </p>
-        <p>(ग) खरेदी करण्यासाठी नियमप्रमाणे दरपत्रके मागविली होती काय ? 
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="tendersCalled" value="होय" /> होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="tendersCalled" value="नाही" /> नाही
-          </label>
-        </p>
-        <p>(घ) खरेदी केलेल्या साहित्याचा नमुना 9,15 व 16 मधील नोंदवहीत नोंदी घेण्यात आल्या आहेत काय ?</p>
-        <p>
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="entriesMade" value="होय" /> होय
-          </label>
-          <label style={{ marginLeft: '10px' }}>
-            <input type="radio" name="entriesMade" value="नाही" /> नाही
-          </label>
-        </p>
-      </div>
-
-      <div style={{ marginBottom: '20px' }}>
-        <p>(12) ग्राम पंचायताने स्वतःच्या निधीतून किंवा शासकीय/जिल्हा परिषद योजनेंतर्गत हात घेतलेल्या कामांचा तपशील-</p>
-        <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अ.क्र.</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>योजनेचे नांव</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>कामाचा प्रकार</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अंदाजित रक्कम</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>मिळालेले अनुदान</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>झालेला खर्च</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Add rows as needed with inputs */}
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none', textAlign: 'center' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            </tr>
-            {/* Repeat for additional rows */}
-          </tbody>
-        </table>
-
-        <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>काम सुरु झाल्याची तारीख</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>काम पूर्ण झाल्याची तारीख</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>प्रगतीवर असलेल्या कामाची सद्य:स्थिती</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>पूर्णत्वाचे प्रमाणपत्र प्राप्त केले किंवा नाही</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>शेरा</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="date" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="date" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <label><input type="radio" name="certificate1" value="होय" /> होय</label>
-                <label style={{ marginLeft: '10px' }}><input type="radio" name="certificate1" value="नाही" /> नाही</label>
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            </tr>
-            {/* Additional rows */}
-          </tbody>
-        </table>
-      </div>
-
-      <div style={{ marginBottom: '20px' }}>
-        <p>(13) ग्राम पंचायतांनी इतर योजनामध्ये केलेली प्रगती</p>
-        <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अ.क्र.</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>योजनेचे नाव</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>दिलेली उद्दिष्टे</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>तपासणीच्या दिनांकास</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>शेरा</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>1</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>एगाविका.</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>2</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>बॉयोगॅस</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>3</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>निर्धूर चुल</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>4</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>कुंटुंब कल्याण</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>5</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>अल्पवचत</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            </tr>
-            {/* Add rows 6 and 7 as empty */}
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>6</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>7</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-        <thead>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
-            <th colSpan="6" style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>(14) 14 वा वित्त आयोगामधून हाती घेतलेली कामे व त्याची प्रगती .</th>
-          </tr>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अ. क्र.</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>योजनेचे नाव</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>कामाचा प्रकार</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अंदाजित रक्कम</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>मिळालेले अनुदान</th>
-            <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>झालेला खर्च</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>1</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>14 वा वित्त आयोग</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>एल.ई.डी.लाईट खरेदी</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>2</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>कचरा कुंडी</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>3</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>फर्निचर</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>4</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>टि.व्हि.संच खरेदी</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>5</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>आपले सरकार सेवा केंद्र खर्च</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>6</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>वाटर मिटर</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>7</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>सीसीरोड</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>8</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>आपले सरकार सेवा केंद्र खर्च</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>9</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>फॉगिंग मशीन</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>10</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>ग्रांपभवन</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-          <tr>
-            <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>11</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}>कंप्युटर</td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-            <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div style={{ marginBottom: '20px' }}>
-        <h1 style={{ textAlign: 'center', color: '#333' }}>तपासणी अधिकार्‍याचा अभिप्राय</h1>
-        <p>1) नमुना - - - - -  अपूर्ण आहेत. <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-        <p>2) - ----- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-        <br />
-        <p>3) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-        <p>4) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-        <p>5) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-        <p>6) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-        <p>7) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-        <p>8) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-      </div>
-
-                
-                          {/* Location Section */}
-            <div className="border-l-4 border-green-500 pl-4 mt-8">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">स्थान माहिती</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    स्थानाचे नाव
-                  </label>
-                  <input 
-                    type="text" 
-                    value={inspectionData.location_name || gpName} 
-                    onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="स्थानाचे नाव"
-                    disabled={isViewMode}
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    तारीख
-                  </label>
-                  <input 
-                    type="date" 
-                    value={inspectionData.planned_date || ''} 
-                    onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    disabled={isViewMode}
-                  />
-                </div>
-              </div>
-
-              {!isViewMode && (
-                <button
-                  onClick={getCurrentLocation}
-                  disabled={isGettingLocation}
-                  className="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 mb-4"
-                >
-                  <MapPin className="w-5 h-5" />
-                  {isGettingLocation ? 'स्थान मिळवत आहे...' : 'GPS स्थान मिळवा'}
-                </button>
-              )}
-
-              {inspectionData.latitude && (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm text-green-800">
-                    <strong>स्थान कॅप्चर केले:</strong><br />
-                    अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
-                    रेखांश: {inspectionData.longitude?.toFixed(6)}<br />
-                    अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
-                  </p>
-                </div>
-              )}
+    <>
+      <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <button
+                onClick={onBack}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+              >
+                <ArrowLeft className="h-5 w-5" />
+                <span>Back</span>
+              </button>
+              <h1 className="text-lg md:text-2xl font-bold text-gray-900">
+                à¤—à¥à¤°à¤¾à¤® à¤ªà¤‚à¤šà¤¾à¤¯à¤¤ à¤¤à¤ªà¤¾à¤¸à¤£à¥€
+              </h1>
+              <div className="w-20"></div>
             </div>
-
-            {/* Photo Upload Section */}
-            <div className="border-l-4 border-purple-500 pl-4 mt-8">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">फोटो अपलोड</h3>
-              
-              {!isViewMode && (
-                <div>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handlePhotoUpload}
-                    className="mb-4"
-                  />
-                  
-                  {uploadedPhotos.length > 0 && (
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {uploadedPhotos.map((file, index) => (
-                        <div key={index} className="relative">
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt="Preview"
-                            className="w-full h-32 object-cover rounded"
-                          />
-                          <button
-                            onClick={() => removePhoto(index)}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
-                          >
-                            ×
-                          </button>
-                          <p className="text-xs text-gray-600 truncate mt-1">{file.name}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Submit Buttons */}
-        {!isViewMode && (
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-            <button
-              onClick={() => handleSubmit(true)}
-              disabled={isLoading}
-              className="px-8 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
-            >
-              {isLoading ? 'सेव्ह करत आहे...' : 'मसुदा सेव्ह करा'}
-            </button>
             
-            <button
-              onClick={() => handleSubmit(false)}
-              disabled={isLoading}
-              className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-            >
-              {isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}
-            </button>
+            <p className="text-sm md:text-base text-gray-600 text-center">
+              à¤—à¥à¤°à¤¾à¤® à¤ªà¤‚à¤šà¤¾à¤¯à¤¤ à¤¨à¤¿à¤°à¥€à¤•à¥à¤·à¤£ à¤ªà¥à¤°à¤ªà¤¤à¥à¤° à¤­à¤°à¤¾
+            </p>
           </div>
-        )}
 
-        {isViewMode && (
-          <div className="text-center mt-8 p-6 bg-blue-50 rounded-lg">
-            <FileText className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-            <p className="text-gray-700">तपासणी दृष्य मोडमध्ये आहे</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+          {/* Form Content */}
+          <div style={{ fontFamily: 'Arial, sans-serif', direction: 'ltr', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+            <h1 style={{ textAlign: 'center', color: '#333' }}>à¤ªà¤°à¤¿à¤¶à¤¿à¤·à¥à¤Ÿ-à¤šà¤¾à¤°</h1>
+            <p style={{ textAlign: 'center', fontWeight: 'bold' }}>(à¤¨à¤¿à¤¯à¤® 80 à¤ªà¤¹à¤¾)</p>
+            <p style={{ textAlign: 'center', fontWeight: 'bold' }}>(à¤–)à¤—à¥à¤°à¤¾à¤® à¤ªà¤‚à¤šà¤¾à¤¯à¤¤à¤¾à¤‚à¤šà¥€ à¤¸à¤°à¥à¤µà¤¸à¤¾à¤§à¤¾à¤°à¤£ à¤¤à¤ªà¤¾à¤¸à¤£à¥€à¤šà¤¾ à¤¨à¤®à¥à¤¨à¤¾</p>
+
+            <ol style={{ marginLeft: '20px' }}>
+              <li>
+                à¤—à¥à¤°à¤¾à¤® à¤ªà¤‚à¤šà¤¾à¤¯à¤¤à¤¿à¤šà¥‡ à¤¨à¤¾à¤‚à¤µ- 
+                <input 
+                  type="text" 
+                  value={gpName} 
+                  onChange={(e) => setGpName(e.target.value)} 
+                  style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
+                />
+                à¤ªà¤‚à¤šà¤¾à¤¯à¤¤ à¤¸à¤®à¤¿à¤¤à¥€ - 
+                <input 
+                  type="text" 
+                  value={psName} 
+                  onChange={(e) => setPsName(e.target.value)} 
+                  style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
+                />
+              </li>
+              <li>
+                (à¤•) à¤¸à¤°à¥à¤µà¤¸à¤¾à¤§à¤¾à¤°à¤£ à¤¤à¤ªà¤¾à¤¸à¤£à¥€à¤šà¥€ à¤¤à¤¾à¤°à¥€à¤– - 
+                <input 
+                  type="date" 
+                  value={inspectionDate} 
+                  onChange={(e) => setInspectionDate(e.target.value)} 
+                  style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
+                />
+              </li>
+              <li>
+                (à¤–) à¤¸à¤°à¥à¤µà¤¸à¤¾à¤§à¤¾à¤°à¤£ à¤¤à¤ªà¤¾à¤¸à¤£à¥€à¤šà¥‡ à¤ à¤¿à¤•à¤¾à¤£ :- 
+                <input 
+                  type="text" 
+                  value={inspectionPlace} 
+                  onChange={(e) => setInspectionPlace(e.target.value)} 
+                  style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
+                />
+              </li>
+              <li>
+                à¤¤à¤ªà¤¾à¤¸à¤£à¥€ à¤…à¤§à¤¿à¤•à¤¾à¤°à¥€à¤¾à¤šà¥‡ à¤¨à¤¾à¤‚à¤µ à¤µ à¤¹à¥à¤¦à¥à¤¦à¤¾ :- 
+                <input 
+                  type="text" 
+                  value={officerName} 
+                  onChange={(e) => setOfficerName(e.target.value)} 
+                  style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
+                />
+                /
+                <input 
+                  type="text" 
+                  value={officerPost} 
+                  onChange={(e) => setOfficerPost(e.target.value)} 
+                  style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
+                />
+              </li>
+              <li>
+                à¤¸à¤šà¤¿à¤µà¤¾à¤šà¥‡ à¤¨à¤¾à¤‚à¤µ à¤µ à¤¤à¥‹ à¤¸à¤¦à¤¸à¥à¤¯ à¤ªà¤‚à¤šà¤¾à¤¯à¤¤à¥€à¤¤ à¤•à¥‡à¤²à¥‡à¤²à¤¾ à¤ªà¤¾à¤¸à¥‚à¤¨ à¤•à¤¾à¤® à¤•à¤°à¥€à¤¤ à¤†à¤¹à¥‡ :- 
+                <input 
+                  type="text" 
+                  value={secretaryName} 
+                  onChange={(e) => setSecretaryName(e.target.value)} 
+                  style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
+                />
+                /
+                <input 
+                  type="text" 
+                  value={secretaryTenure} 
+                  onChange={(e) => setSecretaryTenure(e.target.value)} 
+                  style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
+                />
+              </li>
+              <li>
+                à¤®à¤¾à¤¸à¤¿à¤• à¤¸à¤­à¤¾ à¤¨à¤¿à¤¯à¤®à¤¾à¤‚à¤¨à¥à¤¸à¤¾à¤° à¤¨à¤¿à¤¯à¤®à¤¿à¤¤à¤ªà¤£à¥‡ à¤¹à¥‹à¤¤à¤¾à¤¤ à¤•à¤¾à¤¯ ? 
+                <label style={{ marginLeft: '10px' }}>
+                  <input 
+                    type="radio" 
+                    name="monthlyMeetings" 
+                    value="à¤¹à¥‹à¤¯" 
+                    checked={monthlyMeetings === 'à¤¹à¥‹à¤¯'} 
+                    onChange={(e) => setMonthlyMeetings(e.target.value)} 
+                  /> 
+                  à¤¹à¥‹à¤¯
+                </label>
+                <label style={{ marginLeft: '10px' }}>
+                  <input 
+                    type="radio" 
+                    name="monthlyMeetings" 
+                    value="à¤¨à¤¾à¤¹à¥€" 
+                    checked={monthlyMeetings === 'à¤¨à¤¾à¤¹à¥€'} 
+                    onChange={(e) => setMonthlyMeetings(e.target.value)} 
+                  /> 
+                  à¤¨à¤¾à¤¹à¥€
+                </label>
+              </li>
+              <ul style={{ marginLeft: '20px' }}>
+                <li>
+                  à¤¸à¤­à¥‡à¤šà¥€ à¤•à¤¾à¤°à¥à¤¯à¤¸à¥‚à¤šà¥€ à¤µ à¤¸à¤­à¥‡à¤šà¥€ à¤¨à¥‹à¤‚à¤¦à¤µà¤¹à¥€ à¤ˆà¤¤à¥à¤¯à¤¾à¤¦à¥€ à¤…à¤¦à¥à¤¯à¤¾à¤µà¤¤ à¤†à¤¹à¥‡ à¤•à¤¾à¤¯ ? 
+                  <label style={{ marginLeft: '10px' }}>
+                    <input 
+                      type="radio" 
+                      name="agendaUpToDate" 
+                      value="à¤¹à¥‹à¤¯" 
+                      checked={agendaUpToDate === 'à¤¹à¥‹à¤¯'} 
+                      onChange={(e) => setAgendaUpToDate(e.target.value)} 
+                    /> 
+                    à¤¹à¥‹à¤¯
+                  </label>
+                  <label style={{ marginLeft: '10px' }}>
+                    <input 
+                      type="radio" 
+                      name="agendaUpToDate" 
+                      value="à¤¨à¤¾à¤¹à¥€" 
+                      checked={agendaUpToDate === 'à¤¨à¤¾à¤¹à¥€'} 
+                      onChange={(e) => setAgendaUpToDate(e.target.value)} 
+                    /> 
+                    à¤¨à¤¾à¤¹à¥€
+                  </label>
+                </li>
+              </ul>
+              <br />
+              <br />
+            </ol>
+
+            <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#f2f2f2' }}>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤….à¤•à¥à¤°.</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¨à¥‹à¤‚à¤¦à¤µà¤¹à¥€à¤šà¥‡ à¤¨à¤¾à¤µ</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¤à¤ªà¤¾à¤¸à¤£à¥€à¤šà¥à¤¯à¤¾ à¤¤à¤¾à¤°à¤–à¥‡à¤²à¤¾ à¤¶à¤¿à¤²à¥à¤²à¤•</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¬à¤à¤•à¥‡à¤¤à¤¿à¤² à¤¶à¤¿à¤²à¥à¤²à¤•</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤ªà¥‹à¤¸à¥à¤Ÿà¤¾à¤¤à¤¿à¤² à¤¶à¤¿à¤²à¥à¤²à¤•</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¹à¤¾à¤¤à¥€ à¤…à¤¸à¤²à¥‡à¤²à¥€ à¤¶à¤¿à¤²à¥à¤²à¤•</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤šà¥‡à¤•</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>1</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤—à¥à¤°à¤¾à¤®à¤¨à¤¿à¤§à¥€</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>2</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤ªà¤¾à¤£à¥€ à¤ªà¥à¤°à¤µà¤ à¤¾</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#f2f2f2' }}>
+                  <th colSpan="7" style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>(7) à¤°à¥‹à¤•à¤¡ à¤µà¤¹à¥€à¤šà¤¾ à¤¤à¤ªà¤¶à¥€à¤²</th>
+                </tr>
+                <tr style={{ backgroundColor: '#f2f2f2' }}>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤….à¤•à¥à¤°.</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¨à¥‹à¤‚à¤¦à¤µà¤¹à¥€à¤šà¥‡ à¤¨à¤¾à¤µ</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¤à¤ªà¤¾à¤¸à¤£à¥€à¤šà¥à¤¯à¤¾ à¤¤à¤¾à¤°à¥€à¤–à¥‡à¤²à¤¾ à¤¶à¤¿à¤²à¥à¤²à¤•</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¬à¤à¤•à¥‡à¤¤à¤¿à¤² à¤¶à¤¿à¤²à¥à¤²à¤•</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤ªà¥‹à¤¸à¥à¤Ÿà¤¾à¤¤à¤¿à¤² à¤¶à¤¿à¤²à¥à¤²à¤•</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¹à¤¾à¤¤à¥€ à¤…à¤¸à¤²à¥‡à¤²à¥€ à¤¶à¤¿à¤²à¥à¤²à¤•</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤šà¥‡à¤•</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["1", "à¤—à¥à¤°à¤¾à¤®à¤¨à¤¿à¤§à¥€"],
+                  ["2", "à¤ªà¤¾à¤£à¥€ à¤ªà¥à¤°à¤µà¤ à¤¾"],
+                  ["3", "14 à¤µà¤¾ à¤µà¤¿à¤¤à¥à¤¤ à¤†à¤¯à¥‹à¤—"],
+                  ["4", "à¤‡à¤‚.à¤—à¤¾.à¤¯à¥‹."],
+                  ["5", "à¤….à¤œà¤¾.à¤µà¤¿à¤•à¤¾à¤¸"],
+                  ["6", "à¤®à¤œà¤—à¤¾à¤°à¥‹à¤¹à¤¯à¥‹"],
+                  ["7", "à¤ à¤•à¥à¤•à¤° à¤¬à¤¾à¤ªà¥à¤ªà¤¾"],
+                  ["8", "à¤—à¥à¤°à¤¾à¤®à¤•à¥‹à¤· à¤ªà¥ˆà¤¸à¤¾"],
+                  ["9", "à¤¨à¤¾à¤—à¤°à¥€ à¤¸à¥à¤µà¤¿à¤§à¤¾"],
+                  ["10", "à¤¦à¤²à¤¿à¤¤ à¤µà¤¸à¥à¤¤à¥€ à¤µà¤¿à¤•à¤¾à¤¸"],
+                  ["11", "à¤¤à¤‚à¤Ÿà¤¾ à¤®à¥à¤•à¥à¤¤ à¤¯à¥‹à¤œà¤¨à¤¾"],
+                  ["12", "à¤œà¤¨à¤¸à¥à¤µà¤¿à¤§à¤¾"],
+                  ["13", "à¤ªà¤¾à¤¯à¤•à¤¾"],
+                  ["14", "à¤ª.à¤¸à¤‚.à¤¯à¥‹à¤œà¤¨à¤¾"],
+                  ["15", "SBM"],
+                  ["16", "à¤¤à¥€à¤°à¥à¤¥à¤•à¥à¤·à¥‡à¤¤à¥à¤° à¤µà¤¿à¤•à¤¾à¤¸ à¤¨à¤¿à¤§à¥€"],
+                  ["17", "à¤…à¤²à¥à¤ªà¤¸à¤‚à¤–à¥à¤¯à¤¾à¤‚à¤• à¤µà¤¿à¤•à¤¾à¤¸ à¤¨à¤¿à¤§à¥€"]
+                ].map((row, index) => (
+                  <tr key={index}>
+                    <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>{row[0]}</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}>{row[1]}</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div style={{ marginBottom: '20px' }}>
+              <h3 style={{ color: '#333', marginBottom: '10px' }}>(8)(à¤•) à¤•à¤° à¤†à¤•à¤¾à¤°à¤£à¥€ à¤¨à¥‹à¤‚à¤¦à¤µà¤¹à¥€(à¤¨à¤®à¥à¤¨à¤¾ 8) :- à¤¨à¤¾à¤¹à¥€</h3>
+              <p>1.à¤•à¤°à¤¾à¤šà¥à¤¯à¤¾ à¤®à¤¾à¤—à¤£à¥€à¤šà¥‡ à¤¨à¥‹à¤‚à¤¦à¤£à¥€ à¤ªà¥à¤¸à¥à¤¤à¤• (à¤¨à¤®à¥à¤¨à¤¾ 9):-</p>
+              <p>
+                2.à¤•à¤°à¤¾à¤šà¥€ à¤ªà¤¾à¤µà¤¤à¥€ (à¤¨à¤®à¥à¤¨à¤¾ 10):-à¤¹à¥‡ à¤…à¤¦à¥à¤¯à¤¾à¤µà¤¤ à¤†à¤¹à¥‡ à¤•à¤¾à¤¯ ? 
+                <label style={{ marginLeft: '10px' }}>
+                  <input 
+                    type="radio" 
+                    name="receiptUpToDate" 
+                    value="à¤¹à¥‹à¤¯" 
+                    checked={receiptUpToDate === 'à¤¹à¥‹à¤¯'} 
+                    onChange={(e) => setReceiptUpToDate(e.target.value)} 
+                  /> 
+                  à¤¹à¥‹à¤¯
+                </label>
+                <label style={{ marginLeft: '10px' }}>
+                  <input 
+                    type="radio" 
+                    name="receiptUpToDate" 
+                    value="à¤¨à¤¾à¤¹à¥€" 
+                    checked={receiptUpToDate === 'à¤¨à¤¾à¤¹à¥€'} 
+                    onChange={(e) => setReceiptUpToDate(e.target.value)} 
+                  /> 
+                  à¤¨à¤¾à¤¹à¥€
+                </label>
+              </p>
+              <p>(à¤–) à¤®à¤¾à¤—à¥€à¤² à¤«à¥‡à¤° à¤†à¤•à¤¾à¤°à¤£à¥€ à¤•à¥‡à¤²à¥‡à¤²à¥€ à¤à¤¾à¤²à¥€ ? à¤¦à¤¿à¤¨à¤¾à¤‚à¤• 
+                <input type="date" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> 
+                / / à¤ à¤°à¤¾à¤µ à¤•à¥à¤°à¤®à¤¾à¤‚à¤• - 
+                <input 
+                  type="text" 
+                  value={resolutionNo} 
+                  onChange={(e) => setResolutionNo(e.target.value)} 
+                  style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
+                />
+              </p>
+              <p>à¤¨à¤¾à¤¹à¥€</p>
+              <p>(à¤—) à¤šà¤¾à¤° à¤µà¤°à¥à¤·à¥‡ à¤ªà¥‚à¤°à¥à¤£ à¤à¤¾à¤²à¥‡à¤²à¥€ à¤…à¤¸à¤²à¥à¤¯à¤¾à¤¸ ,à¤¨à¤Ÿà¤²à¥à¤¯à¤¾à¤¨à¥‡ à¤«à¥‡à¤° à¤†à¤•à¤¾à¤°à¤£à¥€ à¤•à¤°à¤£à¥à¤¯à¤¾à¤¸à¤¾à¤ à¥€ à¤•à¤¾à¤°à¥à¤¯à¤µà¤¾à¤¹à¥€ à¤šà¤¾à¤²à¥‚ à¤†à¤¹à¥‡ à¤•à¤¿à¤‚à¤µà¤¾ à¤¨à¤¾à¤¹à¥€ ?</p>
+              <p>
+                <label style={{ marginLeft: '10px' }}>
+                  <input 
+                    type="radio" 
+                    name="reassessmentAction" 
+                    value="à¤¹à¥‹à¤¯" 
+                    checked={reassessmentAction === 'à¤¹à¥‹à¤¯'} 
+                    onChange={(e) => setReassessmentAction(e.target.value)} 
+                  /> 
+                  à¤¹à¥‹à¤¯
+                </label>
+                <label style={{ marginLeft: '10px' }}>
+                  <input 
+                    type="radio" 
+                    name="reassessmentAction" 
+                    value="à¤¨à¤¾à¤¹à¥€" 
+                    checked={reassessmentAction === 'à¤¨à¤¾à¤¹à¥€'} 
+                    onChange={(e) => setReassessmentAction(e.target.value)} 
+                  /> 
+                  à¤¨à¤¾à¤¹à¥€
+                </label>
+              </p>
+            </div>
+
+            <h3 style={{ color: '#333', marginBottom: '10px' }}>(9) à¤¤à¤ªà¤¾à¤¸à¤£à¥€ à¤¤à¤¾à¤°à¤–à¥‡à¤¸ à¤•à¤° à¤µà¤¸à¥à¤²à¥€à¤šà¥€ à¤ªà¥à¤°à¤—à¤¤à¥€ à¤–à¤¾à¤²à¥€à¤²à¤ªà¥à¤°à¤®à¤¾à¤£à¥‡ à¤†à¤¹à¥‡ :-</h3>
+            <ul style={{ marginLeft: '20px' }}>
+              <li>(1) à¤®à¤¾à¤—à¥€à¤² à¤¯à¥‡à¤£à¥‡ à¤°à¤•à¥à¤•à¤® :- à¤—à¥ƒà¤¹à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> à¤ªà¤¾à¤£à¥€à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(2) à¤šà¤¾à¤²à¥‚ à¤µà¤°à¥à¤·à¤¾à¤¤ à¤®à¤¾à¤—à¤£à¥€ :- à¤—à¥ƒà¤¹à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> à¤ªà¤¾à¤£à¥€à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(3) à¤à¤•à¥à¤£ à¤®à¤¾à¤—à¤£à¥€ :- à¤—à¥ƒà¤¹à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> à¤ªà¤¾à¤£à¥€à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(4) à¤à¤•à¥à¤£ à¤µà¤¸à¥‚à¤²à¥€ :- à¤—à¥ƒà¤¹à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> à¤ªà¤¾à¤£à¥€à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(5) à¤¶à¤¿à¤²à¥à¤²à¤• à¤µà¤¸à¥‚à¤²à¥€ :- à¤—à¥ƒà¤¹à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> à¤ªà¤¾à¤£à¥€à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(6) à¤Ÿà¤•à¥à¤•à¥‡à¤µà¤¾à¤°à¥€ :- à¤—à¥ƒà¤¹à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> à¤ªà¤¾à¤£à¥€à¤•à¤°- <input type="number" style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(7) à¤¶à¥‡à¤°à¤¾ :- <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+            </ul>
+
+            <h3 style={{ color: '#333', marginBottom: '10px' }}>(10) à¤®à¤¾à¤—à¤¾à¤¸ à¤µà¤°à¥à¤—à¥€à¤¯à¤¾à¤•à¤°à¥€à¤¤à¤¾ à¤°à¤¾à¤–à¥‚à¤¨ à¤ à¥‡à¤µà¤²à¥‡à¤²à¥à¤¯à¤¾ 15% à¤¨à¤¿à¤§à¥€à¤šà¥à¤¯à¤¾ à¤–à¤°à¥à¤šà¤¾à¤šà¤¾ à¤¤à¤ªà¤¶à¥€à¤²:-</h3>
+            <ul style={{ marginLeft: '20px' }}>
+              <li>(1) à¤—à¥à¤°à¤¾à¤® à¤ªà¤‚à¤šà¤¾à¤¯à¤¤à¥€à¤šà¥‡ à¤à¤•à¥à¤£ à¤‰à¤¤à¥à¤ªà¤¨à¥à¤¨ :- <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(2) 15% à¤°à¤•à¥à¤•à¤® :- <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(3) à¤®à¤¾à¤—à¥€à¤² à¤…à¤¨à¥à¤¶à¥‡à¤· <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(4) à¤•à¤°à¤¾à¤µà¤¯à¤¾à¤šà¤¾ à¤à¤•à¥à¤£ à¤–à¤°à¥à¤š <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(5) à¤¤à¤ªà¤¾à¤¸à¤£à¥€à¤¤à¥à¤¯à¤¾ à¤¦à¤¿à¤¨à¤¾à¤‚à¤• à¤ªà¤°à¥à¤¯à¤‚à¤¤ à¤à¤¾à¤²à¥‡à¤²à¤¾ à¤–à¤°à¥à¤š: <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+              <li>(6) à¤¶à¤¿à¤²à¥à¤²à¤• à¤–à¤°à¥à¤š <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
+            </ul>
+
+            <div style={{ marginBottom: '20px' }}>
+              <h3 style={{ color: '#333', marginBottom: '10px' }}>(7) à¤¸à¥‚à¤šà¤¨à¤¾-</h3>
+              <h3 style={{ color: '#333', marginBottom: '10px' }}>(11) à¤†à¤°à¥à¤¥à¤¿à¤• à¤µà¥à¤¯à¤µà¤¹à¤¾à¤°à¤¾à¤¤ à¤¨à¤¿à¤°à¥à¤¦à¥‡à¤¶à¤¾à¤¨à¥à¤¸à¤¾à¤° à¤†à¤²à¥‡à¤²à¥à¤¯à¤¾ à¤¨à¤¿à¤¯à¤®à¤¬à¤¾à¤¹à¥à¤¯à¤¤à¤¾ -</h3>
+              <p>(à¤•) à¤•à¥‹à¤£à¤¤à¥à¤¯à¤¾à¤¹à¥€ à¤šà¤¾à¤²à¥‚ à¤–à¤°à¥‡à¤¦à¥€ à¤•à¤°à¤£à¤¾à¤±à¥à¤¯à¤¾à¤ªà¥‚à¤°à¥à¤µà¥€ à¤…à¤‚à¤¦à¤¾à¤œà¤ªà¤¤à¥à¤°à¤•à¤¾à¤¤ à¤¯à¥‹à¤—à¥à¤¯ à¤¤à¤°à¤¤à¥‚à¤¦ à¤•à¥‡à¤²à¥€ à¤†à¤¹à¥‡ à¤•à¤¾à¤¯ ? 
+                <label style={{ marginLeft: '10px' }}>
+                  <input type="radio" name="budgetProvision" value="à¤¹à¥‹à¤¯" /> à¤¹à¥‹à¤¯
+                </label>
+                <label style={{ marginLeft: '10px' }}>
+                  <input type="radio" name="budgetProvision" value="à¤¨à¤¾à¤¹à¥€" /> à¤¨à¤¾à¤¹à¥€
+                </label>
+              </p>
+              <p>(à¤–) à¤—à¥à¤°à¤¾à¤® à¤ªà¤‚à¤šà¤¾à¤¯à¤¤ à¤–à¤°à¥‡à¤¦à¥€à¤¸à¤¾à¤ à¥€ à¤®à¤¾à¤¨à¥à¤¯à¤¤à¤¾ à¤¦à¤¿à¤²à¥€ à¤†à¤¹à¥‡ à¤•à¤¾à¤¯ ? à¤ à¤°à¤¾à¤µ à¤•à¥à¤°.          
+                <input type="text" style={{ padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> 
+                à¤¦à¤¿.         
+                <input type="date" style={{ padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} /> 
+                / 
+              </p>
+              <p>(à¤—) à¤–à¤°à¥‡à¤¦à¥€ à¤•à¤°à¤£à¥à¤¯à¤¾à¤¸à¤¾à¤ à¥€ à¤¨à¤¿à¤¯à¤®à¤ªà¥à¤°à¤®à¤¾à¤£à¥‡ à¤¦à¤°à¤ªà¤¤à¥à¤°à¤•à¥‡ à¤®à¤¾à¤—à¤µà¤¿à¤²à¥€ à¤¹à¥‹à¤¤à¥€ à¤•à¤¾à¤¯ ? 
+                <label style={{ marginLeft: '10px' }}>
+                  <input type="radio" name="tendersCalled" value="à¤¹à¥‹à¤¯" /> à¤¹à¥‹à¤¯
+                </label>
+                <label style={{ marginLeft: '10px' }}>
+                  <input type="radio" name="tendersCalled" value="à¤¨à¤¾à¤¹à¥€" /> à¤¨à¤¾à¤¹à¥€
+                </label>
+              </p>
+              <p>(à¤˜) à¤–à¤°à¥‡à¤¦à¥€ à¤•à¥‡à¤²à¥‡à¤²à¥à¤¯à¤¾ à¤¸à¤¾à¤¹à¤¿à¤¤à¥à¤¯à¤¾à¤šà¤¾ à¤¨à¤®à¥à¤¨à¤¾ 9,15 à¤µ 16 à¤®à¤§à¥€à¤² à¤¨à¥‹à¤‚à¤¦à¤µà¤¹à¥€à¤¤ à¤¨à¥‹à¤‚à¤¦à¥€ à¤˜à¥‡à¤£à¥à¤¯à¤¾à¤¤ à¤†à¤²à¥à¤¯à¤¾ à¤†à¤¹à¥‡à¤¤ à¤•à¤¾à¤¯ ?</p>
+              <p>
+                <label style={{ marginLeft: '10px' }}>
+                  <input type="radio" name="entriesMade" value="à¤¹à¥‹à¤¯" /> à¤¹à¥‹à¤¯
+                </label>
+                <label style={{ marginLeft: '10px' }}>
+                  <input type="radio" name="entriesMade" value="à¤¨à¤¾à¤¹à¥€" /> à¤¨à¤¾à¤¹à¥€
+                </label>
+              </p>
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <p>(12) à¤—à¥à¤°à¤¾à¤® à¤ªà¤‚à¤šà¤¾à¤¯à¤¤à¤¾à¤¨à¥‡ à¤¸à¥à¤µà¤¤à¤ƒà¤šà¥à¤¯à¤¾ à¤¨à¤¿à¤§à¥€à¤¤à¥‚à¤¨ à¤•à¤¿à¤‚à¤µà¤¾ à¤¶à¤¾à¤¸à¤•à¥€à¤¯/à¤œà¤¿à¤²à¥à¤¹à¤¾ à¤ªà¤°à¤¿à¤·à¤¦ à¤¯à¥‹à¤œà¤¨à¥‡à¤‚à¤¤à¤°à¥à¤—à¤¤ à¤¹à¤¾à¤¤ à¤˜à¥‡à¤¤à¤²à¥‡à¤²à¥à¤¯à¤¾ à¤•à¤¾à¤®à¤¾à¤‚à¤šà¤¾ à¤¤à¤ªà¤¶à¥€à¤²-</p>
+              <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f2f2f2' }}>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤….à¤•à¥à¤°.</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¯à¥‹à¤œà¤¨à¥‡à¤šà¥‡ à¤¨à¤¾à¤‚à¤µ</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤•à¤¾à¤®à¤¾à¤šà¤¾ à¤ªà¥à¤°à¤•à¤¾à¤°</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤…à¤‚à¤¦à¤¾à¤œà¤¿à¤¤ à¤°à¤•à¥à¤•à¤®</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤®à¤¿à¤³à¤¾à¤²à¥‡à¤²à¥‡ à¤…à¤¨à¥à¤¦à¤¾à¤¨</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤à¤¾à¤²à¥‡à¤²à¤¾ à¤–à¤°à¥à¤š</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Add rows as needed with inputs */}
+                  <tr>
+                    <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none', textAlign: 'center' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  </tr>
+                  {/* Repeat for additional rows */}
+                </tbody>
+              </table>
+
+              <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f2f2f2' }}>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤•à¤¾à¤® à¤¸à¥à¤°à¥ à¤à¤¾à¤²à¥à¤¯à¤¾à¤šà¥€ à¤¤à¤¾à¤°à¥€à¤–</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤•à¤¾à¤® à¤ªà¥‚à¤°à¥à¤£ à¤à¤¾à¤²à¥à¤¯à¤¾à¤šà¥€ à¤¤à¤¾à¤°à¥€à¤–</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤ªà¥à¤°à¤—à¤¤à¥€à¤µà¤° à¤…à¤¸à¤²à¥‡à¤²à¥à¤¯à¤¾ à¤•à¤¾à¤®à¤¾à¤šà¥€ à¤¸à¤¦à¥à¤¯:à¤¸à¥à¤¥à¤¿à¤¤à¥€</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤ªà¥‚à¤°à¥à¤£à¤¤à¥à¤µà¤¾à¤šà¥‡ à¤ªà¥à¤°à¤®à¤¾à¤£à¤ªà¤¤à¥à¤° à¤ªà¥à¤°à¤¾à¤ªà¥à¤¤ à¤•à¥‡à¤²à¥‡ à¤•à¤¿à¤‚à¤µà¤¾ à¤¨à¤¾à¤¹à¥€</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¶à¥‡à¤°à¤¾</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="date" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="date" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}>
+                      <label><input type="radio" name="certificate1" value="à¤¹à¥‹à¤¯" /> à¤¹à¥‹à¤¯</label>
+                      <label style={{ marginLeft: '10px' }}><input type="radio" name="certificate1" value="à¤¨à¤¾à¤¹à¥€" /> à¤¨à¤¾à¤¹à¥€</label>
+                    </td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  </tr>
+                  {/* Additional rows */}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <p>(13) à¤—à¥à¤°à¤¾à¤® à¤ªà¤‚à¤šà¤¾à¤¯à¤¤à¤¾à¤‚à¤¨à¥€ à¤‡à¤¤à¤° à¤¯à¥‹à¤œà¤¨à¤¾à¤®à¤§à¥à¤¯à¥‡ à¤•à¥‡à¤²à¥‡à¤²à¥€ à¤ªà¥à¤°à¤—à¤¤à¥€</p>
+              <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f2f2f2' }}>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤….à¤•à¥à¤°.</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¯à¥‹à¤œà¤¨à¥‡à¤šà¥‡ à¤¨à¤¾à¤µ</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¦à¤¿à¤²à¥‡à¤²à¥€ à¤‰à¤¦à¥à¤¦à¤¿à¤·à¥à¤Ÿà¥‡</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¤à¤ªà¤¾à¤¸à¤£à¥€à¤šà¥à¤¯à¤¾ à¤¦à¤¿à¤¨à¤¾à¤‚à¤•à¤¾à¤¸</th>
+                    <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¶à¥‡à¤°à¤¾</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>1</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤à¤—à¤¾à¤µà¤¿à¤•à¤¾.</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>2</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤¬à¥‰à¤¯à¥‹à¤—à¥…à¤¸</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>3</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤¨à¤¿à¤°à¥à¤§à¥‚à¤° à¤šà¥à¤²</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>4</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤•à¥à¤‚à¤Ÿà¥à¤‚à¤¬ à¤•à¤²à¥à¤¯à¤¾à¤£</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>5</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤…à¤²à¥à¤ªà¤µà¤šà¤¤</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  </tr>
+                  {/* Add rows 6 and 7 as empty */}
+                  <tr>
+                    <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>6</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>7</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#f2f2f2' }}>
+                  <th colSpan="6" style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>(14) 14 à¤µà¤¾ à¤µà¤¿à¤¤à¥à¤¤ à¤†à¤¯à¥‹à¤—à¤¾à¤®à¤§à¥‚à¤¨ à¤¹à¤¾à¤¤à¥€ à¤˜à¥‡à¤¤à¤²à¥‡à¤²à¥€ à¤•à¤¾à¤®à¥‡ à¤µ à¤¤à¥à¤¯à¤¾à¤šà¥€ à¤ªà¥à¤°à¤—à¤¤à¥€ .</th>
+                </tr>
+                <tr style={{ backgroundColor: '#f2f2f2' }}>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤…. à¤•à¥à¤°.</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤¯à¥‹à¤œà¤¨à¥‡à¤šà¥‡ à¤¨à¤¾à¤µ</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤•à¤¾à¤®à¤¾à¤šà¤¾ à¤ªà¥à¤°à¤•à¤¾à¤°</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤…à¤‚à¤¦à¤¾à¤œà¤¿à¤¤ à¤°à¤•à¥à¤•à¤®</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤®à¤¿à¤³à¤¾à¤²à¥‡à¤²à¥‡ à¤…à¤¨à¥à¤¦à¤¾à¤¨</th>
+                  <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>à¤à¤¾à¤²à¥‡à¤²à¤¾ à¤–à¤°à¥à¤š</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>1</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>14 à¤µà¤¾ à¤µà¤¿à¤¤à¥à¤¤ à¤†à¤¯à¥‹à¤—</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤à¤².à¤ˆ.à¤¡à¥€.à¤²à¤¾à¤ˆà¤Ÿ à¤–à¤°à¥‡à¤¦à¥€</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>2</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤•à¤šà¤°à¤¾ à¤•à¥à¤‚à¤¡à¥€</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>3</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤«à¤°à¥à¤¨à¤¿à¤šà¤°</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>4</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤Ÿà¤¿.à¤µà¥à¤¹à¤¿.à¤¸à¤‚à¤š à¤–à¤°à¥‡à¤¦à¥€</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>5</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤†à¤ªà¤²à¥‡ à¤¸à¤°à¤•à¤¾à¤° à¤¸à¥‡à¤µà¤¾ à¤•à¥‡à¤‚à¤¦à¥à¤° à¤–à¤°à¥à¤š</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', border: 'none' }} /></td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>6</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>à¤µà¤¾à¤Ÿà¤° à¤®à¤¿à¤Ÿà¤°</td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
+                  <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="number" style={{ width: '100%', borde
