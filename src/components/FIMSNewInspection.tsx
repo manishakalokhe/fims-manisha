@@ -436,7 +436,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
                     <p>• रोग माहिती व लसीकरण कार्यक्रम</p>
                     <p>• योजना प्रगती व तांत्रिक मूल्यांकन</p>
                     </>
-              ) : form.key === 'gram_panchayat' ? (
+              ) : form.key === 'grampanchayat' ? (
                   <>
                     <p>• पंचायत समिती</p>
                     <p>• तपासणी अधिकारीाचे नांव</p>
