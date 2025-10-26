@@ -455,6 +455,7 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
               <br />
             </ol>
 
+            {/* नोंदवह्यांचा तपशील Table */}
             <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
               <thead>
                 <tr style={{ backgroundColor: '#f2f2f2' }}>
@@ -489,6 +490,7 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
               </tbody>
             </table>
 
+            {/* रोकड वहीचा तपशील Table */}
             <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
               <thead>
                 <tr style={{ backgroundColor: '#f2f2f2' }}>
@@ -746,12 +748,8 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
                   <tr>
                     <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>4</td>
                     <td style={{ padding: '8px', border: '1px solid #ddd' }}>कुंटुंब कल्याण</td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
-                  </tr>
-                  <tr>
-                    <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>5</td>
+                    <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text"
+
                     <td style={{ padding: '8px', border: '1px solid #ddd' }}>अल्पवचत</td>
                     <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
                     <td style={{ padding: '8px', border: '1px solid #ddd' }}><input type="text" style={{ width: '100%', border: 'none' }} /></td>
@@ -882,18 +880,7 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
               </tbody>
             </table>
 
-            <div style={{ marginBottom: '20px' }}>
-              <h1 style={{ textAlign: 'center', color: '#333' }}>तपासणी अधिकार्‍याचा अभिप्राय</h1>
-              <p>1) नमुना - - - - -  अपूर्ण आहेत. <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-              <p>2) - ----- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-              <br />
-              <p>3) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-              <p>4) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-              <p>5) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-              <p>6) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-              <p>7) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-              <p>8) --- . <input type="text" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></p>
-            </div>
+            
 
             {/* Location Section */}
             <div className="border-l-4 border-green-500 pl-4 mt-8">
