@@ -11,8 +11,8 @@ import { ZPDarMahinyalaSadarKaryachePrapatraForm } from './ZPDarMahinyalaSadarKa
 import { RajyaGunwattaNirikshakTapasaniForm } from './RajyaGunwattaNirikshakTapasaniForm';
 import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
 import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
-import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm';  // .tsx काढले consistent साठी
-import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm';  // .tsx काढले consistent साठी
+import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
+import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm.tsx';
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
@@ -33,16 +33,28 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const [selectedInspectionType, setSelectedInspectionType] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Single useEffect for auto-selecting editing inspection type
+  // All hooks must be called before any conditional logic
   useEffect(() => {
+    // If we have an editing inspection, auto-select the inspection type
     if (editingInspection && categories.length > 0) {
+      const category = categories.find(cat => cat.id === editingInspection.category_id);
+      if (category) {
+        setSelectedInspectionType(category.form_type);
+      }
+    }
+  }, [editingInspection, categories]);
+
+  // Auto-navigate to form if editing an existing inspection
+  useEffect(() => {
+    if (editingInspection && editingInspection.id && categories.length > 0) {
       const category = categories.find(cat => cat.id === editingInspection.category_id);
       if (category && category.form_type) {
         setSelectedInspectionType(category.form_type);
       }
     }
-  }, [editingInspection, categories]);  // Single dependency array
+  }, [editingInspection, categories]);
 
   // Handle inspection type selection
   const handleInspectionTypeSelect = (type: string) => {
@@ -51,8 +63,9 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
 
   // Handle back navigation
   const handleBackToSelection = () => {
+    // Only allow back to selection if not editing an existing inspection
     if (editingInspection && editingInspection.id) {
-      onBack();
+      onBack(); // Go back to dashboard instead
       return;
     }
     setSelectedInspectionType(null);
@@ -225,7 +238,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
           </p>
         </div>
 
-        {/* Inspection Type Selection */}
+        {/* Inspection Type Selection - Updated to support more forms */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Anganwadi Inspection */}
           <div 
@@ -335,7 +348,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             </div>
           </div>  
           
-          {/* Remaining forms array */}
+          {/* Placeholder cards for the remaining 12 forms */}
           {[
             { key: 'bandhkam_vibhag1', title: 'बांधकाम विभाग प्रपत्र-1', subtitle: 'Construction Department Form-1', color: 'orange', active: true },
             { key: 'bandhkam_vibhag2', title: 'बांधकाम विभाग प्रपत्र-2', subtitle: 'Construction Department Form-2', color: 'teal', active: true },
@@ -343,9 +356,16 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             { key: 'rajya_gunwatta_nirikshak', title: 'राज्य गुणवत्ता निरीक्षक तपासणी', subtitle: 'State Quality Inspector Inspection', color: 'emerald', active: true },
             { key: 'mahatma_gandhi_rojgar_hami', title: 'महात्मा गांधी रोजगार हमी योजना', subtitle: 'MGNREGA Work Inspection Form', color: 'green', active: true },
             { key: 'mumbai_nyayalay', title: 'मुंबई न्यायालय तपासणी प्रपत्र', subtitle: 'Mumbai High Court School Inspection Form', color: 'red', active: true },
-            { key: 'pashutapasani', title: 'पशुवैद्यकीय संस्थांचे तांत्रिक निरीक्षण', subtitle: 'Veterinary Institution Technical Inspection Form', color: 'rose', active: true },
-            { key: 'gram_panchayat', title: 'ग्राम पंचायतांची तपासणीचा नमुना', subtitle: 'Grampanchayat Inspection Form', color: 'purple', active: true }
-          ].map((form) => (
+            { key: 'pashutapasani', title: 'पशुवैद्यकीय संस्थांचे तांत्रिक निरीक्षण', subtitle: 'Veterinary Institution Technical Inspection Form', color: 'red', active: true },
+      { key: 'gram_panchayat', title: 'ग्राम पंचायतांची तपासणीचा नमुना', subtitle: 'Grampanchayat Inspection Form', color: 'purple', active: true },
+         //   { key: 'form_10', title: 'Form 10 Title', subtitle: 'Form 10 Description', color: 'cyan' },
+         //   { key: 'form_11', title: 'Form 11 Title', subtitle: 'Form 11 Description', color: 'violet' },
+         //   { key: 'form_12', title: 'Form 12 Title', subtitle: 'Form 12 Description', color: 'lime' },
+         //   { key: 'form_13', title: 'Form 13 Title', subtitle: 'Form 13 Description', color: 'amber' },
+         //   { key: 'form_14', title: 'Form 14 Title', subtitle: 'Form 14 Description', color: 'emerald' },
+         //   { key: 'form_15', title: 'Form 15 Title', subtitle: 'Form 15 Description', color: 'rose' }
+      
+          ].map((form, index) => (
             <div 
               key={form.key}
               onClick={() => form.active ? handleInspectionTypeSelect(form.key) : alert(`${form.title} - Coming Soon!`)}
@@ -366,84 +386,67 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
               </div>
               
               <div className="space-y-2 text-sm text-gray-600">
-                {(() => {
-                  if (form.key === 'bandhkam_vibhag1') {
-                    return (
-                      <>
-                        <p>• प्रशासकीय व तांत्रिक मान्यता तपशील</p>
-                        <p>• कारनामा व ठेकेदार माहिती</p>
-                        <p>• कामाची सद्यस्थिती व प्रगती</p>
-                        <p>• देयक व मोजमाप तपशील</p>
-                      </>
-                    );
-                  } else if (form.key === 'bandhkam_vibhag2') {
-                    return (
-                      <>
-                        <p>• तपासणी दिनांक व उपस्थित अधिकारी</p>
-                        <p>• कामाची सद्यस्थिती व दर्जा</p>
-                        <p>• दोषदायित्व कालावधी</p>
-                        <p>• तपासणी अहवाल</p>
-                      </>
-                    );
-                  } else if (form.key === 'zp_dar_mahinyala') {
-                    return (
-                      <>
-                        <p>• जिल्हा परिषद मासिक अहवाल</p>
-                        <p>• अंगणवाडी केंद्रांची संख्या</p>
-                        <p>• पर्यवेक्षकांचे उद्दिष्ट साध्यीकरण</p>
-                        <p>• प्रकल्प भेट तपशील</p>
-                      </>
-                    );
-                  } else if (form.key === 'rajya_gunwatta_nirikshak') {
-                    return (
-                      <>
-                        <p>• राज्य गुणवत्ता निरीक्षक माहिती</p>
-                        <p>• कामा तपासणी दिनांक</p>
-                        <p>• कामाचे नाव</p>
-                        <p>• काम तपासणीवेळी छायाचित्रे</p>
-                      </>
-                    );
-                  } else if (form.key === 'mahatma_gandhi_rojgar_hami') {
-                    return (
-                      <>
-                        <p>• NREGA Soft नोंदी तपासणी</p>
-                        <p>• मजूर हजेरी आणि सुविधा</p>
-                        <p>• कामाचे मोजमाप आणि गुणवत्ता</p>
-                        <p>• अभिसरण आणि निधी तपशील</p>
-                      </>
-                    );
-                  } else if (form.key === 'mumbai_nyayalay') {
-                    return (
-                      <>
-                        <p>• शाळा इमारत आणि बांधकाम तपासणी</p>
-                        <p>• विद्यार्थी आणि शिक्षक संख्या</p>
-                        <p>• भौतिक सुविधा मूल्यांकन</p>
-                        <p>• स्वच्छता आणि सुरक्षा तपासणी</p>
-                      </>
-                    );
-                  } else if (form.key === 'pashutapasani') {
-                    return (
-                      <>
-                        <p>• संस्थेची मूलभूत माहिती व तांत्रिक आढावा</p>
-                        <p>• रुग्ण आकडेवारी व शस्त्रक्रिया तपशील</p>
-                        <p>• कृत्रिम रेतन व गर्भधारणा तपासणी</p>
-                        <p>• रोग माहिती व लसीकरण कार्यक्रम</p>
-                        <p>• योजना प्रगती व तांत्रिक मूल्यांकन</p>
-                      </>
-                    );
-                  } else if (form.key === 'gram_panchayat') {
-                    return (
-                      <>
-                        <p>• पंचायत समिती</p>
-                        <p>• तपासणी अधिकारीाचे नांव</p>
-                        <p>• सभेची कार्यसूची व सभेची नोंदवही</p>
-                        <p>• मासिक सभा</p>
-                        <p>• सर्वसाधारण तपासणीचे ठिकाण</p>
-                      </>
-                    );
-                  }
-                  return null;
-                })()}
+                {form.key === 'bandhkam_vibhag1' ? (
+                  <>
+                    <p>• प्रशासकीय व तांत्रिक मान्यता तपशील</p>
+                    <p>• कारनामा व ठेकेदार माहिती</p>
+                    <p>• कामाची सद्यस्थिती व प्रगती</p>
+                    <p>• देयक व मोजमाप तपशील</p>
+                  </>
+                ) : form.key === 'bandhkam_vibhag2' ? (
+                  <>
+                    <p>• तपासणी दिनांक व उपस्थित अधिकारी</p>
+                    <p>• कामाची सद्यस्थिती व दर्जा</p>
+                    <p>• दोषदायित्व कालावधी</p>
+                    <p>• तपासणी अहवाल</p>
+                  </>
+                ) : form.key === 'zp_dar_mahinyala' ? (
+                  <>
+                    <p>• जिल्हा परिषद मासिक अहवाल</p>
+                    <p>• अंगणवाडी केंद्रांची संख्या</p>
+                    <p>• पर्यवेक्षकांचे उद्दिष्ट साध्यीकरण</p>
+                    <p>• प्रकल्प भेट तपशील</p>
+                  </>
+                ) : form.key === 'rajya_gunwatta_nirikshak' ? (
+                  <>
+                    <p>• राज्य गुणवत्ता निरीक्षक माहिती</p>
+                    <p>• कामा तपासणी दिनांक</p>
+                    <p>• कामाचे नाव</p>
+                    <p>• काम तपासणीवेळी छायाचित्रे</p>
+                  </>
+                ) : form.key === 'mahatma_gandhi_rojgar_hami' ? (
+                  <>
+                    <p>• NREGA Soft नोंदी तपासणी</p>
+                    <p>• मजूर हजेरी आणि सुविधा</p>
+                    <p>• कामाचे मोजमाप आणि गुणवत्ता</p>
+                    <p>• अभिसरण आणि निधी तपशील</p>
+                  </>
+                ) : form.key === 'mumbai_nyayalay' ? (
+                  <>
+                    <p>• शाळा इमारत आणि बांधकाम तपासणी</p>
+                    <p>• विद्यार्थी आणि शिक्षक संख्या</p>
+                    <p>• भौतिक सुविधा मूल्यांकन</p>
+                    <p>• स्वच्छता आणि सुरक्षा तपासणी</p>
+                  </>
+                ) : form.key === 'pashutapasani' ? (
+                  <>
+                    <p>• संस्थेची मूलभूत माहिती व तांत्रिक आढावा</p>
+                    <p>• रुग्ण आकडेवारी व शस्त्रक्रिया तपशील</p>
+                    <p>• कृत्रिम रेतन व गर्भधारणा तपासणी</p>
+                    <p>• रोग माहिती व लसीकरण कार्यक्रम</p>
+                    <p>• योजना प्रगती व तांत्रिक मूल्यांकन</p>
+                    </>
+              ) : form.key === 'gram_panchayat' ? (
+                  <>
+                    <p>• पंचायत समिती</p>
+                    <p>• तपासणी अधिकारीाचे नांव</p>
+                    <p>• सभेची कार्यसूची व सभेची नोंदवही</p>
+                    <p>• मासिक सभा</p>
+                    <p>• सर्वसाधारण तपासणीचे ठिकाण</p>
+                    </>
+                ) : (
+                  <></>
+                )}
               </div>
               
               <div className="mt-4 flex items-center justify-between">
