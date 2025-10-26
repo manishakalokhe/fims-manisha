@@ -371,10 +371,14 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             { key: 'rajya_gunwatta_nirikshak', title: 'राज्य गुणवत्ता निरीक्षक तपासणी', subtitle: 'State Quality Inspector Inspection', color: 'emerald', active: true },
             { key: 'mahatma_gandhi_rojgar_hami', title: 'महात्मा गांधी रोजगार हमी योजना', subtitle: 'MGNREGA Work Inspection Form', color: 'green', active: true },
             { key: 'mumbai_nyayalay', title: 'मुंबई न्यायालय तपासणी प्रपत्र', subtitle: 'Mumbai High Court School Inspection Form', color: 'red', active: true },
-            { key: 'pashutapasani', title: 'पशुवैद्यकीय संस्थांचे तांत्रिक निरीक्षण', subtitle: 'Veterinary Institution Technical Inspection Form', color: 'red', active: true },
-      { key: 'gram_panchayat', title: 'ग्राम पंचायत तपासणी', subtitle: 'Grampanchayat Inspection Form', color: 'red', active: true },
-{  key: 'jilhastariya_inspection_form',  title: 'जिल्हास्तरीय अधिकारी तपासणी', 
-  subtitle: 'Jilhastrariya Inspection Form',  color: 'purple', active: true
+           { key: 'pashutapasani', title: 'पशुवैद्यकीय संस्थांचे तांत्रिक निरीक्षण', subtitle: 'Veterinary Institution Technical Inspection Form', color: 'red', active: true },
+{ key: 'gram_panchayat', title: 'ग्राम पंचायत तपासणी', subtitle: 'Grampanchayat Inspection Form', color: 'red', active: true },
+{ 
+  key: 'jilhastariya_inspection_form', 
+  title: 'जिल्हास्तरीय अधिकारी तपासणी', 
+  subtitle: 'Jilhastrariya Inspection Form', 
+  color: 'purple', 
+  active: true  // ← Add this
 },
    
          //   { key: 'form_10', title: 'Form 10 Title', subtitle: 'Form 10 Description', color: 'cyan' },
