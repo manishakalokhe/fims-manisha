@@ -193,6 +193,17 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       );
     }
 
+    if (selectedInspectionType === 'grampanchayat') {
+      return (
+        <GrampanchayatInspectionForm
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
     return null;
   };
 
