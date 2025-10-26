@@ -446,7 +446,6 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
                     <p>• मासिक सभा</p>
                     <p>• सर्वसाधारण तपासणीचे ठिकाण</p>
                     </>
-
                 ) : (
                   <></>
                 )}
