@@ -27,7 +27,7 @@ const InspectionForm: React.FC<GrampanchayatFormProps> = ({
   editingInspection
 }) => {
   const { t } = useTranslation();
-  
+
   const isViewMode = editingInspection?.mode === 'view';
   const isEditMode = editingInspection?.mode === 'edit';
   
