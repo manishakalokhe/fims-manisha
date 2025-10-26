@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Plus, FileText, Camera, MapPin, Building2, School, Users, BookOpen, GraduationCap, Building, UserCheck, ClipboardList, Award, Target, SquareCheck as CheckSquare, FileCheck, UserPlus, Settings, Activity } from 'lucide-react';
@@ -11,8 +12,8 @@ import { ZPDarMahinyalaSadarKaryachePrapatraForm } from './ZPDarMahinyalaSadarKa
 import { RajyaGunwattaNirikshakTapasaniForm } from './RajyaGunwattaNirikshakTapasaniForm';
 import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
 import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
-import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm';
-import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm.tsx';
+import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
+import { JilhastariyaTapasaniSuchiForm } from './JilhastariyaTapasaniSuchiForm.tsx';
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
@@ -193,9 +194,9 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       );
     }
 
-    if (selectedInspectionType === 'grampanchayat') {
+    if (selectedInspectionType === 'jilhastariya_inspection') {
       return (
-        <GrampanchayatInspectionForm
+        <JilhastariyaTapasaniSuchiForm
           user={user}
           onBack={handleBackToSelection}
           categories={categories}
@@ -204,7 +205,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
         />
       );
     }
-
+    
     return null;
   };
 
@@ -237,7 +238,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             {t('fims.selectCategory')}
           </p>
         </div>
-
+        
         {/* Inspection Type Selection - Updated to support more forms */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Anganwadi Inspection */}
@@ -346,8 +347,9 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
                 <Plus className="h-5 w-5 text-white" />
               </div>
             </div>
-          </div>  
-          
+          </div>
+         
+
           {/* Placeholder cards for the remaining 12 forms */}
           {[
             { key: 'bandhkam_vibhag1', title: 'बांधकाम विभाग प्रपत्र-1', subtitle: 'Construction Department Form-1', color: 'orange', active: true },
@@ -357,14 +359,14 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             { key: 'mahatma_gandhi_rojgar_hami', title: 'महात्मा गांधी रोजगार हमी योजना', subtitle: 'MGNREGA Work Inspection Form', color: 'green', active: true },
             { key: 'mumbai_nyayalay', title: 'मुंबई न्यायालय तपासणी प्रपत्र', subtitle: 'Mumbai High Court School Inspection Form', color: 'red', active: true },
             { key: 'pashutapasani', title: 'पशुवैद्यकीय संस्थांचे तांत्रिक निरीक्षण', subtitle: 'Veterinary Institution Technical Inspection Form', color: 'red', active: true },
-      { key: 'grampanchayat', title: 'ग्राम पंचायतांची तपासणीचा नमुना', subtitle: 'Grampanchayat Inspection Form', color: 'purple', active: true },
+      { key: 'Jilhastariya Tapasani', title: 'जिल्हास्तरीय तपासणी सूची', subtitle: 'Jilhastariya Tapasani Suchi Form', color: 'red', active: true },
          //   { key: 'form_10', title: 'Form 10 Title', subtitle: 'Form 10 Description', color: 'cyan' },
          //   { key: 'form_11', title: 'Form 11 Title', subtitle: 'Form 11 Description', color: 'violet' },
          //   { key: 'form_12', title: 'Form 12 Title', subtitle: 'Form 12 Description', color: 'lime' },
          //   { key: 'form_13', title: 'Form 13 Title', subtitle: 'Form 13 Description', color: 'amber' },
          //   { key: 'form_14', title: 'Form 14 Title', subtitle: 'Form 14 Description', color: 'emerald' },
          //   { key: 'form_15', title: 'Form 15 Title', subtitle: 'Form 15 Description', color: 'rose' }
-      
+      //   { key: 'form_16', title: 'Form 16 Title', subtitle: 'Form 16 Description', color: 'rose' }
           ].map((form, index) => (
             <div 
               key={form.key}
@@ -436,16 +438,16 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
                     <p>• रोग माहिती व लसीकरण कार्यक्रम</p>
                     <p>• योजना प्रगती व तांत्रिक मूल्यांकन</p>
                     </>
-              ) : form.key === 'grampanchayat' ? (
+              ) : form.key === 'jilhastariya_inspection' ? (
                   <>
-                    <p>• पंचायत समिती</p>
-                    <p>• तपासणी अधिकारीाचे नांव</p>
-                    <p>• सभेची कार्यसूची व सभेची नोंदवही</p>
-                    <p>• मासिक सभा</p>
-                    <p>• सर्वसाधारण तपासणीचे ठिकाण</p>
+                    <p>• राष्ट्रीय कुटुंब कल्याण कार्यक्रम</p>
+                    <p>• राष्ट्रीय माताबाल संगोपन कार्यक्रम</p>
+                    <p>• संशयित कुष्ठरुग्ण नोंदणी</p>
+                    <p>• एक्स रे तपासणी</p>
+                    <p>• एकुण क्रियाशिल रुग्ण</p>
                     </>
                 ) : (
-                  <> </>
+                  <></>
                 )}
               </div>
               
