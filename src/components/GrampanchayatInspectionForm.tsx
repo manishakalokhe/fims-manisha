@@ -863,154 +863,57 @@ export const GrampanchayatInspectionForm: React.FC = () => {
                 <p className="text-gray-700">8) --- . <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-96" /></p>
               </div>
             </div>
-
+            
             {/* Photo Upload Section */}
-            const renderPhotoUploadSection = () => (
-    <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
-        <div className="flex items-center text-white">
-          <Camera className="w-8 h-8 mr-4" />
-          <h3 className="text-2xl font-bold">छायाचित्र अपलोड / Photo Upload</h3>
-        </div>
-      </div>
-      <div className="p-10">
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">फोटो अपलोड क्षेत्र</h3>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-purple-400 transition-colors duration-200">
-            <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h4 className="text-lg font-medium text-gray-900 mb-2">छायाचित्रे निवडा</h4>
-            <p className="text-gray-600 mb-4">
-              {uploadedPhotos.length === 0 ? 'अपलोड करण्यासाठी फोटो निवडा' : uploadedPhotos.length < 5 ? `${uploadedPhotos.length}/5` : '5/5'}
-            </p>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handlePhotoUpload}
-              disabled={isViewMode}
-              className="mb-4"
-            />
-            {!isViewMode && uploadedPhotos.length < 5 && (
-              <label
-                htmlFor="photo-upload"
-                className="inline-flex items-center px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200 bg-purple-600 hover:bg-purple-700 text-white"
-              >
-                <Camera className="h-4 w-4 mr-2" />
-                फोटो निवडा / Select Photos
-              </label>
-            )}
-            <input id="photo-upload" type="file" multiple accept="image/*" onChange={handlePhotoUpload} disabled={isViewMode} style={{ display: 'none' }} />
-          </div>
+            <div className="bg-violet-50 border-l-4 border-violet-500 p-6 rounded-lg mb-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <Camera className="w-6 h-6 text-violet-600" />
+                फोटो अपलोड
+              </h3>
 
-          {/* Photo Previews */}
-          {uploadedPhotos.length > 0 && (
-            <div className="mt-6">
-              <h4 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <Camera className="h-5 w-5 mr-2 text-purple-600" />
-                {uploadedPhotos.length} फोटो निवडले गेले / Selected Photos
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {uploadedPhotos.map((file, index) => (
-                  <div key={index} className="relative bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-200">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-40 object-cover"
-                    />
-                    {!isViewMode && (
-                      <button
-                        onClick={() => removePhoto(index)}
-                        className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg transition-colors duration-200"
-                      >
-                        <span className="text-sm font-bold">×</span>
-                      </button>
-                    )}
-                    <div className="p-3">
-                      <p className="text-sm font-medium text-gray-800 truncate mb-1">{file.name}</p>
-                      <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                    </div>
+              <div>
+                <label className="block mb-3">
+                  <span className="sr-only">Choose photos</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="block w-full text-sm text-gray-500
+                      file:mr-4 file:py-3 file:px-6
+                      file:rounded-lg file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-violet-600 file:text-white
+                      hover:file:bg-violet-700
+                      file:cursor-pointer cursor-pointer
+                      file:transition-colors"
+                  />
+                </label>
+
+                {uploadedPhotos.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+                    {uploadedPhotos.map((file, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-40 object-cover rounded-lg shadow-md"
+                        />
+                        <button
+                          onClick={() => removePhoto(index)}
+                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold shadow-lg transition-colors"
+                        >
+                          ×
+                        </button>
+                        <p className="text-xs text-gray-600 truncate mt-2 px-1">{file.name}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
             </div>
-          )}
-
-          {/* Upload Progress */}
-          {isUploading && (
-            <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-blue-800">अपलोड होत आहे / Uploading...</span>
-                <span className="text-sm text-blue-600">{uploadProgress}%</span>
-              </div>
-              <div className="w-full bg-blue-200 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${uploadProgress}%` }}
-                ></div>
-              </div>
-            </div>
-          )}
-
-          {/* Display existing photos when viewing */}
-          {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
-            <div className="mt-6">
-              <h4 className="text-md font-medium text-gray-900 mb-3">
-                {editingInspection.fims_inspection_photos.length} फोटो उपलब्ध / Available Photos
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
-                  <div key={photo.id} className="relative bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-                    <img
-                      src={photo.photourl}
-                      alt={`${photo.description} Gram Panchayat photo ${index + 1}`}
-                      className="w-full h-40 object-cover"
-                    />
-                    <div className="p-3">
-                      <p className="text-sm font-medium text-gray-800 truncate mb-1">
-                        Photo {index + 1}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">{photo.photoname}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* No photos message for view mode */}
-          {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
-            <div className="text-center py-8 text-gray-500">
-              <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-              <p>कोणतेही फोटो उपलब्ध नाहीत / No photos available</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-
-  return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
-            >
-              <ArrowLeft className="h-5 w-5" />
-              <span>मागे / Back</span>
-            </button>
-          </div>
-          <div className="w-20"></div>
-          <div>
-            <p className="text-sm md:text-base text-gray-600 text-center">
-              ग्रामपंचायत तपासणी फॉर्म / Grampanchayat Inspection Form
-            </p>
           </div>
         </div>
-
 
         {/* Submit Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pb-8">
@@ -1034,5 +937,5 @@ export const GrampanchayatInspectionForm: React.FC = () => {
         </div>
       </div>
     </div>
-  
-
+  );
+};
