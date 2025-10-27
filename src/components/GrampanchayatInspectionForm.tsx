@@ -80,7 +80,7 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
     locationdetected: ''
   });
 
-  const grampanchayatCategory = categories.find((cat: any) => cat.formtype === 'grampanchayat');
+  const grampanchayatCategory = categories.find((cat: any) => cat.formtype === 'Grampanchayat Inspection');
 
   useEffect(() => {
     if (grampanchayatCategory) {
