@@ -45,204 +45,52 @@ export const GrampanchayatInspectionForm: React.FC = () => {
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert(t('categories.geolocationNotSupported'));
+      alert('Geolocation is not supported by your browser');
       return;
     }
 
-    // Clear any cached location data by requesting fresh location
-    // This forces the browser to get a new GPS fix instead of using cached data
     setIsGettingLocation(true);
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         const accuracy = position.coords.accuracy;
-        
-        // Get location name using reverse geocoding
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-          );
-          const data = await response.json();
-          
-          if (data.results && data.results.length > 0) {
-            const address = data.results[0].formatted_address;
-            
-            // Update all location data in a single state call
-            setInspectionData(prev => ({
-              ...prev,
-              latitude: lat,
-              longitude: lng,
-              location_accuracy: accuracy,
-              location_detected: address,
-              location_name: prev.location_name || address // Auto-fill if empty
-            }));
-          } else {
-            // No geocoding results, just update coordinates
-            setInspectionData(prev => ({
-              ...prev,
-              latitude: lat,
-              longitude: lng,
-              location_accuracy: accuracy,
-              location_detected: 'Location detected but address not found'
-            }));
-          }
-        } catch (error) {
-          console.error('Error getting location name:', error);
-          // Fallback: just update coordinates without address
-          setInspectionData(prev => ({
-            ...prev,
-            latitude: lat,
-            longitude: lng,
-            location_accuracy: accuracy,
-            location_detected: 'Unable to get address'
-          }));
-        }
-        
+
+        setInspectionData(prev => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng,
+          location_accuracy: accuracy,
+          location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
+        }));
+
         setIsGettingLocation(false);
-       },
-       (error) => {
-         console.error('Error getting location:', error);
-         setIsGettingLocation(false);
-         alert(t('categories.geolocationError'));
-       },
-      { 
-        enableHighAccuracy: true, 
-        timeout: 15000, // Increased timeout for better GPS fix
-        maximumAge: 0 // Force fresh location, don't use cached data
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        setIsGettingLocation(false);
+        alert('Error getting location. Please try again.');
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
       }
     );
   };
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const files = Array.from(event.target.files || []);
-  if (uploadedPhotos.length + files.length > 5) {
-    alert('Maximum 5 photos allowed');
-    return;
-  }
-  setUploadedPhotos(prev => [...prev, ...files]);
-};
-
-
-  const handlePlaceSelect = (event: any) => {
-    if (!event.detail) {
-      console.warn('Place picker event does not contain place data');
+    const files = Array.from(event.target.files || []);
+    if (files.length + uploadedPhotos.length > 5) {
+      alert('Maximum 5 photos allowed');
       return;
     }
-    
-    const place = event.detail?.place;
-    if (!place) {
-      return;
-    }
-    
-    // Handle place selection logic here
+    setUploadedPhotos(prev => [...prev, ...files]);
   };
 
-  const handleFileUpload = (files: File[]) => {
-    if (uploadedPhotos.length + files.length > 5) {
-      alert(t('fims.maxPhotosAllowed'));
-      return;
-    }
-
-    // Filter out files that are too large (>10MB) or invalid formats
-    const validFiles = files.filter(file => {
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        console.warn(`File ${file.name} is too large (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
-        return false;
-      }
-      if (!file.type.startsWith('image/')) {
-        console.warn(`File ${file.name} is not an image`);
-        return false;
-      }
-      return true;
-    });
-
-    if (validFiles.length !== files.length) {
-      alert('Some files were skipped. Only image files under 10MB are allowed.');
-    }
-
-    if (validFiles.length > 0) {
-      setUploadedPhotos(prev => [...prev, ...validFiles]);
-    }
+  const removePhoto = (index: number) => {
+    setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
   };
-
-const removePhoto = (index: number) => {
-  setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
-};
-
-
-  // Clean up preview URLs when component unmounts
-  useEffect(() => {
-    return () => {
-      photoPreviews.forEach(url => URL.revokeObjectURL(url));
-    };
-  }, []);
-
-const uploadPhotosToSupabase = async (inspectionId: string) => {
-
-  if (uploadedPhotos.length === 0) return;
- 
-  setIsUploading(true);
-
-  try {
-
-    for (let i = 0; i < uploadedPhotos.length; i++) {
-
-      const file = uploadedPhotos[i];
-
-      const fileExt = file.name.split('.').pop();
-
-      const fileName = `anganwadi_${inspectionId}_${Date.now()}_${i}.${fileExt}`;
- 
-      const { data: uploadData, error: uploadError } = await supabase.storage
-
-        .from('field-visit-images')
-
-        .upload(fileName, file);
- 
-      if (uploadError) throw uploadError;
- 
-      const { data: { publicUrl } } = supabase.storage
-
-        .from('field-visit-images')
-
-        .getPublicUrl(fileName);
- 
-      const { error: dbError } = await supabase
-
-        .from('fims_inspection_photos')
-
-        .insert({
-
-          inspection_id: inspectionId,
-
-          photo_url: publicUrl,
-
-          photo_name: file.name,
-
-          description: `Anganwadi inspection photo ${i + 1}`,
-
-          photo_order: i + 1,
-
-        });
- 
-      if (dbError) throw dbError;
-
-    }
-
-  } catch (error) {
-
-    console.error('Error uploading photos:', error);
-
-    throw error;
-
-  } finally {
-
-    setIsUploading(false);
-
-  }
-
-};
 
   const handleSubmit = async (isDraft: boolean = false) => {
     if (!gpName.trim()) {
@@ -1017,79 +865,76 @@ const uploadPhotosToSupabase = async (inspectionId: string) => {
             </div>
 
             {/* Photo Upload Section */}
-                  {/* Submit Buttons */}
+            <div className="bg-violet-50 border-l-4 border-violet-500 p-6 rounded-lg mb-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <Camera className="w-6 h-6 text-violet-600" />
+                फोटो अपलोड
+              </h3>
 
-    {!isViewMode && (
-<div className="flex justify-center space-x-4">
-<button
+              <div>
+                <label className="block mb-3">
+                  <span className="sr-only">Choose photos</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="block w-full text-sm text-gray-500
+                      file:mr-4 file:py-3 file:px-6
+                      file:rounded-lg file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-violet-600 file:text-white
+                      hover:file:bg-violet-700
+                      file:cursor-pointer cursor-pointer
+                      file:transition-colors"
+                  />
+                </label>
 
-          type="button"
+                {uploadedPhotos.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+                    {uploadedPhotos.map((file, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-40 object-cover rounded-lg shadow-md"
+                        />
+                        <button
+                          onClick={() => removePhoto(index)}
+                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold shadow-lg transition-colors"
+                        >
+                          ×
+                        </button>
+                        <p className="text-xs text-gray-600 truncate mt-2 px-1">{file.name}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
 
-          onClick={() => handleSubmit(true)}
-
-          disabled={isLoading || isUploading}
-
-          className="px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
->
-<Save className="h-5 w-5" />
-<span>{isLoading ? 'सेव्ह करत आहे...' : 'मसुदा म्हणून जतन करा'}</span>
-</button>
-<button
-
-          type="button"
-
-          onClick={() => handleSubmit(false)}
-
-          disabled={isLoading || isUploading}
-
-          className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
->
-<Send className="h-5 w-5" />
-<span>{isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}</span>
-</button>
-</div>
-)}
-</div>
-);
-  return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <button
-          onClick={onBack}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5" />
-          <span>{t('common.back')}</span>
-        </button>
-      </div>
-
-      {/* Step Indicator */}
-      {renderStepIndicator()}
-
-      {/* Form Content */}
-      {currentStep === 1 && renderBasicDetailsAndLocation()}
-      {currentStep === 2 && renderAnganwadiInspectionForm()}
-      {currentStep === 3 && renderPhotosAndSubmit()}
-
-      {/* Navigation Buttons */}
-      <div className="flex justify-between mt-8">
-        <button
-          onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
-          disabled={currentStep === 1}
-          className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-400 transition-colors"
-        >
-          {t('common.previous')}
-        </button>
-        
-        {currentStep < 3 && (
+        {/* Submit Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pb-8">
           <button
-            onClick={() => setCurrentStep(Math.min(3, currentStep + 1))}
-            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            onClick={() => handleSubmit(true)}
+            disabled={isLoading}
+            className="px-10 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg flex items-center justify-center gap-2"
           >
-            {t('common.next')}
+            <Save className="w-5 h-5" />
+            {isLoading ? 'सेव्ह करत आहे...' : 'मसुदा सेव्ह करा'}
           </button>
-        )}
+
+          <button
+            onClick={() => handleSubmit(false)}
+            disabled={isLoading}
+            className="px-10 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg flex items-center justify-center gap-2"
+          >
+            <Send className="w-5 h-5" />
+            {isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}
+          </button>
+        </div>
       </div>
     </div>
   );
