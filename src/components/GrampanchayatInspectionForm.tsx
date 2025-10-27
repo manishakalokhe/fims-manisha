@@ -31,7 +31,8 @@ export const GrampanchayatInspectionForm: React.FC = () => {
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0)
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const [inspectionData, setInspectionData] = useState({
     category_id: '',
     location_name: '',
@@ -44,7 +45,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert(t('fims.geolocationNotSupported'));
+      alert('Geolocation is not supported by your browser');
       return;
     }
 
@@ -913,7 +914,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
             </div>
           </div>
         </div>
- 
+
         {/* Submit Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pb-8">
           <button
