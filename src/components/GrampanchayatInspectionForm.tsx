@@ -1048,13 +1048,10 @@ const uploadPhotosToSupabase = async (inspectionId: string) => {
 <span>{isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}</span>
 </button>
 </div>
-
-    )}
+)}
 </div>
 
 );
-
- 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
