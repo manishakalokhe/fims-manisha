@@ -9,8 +9,9 @@ export const GrampanchayatInspectionForm = ({
   user,
   onBack,
   categories,
-  onInspimport React, { useState, useEffect } from 'react';
-import {
+  onInspectionCreated,
+  editingInspection,
+}) => {
   ArrowLeft,
   Camera,
   MapPin,
