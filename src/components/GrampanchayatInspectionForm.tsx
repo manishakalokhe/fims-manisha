@@ -1342,8 +1342,7 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
                 <Send className="h-5 w-5 inline ml-2" />
               </button>
             </div>
-          )}
-
+          )
           {isViewMode && (
             <div className="text-center mt-8 p-6 bg-blue-50 rounded-lg">
               <FileText className="w-12 h-12 text-blue-500 mx-auto mb-4" />
