@@ -45,52 +45,204 @@ export const GrampanchayatInspectionForm: React.FC = () => {
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
+      alert(t('categories.geolocationNotSupported'));
       return;
     }
 
+    // Clear any cached location data by requesting fresh location
+    // This forces the browser to get a new GPS fix instead of using cached data
     setIsGettingLocation(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         const accuracy = position.coords.accuracy;
-
-        setInspectionData(prev => ({
-          ...prev,
-          latitude: lat,
-          longitude: lng,
-          location_accuracy: accuracy,
-          location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
-        }));
-
+        
+        // Get location name using reverse geocoding
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`
+          );
+          const data = await response.json();
+          
+          if (data.results && data.results.length > 0) {
+            const address = data.results[0].formatted_address;
+            
+            // Update all location data in a single state call
+            setInspectionData(prev => ({
+              ...prev,
+              latitude: lat,
+              longitude: lng,
+              location_accuracy: accuracy,
+              location_detected: address,
+              location_name: prev.location_name || address // Auto-fill if empty
+            }));
+          } else {
+            // No geocoding results, just update coordinates
+            setInspectionData(prev => ({
+              ...prev,
+              latitude: lat,
+              longitude: lng,
+              location_accuracy: accuracy,
+              location_detected: 'Location detected but address not found'
+            }));
+          }
+        } catch (error) {
+          console.error('Error getting location name:', error);
+          // Fallback: just update coordinates without address
+          setInspectionData(prev => ({
+            ...prev,
+            latitude: lat,
+            longitude: lng,
+            location_accuracy: accuracy,
+            location_detected: 'Unable to get address'
+          }));
+        }
+        
         setIsGettingLocation(false);
-      },
-      (error) => {
-        console.error('Error getting location:', error);
-        setIsGettingLocation(false);
-        alert('Error getting location. Please try again.');
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0
+       },
+       (error) => {
+         console.error('Error getting location:', error);
+         setIsGettingLocation(false);
+         alert(t('categories.geolocationError'));
+       },
+      { 
+        enableHighAccuracy: true, 
+        timeout: 15000, // Increased timeout for better GPS fix
+        maximumAge: 0 // Force fresh location, don't use cached data
       }
     );
   };
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    if (files.length + uploadedPhotos.length > 5) {
-      alert('Maximum 5 photos allowed');
+  const files = Array.from(event.target.files || []);
+  if (uploadedPhotos.length + files.length > 5) {
+    alert('Maximum 5 photos allowed');
+    return;
+  }
+  setUploadedPhotos(prev => [...prev, ...files]);
+};
+
+
+  const handlePlaceSelect = (event: any) => {
+    if (!event.detail) {
+      console.warn('Place picker event does not contain place data');
       return;
     }
-    setUploadedPhotos(prev => [...prev, ...files]);
+    
+    const place = event.detail?.place;
+    if (!place) {
+      return;
+    }
+    
+    // Handle place selection logic here
   };
 
-  const removePhoto = (index: number) => {
-    setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
+  const handleFileUpload = (files: File[]) => {
+    if (uploadedPhotos.length + files.length > 5) {
+      alert(t('fims.maxPhotosAllowed'));
+      return;
+    }
+
+    // Filter out files that are too large (>10MB) or invalid formats
+    const validFiles = files.filter(file => {
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        console.warn(`File ${file.name} is too large (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+        return false;
+      }
+      if (!file.type.startsWith('image/')) {
+        console.warn(`File ${file.name} is not an image`);
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length !== files.length) {
+      alert('Some files were skipped. Only image files under 10MB are allowed.');
+    }
+
+    if (validFiles.length > 0) {
+      setUploadedPhotos(prev => [...prev, ...validFiles]);
+    }
   };
+
+const removePhoto = (index: number) => {
+  setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
+};
+
+
+  // Clean up preview URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      photoPreviews.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, []);
+
+const uploadPhotosToSupabase = async (inspectionId: string) => {
+
+  if (uploadedPhotos.length === 0) return;
+ 
+  setIsUploading(true);
+
+  try {
+
+    for (let i = 0; i < uploadedPhotos.length; i++) {
+
+      const file = uploadedPhotos[i];
+
+      const fileExt = file.name.split('.').pop();
+
+      const fileName = `anganwadi_${inspectionId}_${Date.now()}_${i}.${fileExt}`;
+ 
+      const { data: uploadData, error: uploadError } = await supabase.storage
+
+        .from('field-visit-images')
+
+        .upload(fileName, file);
+ 
+      if (uploadError) throw uploadError;
+ 
+      const { data: { publicUrl } } = supabase.storage
+
+        .from('field-visit-images')
+
+        .getPublicUrl(fileName);
+ 
+      const { error: dbError } = await supabase
+
+        .from('fims_inspection_photos')
+
+        .insert({
+
+          inspection_id: inspectionId,
+
+          photo_url: publicUrl,
+
+          photo_name: file.name,
+
+          description: `Anganwadi inspection photo ${i + 1}`,
+
+          photo_order: i + 1,
+
+        });
+ 
+      if (dbError) throw dbError;
+
+    }
+
+  } catch (error) {
+
+    console.error('Error uploading photos:', error);
+
+    throw error;
+
+  } finally {
+
+    setIsUploading(false);
+
+  }
+
+};
 
   const handleSubmit = async (isDraft: boolean = false) => {
     if (!gpName.trim()) {
@@ -865,57 +1017,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
             </div>
 
             {/* Photo Upload Section */}
-            <div className="bg-violet-50 border-l-4 border-violet-500 p-6 rounded-lg mb-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <Camera className="w-6 h-6 text-violet-600" />
-                फोटो अपलोड
-              </h3>
-
-              <div>
-                <label className="block mb-3">
-                  <span className="sr-only">Choose photos</span>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handlePhotoUpload}
-                    className="block w-full text-sm text-gray-500
-                      file:mr-4 file:py-3 file:px-6
-                      file:rounded-lg file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-violet-600 file:text-white
-                      hover:file:bg-violet-700
-                      file:cursor-pointer cursor-pointer
-                      file:transition-colors"
-                  />
-                </label>
-
-                {uploadedPhotos.length > 0 && (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-                    {uploadedPhotos.map((file, index) => (
-                      <div key={index} className="relative group">
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full h-40 object-cover rounded-lg shadow-md"
-                        />
-                        <button
-                          onClick={() => removePhoto(index)}
-                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold shadow-lg transition-colors"
-                        >
-                          ×
-                        </button>
-                        <p className="text-xs text-gray-600 truncate mt-2 px-1">{file.name}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Submit Buttons */}
+                    {/* Submit Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pb-8">
           <button
             onClick={() => handleSubmit(true)}
