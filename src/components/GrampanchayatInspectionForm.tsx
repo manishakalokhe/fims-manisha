@@ -1017,25 +1017,30 @@ const uploadPhotosToSupabase = async (inspectionId: string) => {
             </div>
 
             {/* Photo Upload Section */}
-                    {/* Submit Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pb-8">
-          <button
-            onClick={() => handleSubmit(true)}
-            disabled={isLoading}
-            className="px-10 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg flex items-center justify-center gap-2"
-          >
-            <Save className="w-5 h-5" />
-            {isLoading ? 'सेव्ह करत आहे...' : 'मसुदा सेव्ह करा'}
-          </button>
-
-          <button
-            onClick={() => handleSubmit(false)}
-            disabled={isLoading}
-            className="px-10 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg flex items-center justify-center gap-2"
-          >
-            <Send className="w-5 h-5" />
-            {isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}
-          </button>
+                   {/* Submit Buttons */}
+          {!isViewMode && (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pb-8">
+              <button
+                onClick={() => handleSubmit(true)}
+                disabled={isLoading || isUploading}
+                className="px-8 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base flex items-center justify-center gap-2 w-full sm:w-auto"
+              >
+                <Save className="w-4 h-4" />
+                <span>{isLoading ? 'सेव्ह होत आहे...' : 'ड्राफ्ट म्हणून सेव्ह करा'}</span>
+              </button>
+              
+              <button
+                onClick={() => handleSubmit(false)}
+                disabled={isLoading || isUploading}
+                className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base flex items-center justify-center gap-2 w-full sm:w-auto"
+              >
+                <Send className="w-4 h-4" />
+                <span>{isLoading ? 'सबमिट होत आहे...' : isEditMode ? 'तपासणी अपडेट करा' : 'तपासणी सबमिट करा'}</span>
+              </button>
+            </div>
+          )}
         </div>
+      </div>
+    </div>
   );
 };
