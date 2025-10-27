@@ -27,7 +27,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
   const [resolutionNo, setResolutionNo] = useState('');
   const [resolutionDate, setResolutionDate] = useState('');
 
-  const [isLoading, setIsLoading] = useState(false);- 
+  const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
