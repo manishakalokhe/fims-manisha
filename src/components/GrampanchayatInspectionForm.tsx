@@ -619,7 +619,6 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
               <li>(5) तपासणीत्या दिनांक पर्यंत झालेला खर्च: <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
               <li>(6) शिल्लक खर्च <input type="number" style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} /></li>
             </ul>
-
             <div style={{ marginBottom: '20px' }}>
               <h3 style={{ color: '#333', marginBottom: '10px' }}>(7) सूचना-</h3>
               <h3 style={{ color: '#333', marginBottom: '10px' }}>(11) आर्थिक व्यवहारात निर्देशानुसार आलेल्या नियमबाह्यता -</h3>
