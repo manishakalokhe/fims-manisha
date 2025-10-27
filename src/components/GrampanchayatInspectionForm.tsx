@@ -31,8 +31,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-
+  const [uploadProgress, setUploadProgress] = useState(0)
   const [inspectionData, setInspectionData] = useState({
     category_id: '',
     location_name: '',
@@ -49,91 +48,47 @@ export const GrampanchayatInspectionForm: React.FC = () => {
       return;
     }
 
-    // Get location name using reverse geocoding
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-          );
-          const data = await response.json();
-          
-          if (data.results && data.results.length > 0) {
-            const locationName = data.results[0].formatted_address;
-            setInspectionData(prev => ({
-              ...prev,
-              address: locationName
-            }));
-          }
-        } catch (error) {
-          console.error('Error getting location name:', error);
-        }
-        
-        setIsLoading(false);
+    setIsGettingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+
+        setInspectionData(prev => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng,
+          location_accuracy: accuracy,
+          location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
+        }));
+
+        setIsGettingLocation(false);
       },
       (error) => {
         console.error('Error getting location:', error);
-        alert(t('fims.unableToGetLocation'));
-        setIsLoading(false);
+        setIsGettingLocation(false);
+        alert('Error getting location. Please try again.');
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
     );
   };
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    
-    if (uploadedPhotos.length + files.length > 5) {
-      alert(t('fims.maxPhotosAllowed'));
+    if (files.length + uploadedPhotos.length > 5) {
+      alert('Maximum 5 photos allowed');
       return;
     }
-
     setUploadedPhotos(prev => [...prev, ...files]);
   };
 
   const removePhoto = (index: number) => {
     setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const uploadPhotosToSupabase = async (inspectionId: string) => {
-    if (uploadedPhotos.length === 0) return;
-
-    setIsUploading(true);
-    try {
-      for (let i = 0; i < uploadedPhotos.length; i++) {
-        const file = uploadedPhotos[i];
-        const fileExt = file.name.split('.').pop();
-        const fileName = `zp_dar_mahinyala_${inspectionId}_${Date.now()}_${i}.${fileExt}`;
-
-        // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('field-visit-images')
-          .upload(fileName, file);
-
-        if (uploadError) throw uploadError;
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('field-visit-images')
-          .getPublicUrl(fileName);
-
-        // Save photo record to database
-        const { error: dbError } = await supabase
-          .from('fims_inspection_photos')
-          .insert({
-            inspection_id: inspectionId,
-            photo_url: publicUrl,
-            photo_name: file.name,
-            description: `ZP Dar Mahinyala inspection photo ${i + 1}`,
-            photo_order: i + 1
-          });
-
-        if (dbError) throw dbError;
-      }
-    } catch (error) {
-      console.error('Error uploading photos:', error);
-      throw error;
-    } finally {
-      setIsUploading(false);
-    }
   };
 
   const handleSubmit = async (isDraft: boolean = false) => {
