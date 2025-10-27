@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Save, Send, FileText, Users, Camera, MapPin, Building2, CheckCircle, AlertCircle, Calendar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import supabase from '../lib/supabase';
-import type { User as SupabaseUser } from 'supabase/supabase-js';
+import { 
+  ArrowLeft,
+  MapPin,
+  Camera,
+  Save,
+  Send,
+  Building,
+  FileText,
+  Users
+} from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
-interface GrampanchayatInspectionFormProps {
+interface GramPanchayatFormProps {
   user: SupabaseUser;
   onBack: () => void;
   categories: any[];
@@ -12,215 +21,199 @@ interface GrampanchayatInspectionFormProps {
   editingInspection?: any;
 }
 
-interface GrampanchayatFormData {
-  // Basic Information
-  gpName: string;
-  psName: string;
-  secretaryName: string;
-  secretaryTenure: string;
-  inspectionDate: string;
-  inspectionPlace: string;
-  officerName: string;
-  officerPost: string;
-
-  // Meeting Information
-  monthlyMeetings: boolean;
-  agendaUpToDate: boolean;
-  receiptUpToDate: boolean;
-
-  // Financial Details
-  reassessmentDone: boolean;
-  reassessmentAction: boolean;
-  resolutionNo: string;
-  resolutionDate: string;
-
-  // Work Details - Add more fields as needed based on your requirements
-  workDetailsObservation: string;
-
-  // Final Details
-  generalObservations: string;
-  recommendations: string;
-  actionRequired: string;
-  suggestions: string;
-  visitDate: string;
-  inspectorDesignation: string;
-  inspectorName: string;
-}
-
-export const GrampanchayatInspectionForm: React.FC<GrampanchayatInspectionFormProps> = ({ user, onBack, categories, onInspectionCreated, editingInspection }) => {
+const GramPanchayatInspectionForm: React.FC<GramPanchayatFormProps> = ({
+  user,
+  onBack,
+  categories,
+  onInspectionCreated,
+  editingInspection
+}) => {
   const { t } = useTranslation();
-  const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [isViewMode, setIsViewMode] = useState(editingInspection?.mode === 'view');
-  const [isEditMode, setIsEditMode] = useState(editingInspection?.mode === 'edit');
+  const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
+  // Check if we're in view mode
+  const isViewMode = editingInspection?.mode === 'view';
+  const isEditMode = editingInspection?.mode === 'edit';
+
+  // Basic inspection data
   const [inspectionData, setInspectionData] = useState({
-    categoryid: '',
-    locationname: '',
-    planneddate: '',
+    category_id: '',
+    location_name: '',
+    address: '',
+    planned_date: '',
     latitude: null as number | null,
     longitude: null as number | null,
-    locationaccuracy: null as number | null,
-    locationdetected: ''
+    location_accuracy: null as number | null
   });
 
-  const [grampanchayatFormData, setGrampanchayatFormData] = useState<GrampanchayatFormData>({
-    gpName: '',
-    psName: '',
-    secretaryName: '',
-    secretaryTenure: '',
-    inspectionDate: '',
-    inspectionPlace: '',
-    officerName: '',
-    officerPost: '',
-    monthlyMeetings: false,
-    agendaUpToDate: false,
-    receiptUpToDate: false,
-    reassessmentDone: false,
-    reassessmentAction: false,
-    resolutionNo: '',
-    resolutionDate: '',
-    workDetailsObservation: '',
-    generalObservations: '',
-    recommendations: '',
-    actionRequired: '',
-    suggestions: '',
-    visitDate: '',
-    inspectorDesignation: '',
-    inspectorName: ''
-  });
+  // State for yes/no radio buttons and other inputs
+  const [monthlyMeetings, setMonthlyMeetings] = useState('');
+  const [agendaUpToDate, setAgendaUpToDate] = useState('');
+  const [receiptUpToDate, setReceiptUpToDate] = useState('');
+  const [reassessmentDone, setReassessmentDone] = useState('');
+  const [reassessmentAction, setReassessmentAction] = useState('');
 
-  // Get grampanchayat inspection category
-  const grampanchayatCategory = categories.find(cat => cat.formtype === 'grampanchayat');
+  // States for other form fields (blanks)
+  const [gpName, setGpName] = useState('');
+  const [psName, setPsName] = useState('');
+  const [inspectionDate, setInspectionDate] = useState('');
+  const [inspectionPlace, setInspectionPlace] = useState('');
+  const [officerName, setOfficerName] = useState('');
+  const [officerPost, setOfficerPost] = useState('');
+  const [secretaryName, setSecretaryName] = useState('');
+  const [secretaryTenure, setSecretaryTenure] = useState('');
+  const [resolutionNo, setResolutionNo] = useState('');
+  const [resolutionDate, setResolutionDate] = useState('');
+
+  // Get grampanchayat category
+  const gramPanchayatCategory = categories.find(cat => cat.form_type === 'gram_panchayat');
 
   useEffect(() => {
-    if (grampanchayatCategory) {
-      setInspectionData(prev => ({ ...prev, categoryid: grampanchayatCategory.id }));
+    if (gramPanchayatCategory) {
+      setInspectionData(prev => ({
+        ...prev,
+        category_id: gramPanchayatCategory.id
+      }));
     }
-  }, [grampanchayatCategory]);
+  }, [gramPanchayatCategory]);
 
   // Load existing inspection data when editing
   useEffect(() => {
-    if (editingInspection) {
-      console.log('Loading existing inspection data', editingInspection);
-      
+    if (editingInspection && editingInspection.id) {
       // Load basic inspection data
       setInspectionData({
-        categoryid: editingInspection.categoryid,
-        locationname: editingInspection.locationname,
-        planneddate: editingInspection.planneddate ? editingInspection.planneddate.split('T')[0] : '',
+        category_id: editingInspection.category_id || '',
+        location_name: editingInspection.location_name || '',
+        address: editingInspection.address || '',
+        planned_date: editingInspection.planned_date ? editingInspection.planned_date.split('T')[0] : '',
         latitude: editingInspection.latitude,
         longitude: editingInspection.longitude,
-        locationaccuracy: editingInspection.locationaccuracy,
-        locationdetected: editingInspection.locationdetected
+        location_accuracy: editingInspection.location_accuracy
       });
 
-      // Load grampanchayat form data if it exists
-      let formDataToLoad = null;
-      
-      // Try to get data from fimsgrampanchayatforms table first
-      if (editingInspection.fimsgrampanchayatforms && editingInspection.fimsgrampanchayatforms.length > 0) {
-        formDataToLoad = editingInspection.fimsgrampanchayatforms[0];
-        console.log('Loading from fimsgrampanchayatforms', formDataToLoad);
-      } else {
-        // Fallback to formdata JSON field
-        formDataToLoad = editingInspection.formdata;
-        console.log('Loading from formdata JSON', formDataToLoad);
-      }
-
-      if (formDataToLoad) {
-        setGrampanchayatFormData({
-          gpName: formDataToLoad.gpName || '',
-          psName: formDataToLoad.psName || '',
-          secretaryName: formDataToLoad.secretaryName || '',
-          secretaryTenure: formDataToLoad.secretaryTenure || '',
-          inspectionDate: formDataToLoad.inspectionDate || '',
-          inspectionPlace: formDataToLoad.inspectionPlace || '',
-          officerName: formDataToLoad.officerName || '',
-          officerPost: formDataToLoad.officerPost || '',
-          monthlyMeetings: formDataToLoad.monthlyMeetings ?? false,
-          agendaUpToDate: formDataToLoad.agendaUpToDate ?? false,
-          receiptUpToDate: formDataToLoad.receiptUpToDate ?? false,
-          reassessmentDone: formDataToLoad.reassessmentDone ?? false,
-          reassessmentAction: formDataToLoad.reassessmentAction ?? false,
-          resolutionNo: formDataToLoad.resolutionNo || '',
-          resolutionDate: formDataToLoad.resolutionDate || '',
-          workDetailsObservation: formDataToLoad.workDetailsObservation || '',
-          generalObservations: formDataToLoad.generalObservations || '',
-          recommendations: formDataToLoad.recommendations || '',
-          actionRequired: formDataToLoad.actionRequired || '',
-          suggestions: formDataToLoad.suggestions || '',
-          visitDate: formDataToLoad.visitDate || '',
-          inspectorDesignation: formDataToLoad.inspectorDesignation || '',
-          inspectorName: formDataToLoad.inspectorName || ''
-        });
+      // Load form data if it exists
+      if (editingInspection.form_data) {
+        setMonthlyMeetings(editingInspection.form_data.monthlyMeetings || '');
+        setAgendaUpToDate(editingInspection.form_data.agendaUpToDate || '');
+        setReceiptUpToDate(editingInspection.form_data.receiptUpToDate || '');
+        setReassessmentDone(editingInspection.form_data.reassessmentDone || '');
+        setReassessmentAction(editingInspection.form_data.reassessmentAction || '');
+        setGpName(editingInspection.form_data.gpName || '');
+        setPsName(editingInspection.form_data.psName || '');
+        setInspectionDate(editingInspection.form_data.inspectionDate || '');
+        setInspectionPlace(editingInspection.form_data.inspectionPlace || '');
+        setOfficerName(editingInspection.form_data.officerName || '');
+        setOfficerPost(editingInspection.form_data.officerPost || '');
+        setSecretaryName(editingInspection.form_data.secretaryName || '');
+        setSecretaryTenure(editingInspection.form_data.secretaryTenure || '');
+        setResolutionNo(editingInspection.form_data.resolutionNo || '');
+        setResolutionDate(editingInspection.form_data.resolutionDate || '');
       }
     }
   }, [editingInspection]);
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert(t('categories.geolocationNotSupported'));
+      alert(t('fims.geolocationNotSupported'));
       return;
     }
 
-    // Clear any cached location data by requesting fresh location
-    // This forces the browser to get a new GPS fix instead of using cached data
     setIsLoading(true);
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        const accuracy = position.coords.accuracy;
-
+        setInspectionData(prev => ({
+          ...prev,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          location_accuracy: position.coords.accuracy
+        }));
+        
         // Get location name using reverse geocoding
         try {
           const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`
           );
           const data = await response.json();
-
+          
           if (data.results && data.results.length > 0) {
-            const address = data.results[0].formatted_address;
-            // Update all location data in a single state call
+            const locationName = data.results[0].formatted_address;
             setInspectionData(prev => ({
               ...prev,
-              latitude: lat,
-              longitude: lng,
-              locationaccuracy: accuracy,
-              locationdetected: address,
-              locationname: prev.locationname || address
-            }));
-          } else {
-            // No geocoding results, just update coordinates
-            setInspectionData(prev => ({
-              ...prev,
-              latitude: lat,
-              longitude: lng,
-              locationaccuracy: accuracy,
-              locationdetected: 'Location detected but address not found'
+              address: locationName
             }));
           }
         } catch (error) {
-          console.error('Error getting location name', error);
-          // Fallback just update coordinates without address
-          setInspectionData(prev => ({
-            ...prev,
-            latitude: lat,
-            longitude: lng,
-            locationaccuracy: accuracy,
-            locationdetected: 'Unable to get address'
-          }));
+          console.error('Error getting location name:', error);
         }
+        
         setIsLoading(false);
       },
       (error) => {
-        console.error('Error getting location', error);
+        console.error('Error getting location:', error);
+        alert(t('fims.unableToGetLocation'));
         setIsLoading(false);
-        alert(t('categories.geolocationError'));
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 } // Force fresh location, don't use cached data
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
+  };
+
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    
+    if (uploadedPhotos.length + files.length > 5) {
+      alert(t('fims.maxPhotosAllowed'));
+      return;
+    }
+
+    setUploadedPhotos(prev => [...prev, ...files]);
+  };
+
+  const removePhoto = (index: number) => {
+    setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadPhotosToSupabase = async (inspectionId: string) => {
+    if (uploadedPhotos.length === 0) return;
+
+    setIsUploading(true);
+    try {
+      for (let i = 0; i < uploadedPhotos.length; i++) {
+        const file = uploadedPhotos[i];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `gram_panchayat_${inspectionId}_${Date.now()}_${i}.${fileExt}`;
+
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('field-visit-images')
+          .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('field-visit-images')
+          .getPublicUrl(fileName);
+
+        // Save photo record to database
+        const { error: dbError } = await supabase
+          .from('fims_inspection_photos')
+          .insert({
+            inspection_id: inspectionId,
+            photo_url: publicUrl,
+            photo_name: file.name,
+            description: `Gram Panchayat inspection photo ${i + 1}`
+          });
+
+        if (dbError) throw dbError;
+      }
+    } catch (error) {
+      console.error('Error uploading photos:', error);
+      throw error;
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const generateInspectionNumber = () => {
@@ -236,10 +229,29 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatInspectionFormPr
     try {
       setIsLoading(true);
 
+      // Prepare form data
+      const formData = {
+        monthlyMeetings,
+        agendaUpToDate,
+        receiptUpToDate,
+        reassessmentDone,
+        reassessmentAction,
+        gpName,
+        psName,
+        inspectionDate,
+        inspectionPlace,
+        officerName,
+        officerPost,
+        secretaryName,
+        secretaryTenure,
+        resolutionNo,
+        resolutionDate
+      };
+
       // Convert empty date strings to null for database compatibility
       const sanitizedInspectionData = {
         ...inspectionData,
-        planneddate: inspectionData.planneddate || null
+        planned_date: inspectionData.planned_date || null
       };
 
       let inspectionResult;
@@ -247,18 +259,17 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatInspectionFormPr
       if (editingInspection && editingInspection.id) {
         // Update existing inspection
         const { data: updateResult, error: updateError } = await supabase
-          .from('fimsinspections')
+          .from('fims_inspections')
           .update({
-            locationname: sanitizedInspectionData.locationname,
+            location_name: sanitizedInspectionData.location_name,
             latitude: sanitizedInspectionData.latitude,
             longitude: sanitizedInspectionData.longitude,
-            locationaccuracy: sanitizedInspectionData.locationaccuracy,
-            locationdetected: sanitizedInspectionData.locationdetected,
-            address: sanitizedInspectionData.locationdetected,
-            planneddate: sanitizedInspectionData.planneddate,
-            inspectiondate: new Date().toISOString(),
+            location_accuracy: sanitizedInspectionData.location_accuracy,
+            address: sanitizedInspectionData.address,
+            planned_date: sanitizedInspectionData.planned_date,
+            inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
-            formdata: grampanchayatFormData
+            form_data: formData
           })
           .eq('id', editingInspection.id)
           .select()
@@ -266,634 +277,435 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatInspectionFormPr
 
         if (updateError) throw updateError;
         inspectionResult = updateResult;
-
-        // Upsert grampanchayat form record
-        const { error: formError } = await supabase
-          .from('fimsgrampanchayatforms')
-          .upsert({
-            inspectionid: editingInspection.id,
-            ...grampanchayatFormData
-          });
-
-        if (formError) throw formError;
       } else {
         // Create new inspection
         const inspectionNumber = generateInspectionNumber();
 
         const { data: createResult, error: createError } = await supabase
-          .from('fimsinspections')
+          .from('fims_inspections')
           .insert({
-            inspectionnumber: inspectionNumber,
-            categoryid: sanitizedInspectionData.categoryid,
-            inspectorid: user.id,
-            locationname: sanitizedInspectionData.locationname,
+            inspection_number: inspectionNumber,
+            category_id: sanitizedInspectionData.category_id,
+            inspector_id: user.id,
+            location_name: sanitizedInspectionData.location_name,
             latitude: sanitizedInspectionData.latitude,
             longitude: sanitizedInspectionData.longitude,
-            locationaccuracy: sanitizedInspectionData.locationaccuracy,
-            locationdetected: sanitizedInspectionData.locationdetected,
-            address: sanitizedInspectionData.locationdetected,
-            planneddate: sanitizedInspectionData.planneddate,
-            inspectiondate: new Date().toISOString(),
+            location_accuracy: sanitizedInspectionData.location_accuracy,
+            address: sanitizedInspectionData.address,
+            planned_date: sanitizedInspectionData.planned_date,
+            inspection_date: new Date().toISOString(),
             status: isDraft ? 'draft' : 'submitted',
-            formdata: grampanchayatFormData
+            form_data: formData
           })
           .select()
           .single();
 
         if (createError) throw createError;
         inspectionResult = createResult;
+      }
 
-        // Create grampanchayat form record
-        const { error: formError } = await supabase
-          .from('fimsgrampanchayatforms')
-          .insert({
-            inspectionid: inspectionResult.id,
-            ...grampanchayatFormData
-          });
-
-        if (formError) throw formError;
+      // Upload photos if any
+      if (uploadedPhotos.length > 0) {
+        await uploadPhotosToSupabase(inspectionResult.id);
       }
 
       const isUpdate = editingInspection && editingInspection.id;
       const message = isDraft 
-        ? isUpdate 
-          ? t('fims.inspectionUpdatedAsDraft') 
-          : t('fims.inspectionSavedAsDraft')
-        : isUpdate 
-          ? t('fims.inspectionUpdatedSuccessfully') 
-          : t('fims.inspectionSubmittedSuccessfully');
-
+        ? (isUpdate ? t('fims.inspectionUpdatedAsDraft') : t('fims.inspectionSavedAsDraft'))
+        : (isUpdate ? t('fims.inspectionUpdatedSuccessfully') : t('fims.inspectionSubmittedSuccessfully'));
+      
       alert(message);
       onInspectionCreated();
       onBack();
+
     } catch (error) {
-      console.error('Error saving inspection', error);
-      alert(`Error saving inspection: ${error.message}`);
+      console.error('Error saving inspection:', error);
+      alert('Error saving inspection: ' + error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const renderStepIndicator = () => (
-    <div className="flex items-center justify-center mb-8">
-      {[1, 2, 3].map(step => (
-        <div key={step} className="flex items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-            currentStep >= step ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-600'
-          }`}>
-            {step}
-          </div>
-          {step < 3 && (
-            <div className={`w-16 h-1 mx-2 ${currentStep > step ? 'bg-purple-600' : 'bg-gray-200'}`} />
-          )}
-        </div>
-      ))}
-    </div>
-  );
-
-  const YesNoRadio = ({ name, value, onChange, question }: {
-    name: string;
-    value: string | boolean;
-    onChange: (value: string | boolean) => void;
-    question: string;
-  }) => (
-    <div className="mb-6 p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300">
-      <p className="mb-4 text-gray-800 font-medium leading-relaxed text-lg">{question}</p>
-      <div className="flex gap-8 pl-4">
-        <label className="flex items-center cursor-pointer group">
-          <input 
-            type="radio" 
-            name={name} 
-            value="yes" 
-            checked={value === true || value === 'yes'} 
-            onChange={e => onChange(e.target.value === 'yes')} 
-            disabled={isViewMode}
-            className="mr-3 w-5 h-5 text-green-600 border-2 border-gray-300 focus:ring-green-500 focus:ring-2 group-hover:border-green-400 transition-colors"
-          />
-          <span className="text-green-700 font-semibold group-hover:text-green-800 transition-colors text-lg">होय</span>
-        </label>
-        <label className="flex items-center cursor-pointer group">
-          <input 
-            type="radio" 
-            name={name} 
-            value="no" 
-            checked={value === false || value === 'no'} 
-            onChange={e => onChange(e.target.value === 'no')} 
-            disabled={isViewMode}
-            className="mr-3 w-5 h-5 text-red-600 border-2 border-gray-300 focus:ring-red-500 focus:ring-2 group-hover:border-red-400 transition-colors"
-          />
-          <span className="text-red-700 font-semibold group-hover:text-red-800 transition-colors text-lg">नाही</span>
-        </label>
-      </div>
-    </div>
-  );
-
-  const renderBasicDetailsAndLocation = () => (
-    <div className="space-y-8">
-      {/* Basic Information Section */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <Building2 className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">मूलभूत माहिती</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.gpName')}</label>
-              <input 
-                type="text" 
-                value={grampanchayatFormData.gpName} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, gpName: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-gray-400" 
-                placeholder={t('fims.enterGpName')} 
-                required 
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.psName')}</label>
-              <input 
-                type="text" 
-                value={grampanchayatFormData.psName} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, psName: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-gray-400" 
-                placeholder={t('fims.enterPsName')} 
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.secretaryName')}</label>
-              <input 
-                type="text" 
-                value={grampanchayatFormData.secretaryName} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, secretaryName: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-gray-400" 
-                placeholder={t('fims.enterSecretaryName')} 
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.secretaryTenure')}</label>
-              <input 
-                type="text" 
-                value={grampanchayatFormData.secretaryTenure} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, secretaryTenure: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-gray-400" 
-                placeholder={t('fims.enterSecretaryTenure')} 
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.inspectionDate')}</label>
-              <input 
-                type="date" 
-                value={grampanchayatFormData.inspectionDate} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, inspectionDate: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent" 
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.inspectionPlace')}</label>
-              <input 
-                type="text" 
-                value={grampanchayatFormData.inspectionPlace} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, inspectionPlace: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-gray-400" 
-                placeholder={t('fims.enterInspectionPlace')} 
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.officerName')}</label>
-              <input 
-                type="text" 
-                value={grampanchayatFormData.officerName} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, officerName: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-gray-400" 
-                placeholder={t('fims.enterOfficerName')} 
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.officerPost')}</label>
-              <input 
-                type="text" 
-                value={grampanchayatFormData.officerPost} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, officerPost: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-gray-400" 
-                placeholder={t('fims.enterOfficerPost')} 
-                disabled={isViewMode}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Location Information Section */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <MapPin className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">स्थान माहिती</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.locationName')}</label>
-              <input 
-                type="text" 
-                value={inspectionData.locationname} 
-                onChange={e => setInspectionData(prev => ({ ...prev, locationname: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400" 
-                placeholder={t('fims.enterLocationName')} 
-                required 
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.plannedDate')}</label>
-              <input 
-                type="date" 
-                value={inspectionData.planneddate} 
-                onChange={e => setInspectionData(prev => ({ ...prev, planneddate: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                disabled={isViewMode}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">GPS स्थान</label>
-              {!isViewMode && (
-                <button 
-                  type="button" 
-                  onClick={getCurrentLocation} 
-                  disabled={isLoading}
-                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-                >
-                  <MapPin className="h-4 w-4" />
-                  <span>{isLoading ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
-                </button>
-              )}
-              {inspectionData.latitude && inspectionData.longitude && (
-                <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
-                  <p className="text-xs text-green-600">
-                    अक्षांश: {inspectionData.latitude.toFixed(6)}<br />
-                    रेखांश: {inspectionData.longitude.toFixed(6)}<br />
-                    अचूकता: {inspectionData.locationaccuracy ? Math.round(inspectionData.locationaccuracy) + ' m' : 'N/A'}
-                  </p>
-                </div>
-              )}
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-xs font-medium text-gray-700 mb-1">{t('fims.locationDetected')}</label>
-              <input 
-                type="text" 
-                value={inspectionData.locationdetected} 
-                onChange={e => setInspectionData(prev => ({ ...prev, locationdetected: e.target.value }))}
-                className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent text-xs placeholder-gray-400" 
-                placeholder="GPS" 
-                readOnly={isViewMode}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-
-  const renderGrampanchayatInspectionForm = () => (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 mb-10 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 px-8 py-16 text-white relative">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
-          <div className="relative z-10 text-center">
-            <div className="flex justify-center mb-8">
-              <div className="bg-white/20 backdrop-blur-sm rounded-full p-6 shadow-lg">
-                <FileText className="w-16 h-16 text-white" />
-              </div>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">
-              ग्रामपंचायत तपासणी अर्ज
-            </h1>
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 inline-block shadow-lg border border-white/30">
-              <p className="text-sm font-medium">
-                {inspectionData.locationdetected && (
-                  <>
-                    <strong>स्थान: </strong>
-                    {inspectionData.locationdetected}
-                    <br />
-                  </>
-                )}
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
+          {isViewMode && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <p className="text-blue-800 text-sm font-medium">
+                {t('fims.viewMode')} - {t('fims.formReadOnly')}
               </p>
             </div>
+          )}
+          
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={onBack}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+            >
+              <ArrowLeft className="h-5 w-5" />
+              <span>Back</span>
+            </button>
+            <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center">
+              {isViewMode ? t('fims.viewInspection') : 
+               isEditMode ? t('fims.editInspection') : 
+               t('fims.newInspection')} - ग्राम पंचायत तपासणी
+            </h1>
+            <div className="w-20"></div>
           </div>
         </div>
-      </div>
 
-      {/* Section 1 - Meeting Information */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <Users className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">सभांची माहिती</h3>
+        {/* Location Information */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-4">
+          <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-t-lg -mx-4 -mt-4 mb-4">
+            <h3 className="text-lg font-semibold flex items-center">
+              <MapPin className="h-5 w-5 mr-2" />
+              स्थान माहिती (Location Information)
+            </h3>
           </div>
-        </div>
-        <div className="p-10">
-          <div className="space-y-6">
-            <YesNoRadio
-              name="monthlyMeetings"
-              value={grampanchayatFormData.monthlyMeetings}
-              onChange={value => setGrampanchayatFormData(prev => ({ ...prev, monthlyMeetings: value }))}
-              question="मासिक सभा नियमित होतात का?"
-            />
-            <YesNoRadio
-              name="agendaUpToDate"
-              value={grampanchayatFormData.agendaUpToDate}
-              onChange={value => setGrampanchayatFormData(prev => ({ ...prev, agendaUpToDate: value }))}
-              question="सभेच्या यादी अद्ययावत आहेत का?"
-            />
-            <YesNoRadio
-              name="receiptUpToDate"
-              value={grampanchayatFormData.receiptUpToDate}
-              onChange={value => setGrampanchayatFormData(prev => ({ ...prev, receiptUpToDate: value }))}
-              question="सभेचे रेकॉर्ड अद्ययावत आहेत का?"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Section 2 - Financial Details */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-        <div className="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <Calendar className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">आर्थिक बाबी</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="space-y-6">
-            <YesNoRadio
-              name="reassessmentDone"
-              value={grampanchayatFormData.reassessmentDone}
-              onChange={value => setGrampanchayatFormData(prev => ({ ...prev, reassessmentDone: value }))}
-              question="पुनरावलोकन केले आहे का?"
-            />
-            <YesNoRadio
-              name="reassessmentAction"
-              value={grampanchayatFormData.reassessmentAction}
-              onChange={value => setGrampanchayatFormData(prev => ({ ...prev, reassessmentAction: value }))}
-              question="पुनरावलोकनावर कारवाई झाली आहे का?"
-            />
+          
+          <div className="space-y-4">
             <div>
-              <label className="block text-lg font-bold text-gray-700 mb-4">ठराव क्रमांक</label>
-              <input 
-                type="text" 
-                value={grampanchayatFormData.resolutionNo} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, resolutionNo: e.target.value }))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-yellow-500/20 focus:border-yellow-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm" 
-                placeholder="ठराव क्रमांक प्रविष्ट करा"
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                स्थानाचे नाव *
+              </label>
+              <input
+                type="text"
+                value={inspectionData.location_name}
+                onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                placeholder="स्थानाचे नाव प्रविष्ट करा"
+                required
                 disabled={isViewMode}
               />
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  नियोजित तारीख
+                </label>
+                <input
+                  type="date"
+                  value={inspectionData.planned_date}
+                  onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  disabled={isViewMode}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  GPS Location
+                </label>
+                <button
+                  type="button"
+                  onClick={getCurrentLocation}
+                  disabled={isLoading || isViewMode}
+                  className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
+                >
+                  <MapPin className="h-4 w-4" />
+                  <span>{isLoading ? 'स्थान मिळवत आहे...' : 'सध्याचे स्थान मिळवा'}</span>
+                </button>
+              </div>
+            </div>
+
+            {inspectionData.latitude && inspectionData.longitude && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-sm text-green-800 font-medium mb-2">स्थान कॅप्चर केले</p>
+                <div className="text-xs text-green-600 space-y-1">
+                  <p>अक्षांश: {inspectionData.latitude.toFixed(6)}</p>
+                  <p>रेखांश: {inspectionData.longitude.toFixed(6)}</p>
+                  <p>अचूकता: {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}</p>
+                </div>
+              </div>
+            )}
+
             <div>
-              <label className="block text-lg font-bold text-gray-700 mb-4">ठराव तारीख</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                संपूर्ण पत्ता
+              </label>
+              <textarea
+                value={inspectionData.address}
+                onChange={(e) => setInspectionData(prev => ({...prev, address: e.target.value}))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                rows={3}
+                placeholder="संपूर्ण पत्ता प्रविष्ट करा"
+                disabled={isViewMode}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Form Content */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-4">
+          <h1 style={{ textAlign: 'center', color: '#333' }}>परिशिष्ट-चार</h1>
+          <p style={{ textAlign: 'center', fontWeight: 'bold' }}>(नियम 80 पहा)</p>
+          <p style={{ textAlign: 'center', fontWeight: 'bold' }}>(ख)ग्राम पंचायतांची सर्वसाधारण तपासणीचा नमुना</p>
+
+          <ol style={{ marginLeft: '20px' }}>
+            <li>
+              ग्राम पंचायतिचे नांव- 
+              <input 
+                type="text" 
+                value={gpName} 
+                onChange={(e) => setGpName(e.target.value)} 
+                style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
+                disabled={isViewMode}
+              />
+              पंचायत समिती - 
+              <input 
+                type="text" 
+                value={psName} 
+                onChange={(e) => setPsName(e.target.value)} 
+                style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
+                disabled={isViewMode}
+              />
+            </li>
+            <li>
+              (क) सर्वसाधारण तपासणीची तारीख - 
               <input 
                 type="date" 
-                value={grampanchayatFormData.resolutionDate} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, resolutionDate: e.target.value }))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-yellow-500/20 focus:border-yellow-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm" 
+                value={inspectionDate} 
+                onChange={(e) => setInspectionDate(e.target.value)} 
+                style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
                 disabled={isViewMode}
               />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 3 - Work Details */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-        <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <FileText className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">कामाची माहिती</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="space-y-6">
-            <div>
-              <label className="block text-lg font-bold text-gray-700 mb-4">कामाबाबत निरीक्षण</label>
-              <textarea 
-                value={grampanchayatFormData.workDetailsObservation} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, workDetailsObservation: e.target.value }))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm" 
-                rows={3}
-                placeholder="कामाची प्रगती आणि निरीक्षणाबाबत माहिती लिहा"
-                disabled={isViewMode}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-
-  const renderPhotosAndSubmit = () => (
-    <div className="space-y-8">
-      {/* Final Section - Inspector Details */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-        <div className="bg-gradient-to-r from-gray-600 to-gray-800 px-8 py-6">
-          <div className="flex items-center text-white">
-            <FileText className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">तपासणी अधिकाऱ्याची माहिती</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">भेट दत्ति</label>
-              <input 
-                type="date" 
-                value={grampanchayatFormData.visitDate} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, visitDate: e.target.value }))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm" 
-                disabled={isViewMode}
-              />
-            </div>
-            <div>
-              <label className="block mb-4 text-lg font-bold text-gray-700">तपासणी अधिका-याचे नाव</label>
+            </li>
+            <li>
+              (ख) सर्वसाधारण तपासणीचे ठिकाण :- 
               <input 
                 type="text" 
-                value={grampanchayatFormData.inspectorName} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, inspectorName: e.target.value }))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm" 
-                placeholder="अधिकाऱ्याचे पूर्ण नाव"
+                value={inspectionPlace} 
+                onChange={(e) => setInspectionPlace(e.target.value)} 
+                style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
                 disabled={isViewMode}
               />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block mb-4 text-lg font-bold text-gray-700">पद</label>
+            </li>
+            <li>
+              तपासणी अधिकारीाचे नांव व हुद्दा :- 
               <input 
                 type="text" 
-                value={grampanchayatFormData.inspectorDesignation} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, inspectorDesignation: e.target.value }))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm" 
-                placeholder="पद नाव प्रविष्ट करा"
+                value={officerName} 
+                onChange={(e) => setOfficerName(e.target.value)} 
+                style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
                 disabled={isViewMode}
               />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block mb-4 text-lg font-bold text-gray-700">सामान्य निरीक्षण</label>
-              <textarea 
-                value={grampanchayatFormData.generalObservations} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, generalObservations: e.target.value }))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm" 
-                rows={3}
-                placeholder="सामान्य निरीक्षण आणि टिपण्ण्या"
+              /
+              <input 
+                type="text" 
+                value={officerPost} 
+                onChange={(e) => setOfficerPost(e.target.value)} 
+                style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
                 disabled={isViewMode}
               />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block mb-4 text-lg font-bold text-gray-700">शिफारशी</label>
-              <textarea 
-                value={grampanchayatFormData.recommendations} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, recommendations: e.target.value }))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm" 
-                rows={3}
-                placeholder="सुधारणांसाठी शिफारशी"
+            </li>
+            <li>
+              सचिवाचे नांव व तो सदस्य पंचायतीत केलेला पासून काम करीत आहे :- 
+              <input 
+                type="text" 
+                value={secretaryName} 
+                onChange={(e) => setSecretaryName(e.target.value)} 
+                style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
                 disabled={isViewMode}
               />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block mb-4 text-lg font-bold text-gray-700">आवश्यक कारवाई</label>
-              <textarea 
-                value={grampanchayatFormData.actionRequired} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, actionRequired: e.target.value }))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm" 
-                rows={3}
-                placeholder="आवश्यक असलेली कारवाई"
+              /
+              <input 
+                type="text" 
+                value={secretaryTenure} 
+                onChange={(e) => setSecretaryTenure(e.target.value)} 
+                style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
                 disabled={isViewMode}
               />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block mb-4 text-lg font-bold text-gray-700">सुचना</label>
-              <textarea 
-                value={grampanchayatFormData.suggestions} 
-                onChange={e => setGrampanchayatFormData(prev => ({ ...prev, suggestions: e.target.value }))}
-                className="w-full p-5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-gray-500/20 focus:border-gray-500 transition-all duration-300 bg-gray-50 hover:bg-white text-lg shadow-sm" 
-                rows={3}
-                placeholder="अतिरिक्त सूचना"
-                disabled={isViewMode}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Photo Upload Section */}
-      <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
-          <div className="flex items-center text-white">
-            <Camera className="w-8 h-8 mr-4" />
-            <h3 className="text-2xl font-bold">फोटो अपलोड</h3>
-          </div>
-        </div>
-        <div className="p-10">
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">फोटो अपलोड क्षेत्र</h3>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-purple-400 transition-colors duration-200">
-              <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h4 className="text-lg font-medium text-gray-900 mb-2">फोटो निवडा</h4>
-              <p className="text-gray-600 mb-4">कमाल 5 फोटो अपलोड करता येतील (10MB पर्यंत)</p>
-              {!isViewMode && (
-                <>
+            </li>
+            <li>
+              मासिक सभा नियमांनुसार नियमितपणे होतात काय ? 
+              <label style={{ marginLeft: '10px' }}>
+                <input 
+                  type="radio" 
+                  name="monthlyMeetings" 
+                  value="होय" 
+                  checked={monthlyMeetings === 'होय'} 
+                  onChange={(e) => setMonthlyMeetings(e.target.value)}
+                  disabled={isViewMode}
+                /> 
+                होय
+              </label>
+              <label style={{ marginLeft: '10px' }}>
+                <input 
+                  type="radio" 
+                  name="monthlyMeetings" 
+                  value="नाही" 
+                  checked={monthlyMeetings === 'नाही'} 
+                  onChange={(e) => setMonthlyMeetings(e.target.value)}
+                  disabled={isViewMode}
+                /> 
+                नाही
+              </label>
+            </li>
+            <ul style={{ marginLeft: '20px' }}>
+              <li>
+                सभेची कार्यसूची व सभेची नोंदवही ईत्यादी अद्यावत आहे काय ? 
+                <label style={{ marginLeft: '10px' }}>
                   <input 
-                    type="file" 
-                    multiple 
-                    accept="image/*" 
-                    onChange={() => {}} // Add photo upload logic here
+                    type="radio" 
+                    name="agendaUpToDate" 
+                    value="होय" 
+                    checked={agendaUpToDate === 'होय'} 
+                    onChange={(e) => setAgendaUpToDate(e.target.value)}
                     disabled={isViewMode}
-                    id="photo-upload" 
-                    style={{ display: 'none' }}
-                  />
-                  <label htmlFor="photo-upload" className="inline-flex items-center px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200 bg-purple-600 hover:bg-purple-700 text-white">
-                    <Camera className="h-4 w-4 mr-2" />
-                    फोटो निवडा
-                  </label>
-                </>
-              )}
-            </div>
-            {/* Add photo preview section here if needed */}
+                  /> 
+                  होय
+                </label>
+                <label style={{ marginLeft: '10px' }}>
+                  <input 
+                    type="radio" 
+                    name="agendaUpToDate" 
+                    value="नाही" 
+                    checked={agendaUpToDate === 'नाही'} 
+                    onChange={(e) => setAgendaUpToDate(e.target.value)}
+                    disabled={isViewMode}
+                  /> 
+                  नाही
+                </label>
+              </li>
+            </ul>
+          </ol>
+        </div>
+
+        {/* Photo Upload Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            {t('fims.photoDocumentation')}
+          </h3>
+          
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+            <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h4 className="text-lg font-medium text-gray-900 mb-2">
+              Upload Gram Panchayat Inspection Photos
+            </h4>
+            <p className="text-gray-600 mb-4">
+              ग्राम पंचायत तपासणी छायाचित्रे अपलोड करा
+            </p>
+            
+            {!isViewMode && (
+              <>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="hidden"
+                  id="photo-upload"
+                />
+                <label
+                  htmlFor="photo-upload"
+                  className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg cursor-pointer transition-colors duration-200"
+                >
+                  <Camera className="h-4 w-4 mr-2" />
+                  {t('fims.chooseFiles')}
+                </label>
+                
+                <p className="text-xs text-gray-500 mt-2">
+                  Maximum 5 photos allowed
+                </p>
+              </>
+            )}
           </div>
+
+          {uploadedPhotos.length > 0 && (
+            <div className="mt-4">
+              <h4 className="text-md font-medium text-gray-900 mb-3">
+                {t('fims.uploadedPhotos')} ({uploadedPhotos.length}/5)
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {uploadedPhotos.map((photo, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={URL.createObjectURL(photo)}
+                      alt={`Gram Panchayat photo ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                    {!isViewMode && (
+                      <button
+                        onClick={() => removePhoto(index)}
+                        className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
+                      >
+                        ×
+                      </button>
+                    )}
+                    <p className="text-xs text-gray-600 mt-1 truncate">
+                      {photo.name}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Display existing photos when viewing */}
+          {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
+            <div className="mt-4">
+              <h4 className="text-md font-medium text-gray-900 mb-3">
+                Inspection Photos ({editingInspection.fims_inspection_photos.length})
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
+                  <div key={photo.id} className="relative">
+                    <img
+                      src={photo.photo_url}
+                      alt={photo.description || `Gram Panchayat photo ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                    <p className="text-xs text-gray-600 mt-1 truncate">
+                      {photo.photo_name || `Photo ${index + 1}`}
+                    </p>
+                    {photo.description && (
+                      <p className="text-xs text-gray-500 truncate">
+                        {photo.description}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {isUploading && (
+            <div className="text-center py-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-2"></div>
+              <p className="text-gray-600">{t('fims.uploadingPhotos')}</p>
+            </div>
+          )}
         </div>
-      </section>
 
-      {/* Submit Buttons */}
-      {!isViewMode && (
-        <div className="flex justify-center space-x-4">
-          <button 
-            type="button" 
-            onClick={() => handleSubmit(true)} 
-            disabled={isLoading}
-            className="px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Save className="h-5 w-5" />
-            <span>{isLoading ? '...' : 'ड्राफ्ट सेव्ह करा'}</span>
-          </button>
-          <button 
-            type="button" 
-            onClick={() => handleSubmit(false)} 
-            disabled={isLoading}
-            className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Send className="h-5 w-5" />
-            <span>{isLoading ? '...' : 'सबमिट करा'}</span>
-          </button>
+        {/* Submit Buttons */}
+        <div className="flex justify-between items-center">
+          {!isViewMode && (
+            <>
+              <button
+                onClick={() => handleSubmit(true)}
+                disabled={isLoading || isUploading}
+                className="px-4 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
+              >
+                <Save className="h-4 w-4" />
+                <span>{t('fims.saveAsDraft')}</span>
+              </button>
+              <button
+                onClick={() => handleSubmit(false)}
+                disabled={isLoading || isUploading}
+                className="px-4 md:px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center space-x-2 text-sm md:text-base"
+              >
+                <Send className="h-4 w-4" />
+                <span>{isEditMode ? t('fims.updateInspection') : t('fims.submitInspection')}</span>
+              </button>
+            </>
+          )}
         </div>
-      )}
-    </div>
-  );
-
-  return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <button onClick={onBack} className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors">
-          <ArrowLeft className="h-5 w-5" />
-          <span className="font-medium">{t('common.back')}</span>
-        </button>
-      </div>
-
-      {/* Step Indicator */}
-      {renderStepIndicator()}
-
-      {/* Form Content */}
-      {currentStep === 1 && renderBasicDetailsAndLocation()}
-      {currentStep === 2 && renderGrampanchayatInspectionForm()}
-      {currentStep === 3 && renderPhotosAndSubmit()}
-
-      {/* Navigation Buttons */}
-      <div className="flex justify-between mt-8">
-        <button 
-          onClick={() => setCurrentStep(Math.max(1, currentStep - 1))} 
-          disabled={currentStep === 1}
-          className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-400 transition-colors"
-        >
-          {t('common.previous')}
-        </button>
-        {currentStep < 3 && (
-          <button 
-            onClick={() => setCurrentStep(Math.min(3, currentStep + 1))} 
-            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-          >
-            {t('common.next')}
-          </button>
-        )}
       </div>
     </div>
   );
 };
+
+export default GramPanchayatInspectionForm;
