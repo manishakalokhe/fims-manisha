@@ -280,7 +280,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
                 </div>
               )}
             </div>
-            
+
             {/* Meeting Information */}
             <div className="bg-purple-50 border-l-4 border-purple-500 p-6 rounded-lg mb-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -863,7 +863,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
                 <p className="text-gray-700">8) --- . <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-96" /></p>
               </div>
             </div>
-            
+
             {/* Photo Upload Section */}
             <div className="bg-violet-50 border-l-4 border-violet-500 p-6 rounded-lg mb-6">
               <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
