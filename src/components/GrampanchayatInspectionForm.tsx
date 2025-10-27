@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Camera, MapPin, Save, Send, FileText, Users } from 'lucide-react';
+import { ArrowLeft, Camera, MapPin, Save, Send, FileText } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
@@ -360,96 +360,86 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
     }
   };
 
-  // Basic Information Section - Enhanced Design from 2nd Screenshot
+  // Basic Information Section - Complete with design from screenshot
   const renderBasicInformation = () => (
-    <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-      <div className="bg-gradient-to-r from-green-500 to-teal-600 px-8 py-6">
-        <div className="flex items-center text-white">
-          <FileText className="w-8 h-8 mr-4" />
-          <h3 className="text-2xl font-bold">माहिती (मूलभूत माहिती)</h3>
+    <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+      <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
+        <div className="flex items-center">
+          <div className="bg-white bg-opacity-20 rounded-full p-2 mr-3">
+            <FileText className="w-6 h-6 text-white" />
+          </div>
+          <h3 className="text-xl font-bold text-white">माहिती (मूलभूत माहिती)</h3>
         </div>
       </div>
-      <div className="p-8 bg-gray-50">
-        <div className="space-y-8">
-          {/* First Row - Two Input Fields */}
+      <div className="p-6 bg-gray-50">
+        <div className="space-y-6">
+          {/* Row 1 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                ग्रामपंचायतचे नाव
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">ग्रामपंचायतचे नाव</label>
               <input
                 type="text"
                 value={gpName}
                 onChange={(e) => setGpName(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-                disabled={isViewMode}
                 placeholder="ग्रामपंचायतचे नाव"
+                disabled={isViewMode}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                पंचायत समितीचे नाव
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">पंचायत समितीचे नाव</label>
               <input
                 type="text"
                 value={psName}
                 onChange={(e) => setPsName(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-                disabled={isViewMode}
                 placeholder="पंचायत समितीचे नाव"
+                disabled={isViewMode}
               />
             </div>
           </div>
 
-          {/* Second Row - Two Input Fields */}
+          {/* Row 2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                ग्रामपंचायत क्रमांक
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">ग्रामपंचायत क्रमांक</label>
               <input
                 type="text"
                 value={gpCode}
                 onChange={(e) => setGpCode(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-                disabled={isViewMode}
                 placeholder="ग्रामपंचायत क्रमांक"
+                disabled={isViewMode}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                गावाचे नाव
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">गावाचे नाव</label>
               <input
                 type="text"
                 value={villageName}
                 onChange={(e) => setVillageName(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-                disabled={isViewMode}
                 placeholder="गावाचे नाव"
+                disabled={isViewMode}
               />
             </div>
           </div>
 
-          {/* Third Row - Two Input Fields */}
+          {/* Row 3 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                लोकसंख्या
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">लोकसंख्या</label>
               <input
                 type="number"
                 value={population}
                 onChange={(e) => setPopulation(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-                disabled={isViewMode}
                 placeholder="लोकसंख्या"
+                disabled={isViewMode}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                तपासणीची तारीख
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">तपासणीची तारीख</label>
               <input
                 type="date"
                 value={inspectionDate}
@@ -460,80 +450,1039 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
             </div>
           </div>
 
-          {/* Fourth Row - Two Input Fields */}
+          {/* Row 4 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                तपासणीचे ठिकाण
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">तपासणीचे ठिकाण</label>
               <input
                 type="text"
                 value={inspectionPlace}
                 onChange={(e) => setInspectionPlace(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-                disabled={isViewMode}
                 placeholder="तपासणीचे ठिकाण"
+                disabled={isViewMode}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                अधिकाऱ्याचे नाव
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">अधिकाऱ्याचे नाव</label>
               <input
                 type="text"
                 value={officerName}
                 onChange={(e) => setOfficerName(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-                disabled={isViewMode}
                 placeholder="अधिकाऱ्याचे नाव"
+                disabled={isViewMode}
               />
             </div>
           </div>
 
-          {/* Fifth Row - Two Input Fields */}
+          {/* Row 5 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                पद
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">पद</label>
               <input
                 type="text"
                 value={officerPost}
                 onChange={(e) => setOfficerPost(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-                disabled={isViewMode}
                 placeholder="पद"
+                disabled={isViewMode}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                सचिवाचे नाव
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">सचिवाचे नाव</label>
               <input
                 type="text"
                 value={secretaryName}
                 onChange={(e) => setSecretaryName(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-                disabled={isViewMode}
                 placeholder="सचिवाचे नाव"
+                disabled={isViewMode}
               />
             </div>
           </div>
 
-          {/* Sixth Row - Single Input Field */}
+          {/* Row 6 */}
           <div className="grid grid-cols-1 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                सचिव कालावधी
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">सचिव कालावधी</label>
               <input
                 type="text"
                 value={secretaryTenure}
                 onChange={(e) => setSecretaryTenure(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-                disabled={isViewMode}
                 placeholder="सचिव कालावधी"
+                disabled={isViewMode}
               />
+            </div>
+          </div>
+
+          {/* Complete Form Content - All Sections */}
+          <div className="space-y-8 mt-8">
+            {/* Section 2 - Monthly Meetings */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">मासिक सभा (Section 2)</h4>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-6">
+                  <label className="text-sm font-medium text-gray-700 w-64">मासिक सभा झाल्या का?</label>
+                  <div className="flex space-x-8">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="monthlyMeetings"
+                        value="yes"
+                        checked={monthlyMeetings === true}
+                        onChange={(e) => setMonthlyMeetings(e.target.value === 'yes')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">हो</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="monthlyMeetings"
+                        value="no"
+                        checked={monthlyMeetings === false}
+                        onChange={(e) => setMonthlyMeetings(e.target.value === 'no')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">नाही</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="ml-16 space-y-3">
+                  <div className="flex items-center space-x-6">
+                    <label className="text-sm font-medium text-gray-700 w-64">दालन सुची अद्ययावत आहे का?</label>
+                    <div className="flex space-x-8">
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="agendaUpToDate"
+                          value="yes"
+                          checked={agendaUpToDate === true}
+                          onChange={(e) => setAgendaUpToDate(e.target.value === 'yes')}
+                          disabled={isViewMode}
+                          className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                        />
+                        <span className="text-sm text-gray-700">हो</span>
+                      </label>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="agendaUpToDate"
+                          value="no"
+                          checked={agendaUpToDate === false}
+                          onChange={(e) => setAgendaUpToDate(e.target.value === 'no')}
+                          disabled={isViewMode}
+                          className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                        />
+                        <span className="text-sm text-gray-700">नाही</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-6">
+                    <label className="text-sm font-medium text-gray-700 w-64">बेत अद्ययावत आहे का?</label>
+                    <div className="flex space-x-8">
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="minutesUpToDate"
+                          value="yes"
+                          disabled={isViewMode}
+                          className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                        />
+                        <span className="text-sm text-gray-700">हो</span>
+                      </label>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="minutesUpToDate"
+                          value="no"
+                          disabled={isViewMode}
+                          className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                        />
+                        <span className="text-sm text-gray-700">नाही</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3 - Tax Collection */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">कर संकलन (Section 3)</h4>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-6">
+                  <label className="text-sm font-medium text-gray-700 w-64">कर आकारणी केली का?</label>
+                  <div className="flex space-x-8">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="taxLevy"
+                        value="yes"
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">हो</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="taxLevy"
+                        value="no"
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">नाही</span>
+                    </label>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-6">
+                  <label className="text-sm font-medium text-gray-700 w-64">संकलन रक्कम</label>
+                  <input
+                    type="number"
+                    className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    disabled={isViewMode}
+                    placeholder="रक्कम"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 6 - Fund Allocation */}
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+              <h4 className="text-lg font-semibold text-gray-900 p-6 border-b bg-gray-50">निधी वाटप (Section 6)</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">अ.क्र.</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">निधी प्रकार</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">मान्य रक्कम</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">वाटप रक्कम</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">खर्च</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">तारीख</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b" colSpan={2}>टिप्पणी</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {[
+                      { num: 1, type: 'राज्य वित्त आयोग', amountState: section1Amount, dateState: section1Date },
+                      { num: 2, type: 'केंद्रीय वित्त आयोग', amountState: section2Amount, dateState: section2Date },
+                      { num: 3, type: 'विकास निधी', amountState: section3Amount, dateState: section3Date },
+                      { num: 4, type: 'स्थानिक निधी', amountState: section4Amount, dateState: section4Date },
+                      { num: 5, type: 'अन्य निधी', amountState: section5Amount, dateState: section5Date },
+                      { num: 6, type: 'एकूण', amountState: section6Amount, dateState: section6Date }
+                    ].map(({ num, type, amountState, dateState }) => (
+                      <tr key={num}>
+                        <td className="px-4 py-4 text-sm text-gray-900 border-r">{num}</td>
+                        <td className="px-4 py-4 text-sm text-gray-900 border-r">{type}</td>
+                        <td className="px-4 py-4 text-sm text-gray-500 border-r">0</td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="text"
+                            value={amountState}
+                            onChange={(e) => {
+                              if (num === 1) setSection1Amount(e.target.value);
+                              if (num === 2) setSection2Amount(e.target.value);
+                              if (num === 3) setSection3Amount(e.target.value);
+                              if (num === 4) setSection4Amount(e.target.value);
+                              if (num === 5) setSection5Amount(e.target.value);
+                              if (num === 6) setSection6Amount(e.target.value);
+                            }}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="number"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={true}
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="date"
+                            value={dateState}
+                            onChange={(e) => {
+                              if (num === 1) setSection1Date(e.target.value);
+                              if (num === 2) setSection2Date(e.target.value);
+                              if (num === 3) setSection3Date(e.target.value);
+                              if (num === 4) setSection4Date(e.target.value);
+                              if (num === 5) setSection5Date(e.target.value);
+                              if (num === 6) setSection6Date(e.target.value);
+                            }}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                          />
+                        </td>
+                        <td colSpan={2} className="px-4 py-4">
+                          <input
+                            type="text"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={true}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Section 8 - Resolution Details */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">ठराव माहिती (Section 8)</h4>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-700">1. ठराव क्र. 9 -</p>
+                
+                <div className="flex items-center space-x-6">
+                  <label className="text-sm font-medium text-gray-700 w-64">2. 10 - पावती अद्ययावत आहे का?</label>
+                  <div className="flex space-x-8">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="receiptUpToDate"
+                        value="yes"
+                        checked={receiptUpToDate === true}
+                        onChange={(e) => setReceiptUpToDate(e.target.value === 'yes')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">हो</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="receiptUpToDate"
+                        value="no"
+                        checked={receiptUpToDate === false}
+                        onChange={(e) => setReceiptUpToDate(e.target.value === 'no')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">नाही</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <label className="text-sm font-medium text-gray-700">तारीख</label>
+                  <input
+                    type="date"
+                    value={resolutionDate}
+                    onChange={(e) => setResolutionDate(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    disabled={isViewMode}
+                  />
+                  <label className="text-sm font-medium text-gray-700 ml-8">ठराव क्र.</label>
+                  <input
+                    type="text"
+                    value={resolutionNo}
+                    onChange={(e) => setResolutionNo(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 ml-2"
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                <div className="ml-16">
+                  <p className="text-sm text-gray-700 mb-2">आधिपत्य पुनर्मूल्यांकन केले का?</p>
+                  <div className="flex space-x-8">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="reassessmentAction"
+                        value="yes"
+                        checked={reassessmentAction === true}
+                        onChange={(e) => setReassessmentAction(e.target.value === 'yes')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">हो</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="reassessmentAction"
+                        value="no"
+                        checked={reassessmentAction === false}
+                        onChange={(e) => setReassessmentAction(e.target.value === 'no')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">नाही</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 9 - Staff Information */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">कर्मचारी माहिती (Section 9)</h4>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700 w-20">1. सरपंच</span>
+                    <input
+                      type="text"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="नाव"
+                    />
+                    <input
+                      type="text"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="कालावधी"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700 w-20">2. उप सरपंच</span>
+                    <input
+                      type="text"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="नाव"
+                    />
+                    <input
+                      type="text"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="कालावधी"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700 w-20">3. सचिव</span>
+                    <input
+                      type="text"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="नाव"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700 w-20">4. तलाठी</span>
+                    <input
+                      type="text"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="नाव"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700 w-20">5. ग्रामसेवक</span>
+                    <input
+                      type="number"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="संख्या"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700 w-20">6. इतर कर्मचारी</span>
+                    <input
+                      type="number"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="संख्या"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-medium text-gray-700 w-20">7. एकूण कर्मचारी</span>
+                  <input
+                    type="text"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    disabled={isViewMode}
+                    placeholder="एकूण"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 10 - Development Works */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">विकास कामे (Section 10)</h4>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm font-medium text-gray-700 w-48">1. पूर्ण झालेली कामे</span>
+                    <input
+                      type="number"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="संख्या"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm font-medium text-gray-700 w-48">2. प्रगतिपथातील कामे (15%)</span>
+                    <input
+                      type="number"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="संख्या"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm font-medium text-gray-700 w-48">3. थांबलेली कामे</span>
+                    <input
+                      type="number"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="संख्या"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm font-medium text-gray-700 w-48">4. नवीन प्रस्तावित कामे</span>
+                    <input
+                      type="number"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="संख्या"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm font-medium text-gray-700 w-48">5. एकूण कामे</span>
+                    <input
+                      type="number"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="एकूण"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm font-medium text-gray-700 w-48">6. खर्च झालेली रक्कम</span>
+                    <input
+                      type="number"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="रक्कम"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 11 - Financial Management */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">आर्थिक व्यवस्थापन (Section 7 & 11)</h4>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-6">
+                  <label className="text-sm font-medium text-gray-700 w-64">बजेट प्रावधान आहे का?</label>
+                  <div className="flex space-x-8">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="budgetProvision"
+                        value="yes"
+                        checked={budgetProvision === true}
+                        onChange={(e) => setBudgetProvision(e.target.value === 'yes')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">हो</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="budgetProvision"
+                        value="no"
+                        checked={budgetProvision === false}
+                        onChange={(e) => setBudgetProvision(e.target.value === 'no')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">नाही</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-6">
+                  <span className="text-sm font-medium text-gray-700 w-64">एकूण बजेट रक्कम?</span>
+                  <input
+                    type="text"
+                    className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    disabled={isViewMode}
+                    placeholder="रक्कम"
+                  />
+                  <span className="text-sm font-medium text-gray-700">तारीख</span>
+                  <input
+                    type="date"
+                    className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 ml-2"
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                <div className="flex items-center space-x-6 ml-16">
+                  <label className="text-sm font-medium text-gray-700 w-48">टेंडर मागवले का?</label>
+                  <div className="flex space-x-8">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="tendersCalled"
+                        value="yes"
+                        checked={tendersCalled === true}
+                        onChange={(e) => setTendersCalled(e.target.value === 'yes')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">हो</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="tendersCalled"
+                        value="no"
+                        checked={tendersCalled === false}
+                        onChange={(e) => setTendersCalled(e.target.value === 'no')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">नाही</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-6 ml-16">
+                  <label className="text-sm font-medium text-gray-700 w-48">9,15 16 कामांसाठी एंट्री केली का?</label>
+                  <div className="flex space-x-8">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="entriesMade"
+                        value="yes"
+                        checked={entriesMade === true}
+                        onChange={(e) => setEntriesMade(e.target.value === 'yes')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">हो</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="entriesMade"
+                        value="no"
+                        checked={entriesMade === false}
+                        onChange={(e) => setEntriesMade(e.target.value === 'no')}
+                        disabled={isViewMode}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm text-gray-700">नाही</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 12 - Work Progress Table */}
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+              <h4 className="text-lg font-semibold text-gray-900 p-6 border-b bg-gray-50">कामाची प्रगती (Section 12)</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">अ.क्र.</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">कामाचे नाव</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">अंदाजे रक्कम</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">खर्च झालेली रक्कम</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">प्रगती %</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">एकूण खर्च</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">उर्वरीत रक्कम</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">तारीख</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <tr key={index}>
+                        <td className="px-4 py-4 text-sm text-gray-900 border-r">{index + 1}</td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="text"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder="कामाचे नाव"
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="text"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder="अंदाजे रक्कम"
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="number"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder="खर्च"
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="number"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder="प्रगती %"
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="number"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder="एकूण खर्च"
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="number"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder="उर्वरीत"
+                          />
+                        </td>
+                        <td className="px-4 py-4">
+                          <input
+                            type="date"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Section 13 - Certificates */}
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+              <h4 className="text-lg font-semibold text-gray-900 p-6 border-b bg-gray-50">प्रमाणपत्रे (Section 13)</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">अ.क्र.</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">प्रमाणपत्र प्रकार</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">तारीख</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">उपलब्ध आहे का?</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">विवरण</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">टिप्पणी</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    <tr>
+                      <td className="px-4 py-4 text-sm text-gray-900 border-r">1</td>
+                      <td className="px-4 py-4 text-sm text-gray-900 border-r">आर्थिक प्रमाणपत्र</td>
+                      <td className="px-4 py-4 border-r">
+                        <input
+                          type="date"
+                          className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                          disabled={isViewMode}
+                        />
+                      </td>
+                      <td className="px-4 py-4 border-r">
+                        <div className="flex space-x-8">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              type="radio"
+                              name="certificate1"
+                              value="yes"
+                              checked={certificate1 === true}
+                              onChange={(e) => setCertificate1(e.target.value === 'yes')}
+                              disabled={isViewMode}
+                              className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                            />
+                            <span className="text-sm text-gray-700">हो</span>
+                          </label>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              type="radio"
+                              name="certificate1"
+                              value="no"
+                              checked={certificate1 === false}
+                              onChange={(e) => setCertificate1(e.target.value === 'no')}
+                              disabled={isViewMode}
+                              className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                            />
+                            <span className="text-sm text-gray-700">नाही</span>
+                          </label>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 border-r">
+                        <input
+                          type="text"
+                          className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                          disabled={isViewMode}
+                          placeholder="विवरण"
+                        />
+                      </td>
+                      <td className="px-4 py-4">
+                        <input
+                          type="text"
+                          className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                          disabled={isViewMode}
+                          placeholder="टिप्पणी"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-4 text-sm text-gray-900 border-r">2</td>
+                      <td className="px-4 py-4 text-sm text-gray-900 border-r">कर संकलन प्रमाणपत्र</td>
+                      <td className="px-4 py-4 border-r">
+                        <input
+                          type="date"
+                          className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                          disabled={isViewMode}
+                        />
+                      </td>
+                      <td className="px-4 py-4 border-r">
+                        <div className="flex space-x-8">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              type="radio"
+                              name="certificate2"
+                              value="yes"
+                              disabled={isViewMode}
+                              className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                            />
+                            <span className="text-sm text-gray-700">हो</span>
+                          </label>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              type="radio"
+                              name="certificate2"
+                              value="no"
+                              disabled={isViewMode}
+                              className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                            />
+                            <span className="text-sm text-gray-700">नाही</span>
+                          </label>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 border-r">
+                        <input
+                          type="text"
+                          className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                          disabled={isViewMode}
+                        />
+                      </td>
+                      <td className="px-4 py-4">
+                        <input
+                          type="text"
+                          className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                          disabled={isViewMode}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Section 14 - Assets Table */}
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+              <h4 className="text-lg font-semibold text-gray-900 p-6 border-b bg-gray-50">संपत्ती नोंद (Section 14)</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th colSpan={8} className="px-4 py-3 text-center text-sm font-medium text-gray-900 border-b bg-white">
+                        ग्रामपंचायत संपत्ती नोंद
+                      </th>
+                    </tr>
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">अ.क्र.</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">संपत्ती प्रकार</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">स्थान</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">खरेदी वर्ष</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">खरेदी किंमत</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">सध्याची किंमत</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">विवरण</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">टिप्पणी</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {Array.from({ length: 11 }, (_, index) => (
+                      <tr key={index}>
+                        <td className="px-4 py-4 text-sm text-gray-900 border-r">{index + 1}</td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="text"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder={`संपत्ती प्रकार ${index + 1}`}
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="text"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder={`स्थान ${index + 1}`}
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="number"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder={`वर्ष ${index + 1}`}
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="number"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder={`खरेदी किंमत ${index + 1}`}
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="number"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder={`सध्याची किंमत ${index + 1}`}
+                          />
+                        </td>
+                        <td className="px-4 py-4 border-r">
+                          <input
+                            type="text"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder={`विवरण ${index + 1}`}
+                          />
+                        </td>
+                        <td className="px-4 py-4">
+                          <input
+                            type="text"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-100"
+                            disabled={isViewMode}
+                            placeholder={`टिप्पणी ${index + 1}`}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Final Information */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2 text-center">अंतिम माहिती</h4>
+              <div className="space-y-4 text-center">
+                <div className="flex justify-center items-center space-x-4">
+                  <span className="text-sm font-medium text-gray-700 w-48">1. तपासणी अधिकाऱ्याचे नाव</span>
+                  <input
+                    type="text"
+                    value={officerName}
+                    onChange={(e) => setOfficerName(e.target.value)}
+                    className="w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    disabled={isViewMode}
+                  />
+                </div>
+                
+                <div className="flex justify-center items-center space-x-4">
+                  <span className="text-sm font-medium text-gray-700 w-48">2. पद</span>
+                  <input
+                    type="text"
+                    value={officerPost}
+                    onChange={(e) => setOfficerPost(e.target.value)}
+                    className="w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                <div className="flex justify-center items-center space-x-4">
+                  <span className="text-sm font-medium text-gray-700 w-48">3. तारीख</span>
+                  <input
+                    type="date"
+                    value={inspectionDate}
+                    onChange={(e) => setInspectionDate(e.target.value)}
+                    className="w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                <div className="flex justify-center items-center space-x-4">
+                  <span className="text-sm font-medium text-gray-700 w-48">4. ठिकाण</span>
+                  <input
+                    type="text"
+                    value={inspectionPlace}
+                    onChange={(e) => setInspectionPlace(e.target.value)}
+                    className="w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex justify-center items-center space-x-4">
+                    <span className="text-sm font-medium text-gray-700 w-48">5. सुधारणा</span>
+                    <input
+                      type="text"
+                      className="w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="सुधारणा"
+                    />
+                  </div>
+                  
+                  <div className="flex justify-center items-center space-x-4">
+                    <span className="text-sm font-medium text-gray-700 w-48">6. पुढील पावले</span>
+                    <input
+                      type="text"
+                      className="w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="पुढील पावले"
+                    />
+                  </div>
+
+                  <div className="flex justify-center items-center space-x-4">
+                    <span className="text-sm font-medium text-gray-700 w-48">7. शिफारशी</span>
+                    <input
+                      type="text"
+                      className="w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="शिफारशी"
+                    />
+                  </div>
+
+                  <div className="flex justify-center items-center space-x-4">
+                    <span className="text-sm font-medium text-gray-700 w-48">8. स्वाक्षरी</span>
+                    <input
+                      type="text"
+                      className="w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      disabled={isViewMode}
+                      placeholder="स्वाक्षरी"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -541,85 +1490,70 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
     </section>
   );
 
-  // Location Information Section - Enhanced Design from 2nd Screenshot
+  // Location Section
   const renderLocationSection = () => (
-    <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
-        <div className="flex items-center text-white">
-          <MapPin className="w-8 h-8 mr-4" />
-          <h3 className="text-2xl font-bold">स्थान माहिती (स्थान माहिती)</h3>
+    <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+        <div className="flex items-center">
+          <div className="bg-white bg-opacity-20 rounded-full p-2 mr-3">
+            <MapPin className="w-6 h-6 text-white" />
+          </div>
+          <h3 className="text-xl font-bold text-white">स्थान माहिती</h3>
         </div>
       </div>
-      <div className="p-8 bg-blue-50">
+      <div className="p-6 bg-blue-50">
         <div className="space-y-6">
-          {/* Location Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              स्थानाचे नाव
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">स्थानाचे नाव</label>
             <input
               type="text"
               value={inspectionData.locationname || gpName}
-              onChange={(e) =>
-                setInspectionData(prev => ({ ...prev, locationname: e.target.value }))
-              }
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm placeholder-gray-500 disabled:opacity-50"
+              onChange={(e) => setInspectionData(prev => ({ ...prev, locationname: e.target.value }))}
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
               placeholder="स्थानाचे नाव"
-              required
               disabled={isViewMode}
             />
           </div>
 
-          {/* Planned Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              नियोजित तारीख
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">नियोजित तारीख</label>
             <input
               type="date"
               value={inspectionData.planneddate}
-              onChange={(e) =>
-                setInspectionData(prev => ({ ...prev, planneddate: e.target.value }))
-              }
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+              onChange={(e) => setInspectionData(prev => ({ ...prev, planneddate: e.target.value }))}
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
               disabled={isViewMode}
             />
           </div>
 
-          {/* GPS Location Button */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              GPS स्थान माहिती
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">GPS स्थान माहिती</label>
             {!isViewMode && (
               <button
                 type="button"
                 onClick={getCurrentLocation}
                 disabled={isGettingLocation}
-                className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors duration-200 flex items-center justify-center space-x-2 shadow-sm disabled:opacity-50"
+                className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium shadow-sm disabled:opacity-50 flex items-center justify-center space-x-2"
               >
                 <MapPin className="h-5 w-5" />
                 <span>{isGettingLocation ? 'स्थान मिळवत आहे...' : 'सध्याचे स्थान मिळवा'}</span>
               </button>
             )}
-            
+
             {inspectionData.latitude && inspectionData.longitude && (
               <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
                 <p className="text-sm font-medium text-green-800 mb-2">स्थान नोंदवले गेले</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-green-700">
-                  <div>
-                    <span className="font-medium">अक्षांश:</span>
-                    <br />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-green-700">
+                  <div className="text-center">
+                    <span className="font-medium block">अक्षांश</span>
                     <span>{inspectionData.latitude?.toFixed(6)}</span>
                   </div>
-                  <div>
-                    <span className="font-medium">रेखांश:</span>
-                    <br />
+                  <div className="text-center">
+                    <span className="font-medium block">रेखांश</span>
                     <span>{inspectionData.longitude?.toFixed(6)}</span>
                   </div>
-                  <div>
-                    <span className="font-medium">अचूकता:</span>
-                    <br />
+                  <div className="text-center">
+                    <span className="font-medium block">अचूकता</span>
                     <span>{inspectionData.locationaccuracy ? Math.round(inspectionData.locationaccuracy) + ' m' : 'NA'}</span>
                   </div>
                 </div>
@@ -627,18 +1561,13 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
             )}
           </div>
 
-          {/* GPS Coordinates Display */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
-              GPS निर्देशांक
-            </label>
+            <label className="block text-xs font-medium text-gray-700 mb-1">GPS निर्देशांक</label>
             <input
               type="text"
               value={inspectionData.locationdetected}
-              onChange={(e) =>
-                setInspectionData(prev => ({ ...prev, locationdetected: e.target.value }))
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-xs placeholder-gray-500"
+              onChange={(e) => setInspectionData(prev => ({ ...prev, locationdetected: e.target.value }))}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
               placeholder="अक्षांश, रेखांश"
               readOnly={isViewMode}
             />
@@ -648,20 +1577,21 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
     </section>
   );
 
-  // Photo Upload Section - Enhanced Design from 2nd Screenshot
+  // Photo Upload Section
   const renderPhotoUploadSection = () => (
-    <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
-        <div className="flex items-center text-white">
-          <Camera className="w-8 h-8 mr-4" />
-          <h3 className="text-2xl font-bold">छायाचित्र अपलोड (Photo Upload)</h3>
+    <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+      <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
+        <div className="flex items-center">
+          <div className="bg-white bg-opacity-20 rounded-full p-2 mr-3">
+            <Camera className="w-6 h-6 text-white" />
+          </div>
+          <h3 className="text-xl font-bold text-white">छायाचित्र अपलोड</h3>
         </div>
       </div>
-      <div className="p-8 bg-purple-50">
+      <div className="p-6 bg-purple-50">
         <div className="space-y-6">
-          {/* Upload Area */}
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-purple-400 transition-colors duration-200 bg-white">
-            <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <div className="border-2 border-dashed border-purple-300 rounded-xl p-8 text-center hover:border-purple-400 transition-colors bg-white">
+            <Camera className="h-12 w-12 text-purple-400 mx-auto mb-4" />
             <h4 className="text-lg font-medium text-gray-900 mb-2">तपासणी छायाचित्र अपलोड करा</h4>
             <p className="text-gray-600 mb-4">
               {uploadedPhotos.length === 0
@@ -677,55 +1607,46 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
               accept="image/*"
               onChange={handlePhotoUpload}
               disabled={isViewMode}
-              className="mb-4 hidden"
+              className="hidden"
               id="photo-upload-input"
             />
             {!isViewMode && uploadedPhotos.length < 5 && (
               <label 
                 htmlFor="photo-upload-input" 
-                className="inline-flex items-center px-6 py-3 rounded-xl cursor-pointer transition-colors duration-200 bg-purple-600 hover:bg-purple-700 text-white shadow-sm font-medium"
+                className="inline-flex items-center px-6 py-3 rounded-xl cursor-pointer bg-purple-600 hover:bg-purple-700 text-white shadow-sm font-medium transition-colors"
               >
                 <Camera className="h-4 w-4 mr-2" />
-                छायाचित्र निवडा (जास्तीत जास्त ५)
+                छायाचित्र निवडा
               </label>
             )}
             {isViewMode && (
-              <div className="text-gray-500 text-sm">
-                दृश्य मोडमध्ये छायाचित्र अपलोड करता येत नाही
-              </div>
+              <p className="text-gray-500 text-sm">दृश्य मोडमध्ये छायाचित्र अपलोड करता येत नाही</p>
             )}
           </div>
 
-          {/* Photo Previews */}
           {uploadedPhotos.length > 0 && !isViewMode && (
-            <div className="mt-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <div>
+              <h4 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
                 <Camera className="h-5 w-5 mr-2 text-purple-600" />
                 {uploadedPhotos.length} निवडलेली छायाचित्रे
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {uploadedPhotos.map((file, index) => (
-                  <div key={index} className="relative bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                    <div className="relative h-32 bg-gray-100">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt={`पूर्वावलोकन ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      <button
-                        onClick={() => removePhoto(index)}
-                        className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg transition-colors duration-200"
-                      >
-                        <span className="text-xs font-bold">×</span>
-                      </button>
-                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
-                        {file.name}
-                      </div>
-                    </div>
-                    <div className="p-2">
-                      <p className="text-xs text-gray-500 truncate">
-                        {(file.size / 1024).toFixed(1)} KB
-                      </p>
+                  <div key={index} className="relative bg-white rounded-xl shadow-md border overflow-hidden">
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-32 object-cover"
+                    />
+                    <button
+                      onClick={() => removePhoto(index)}
+                      className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                    >
+                      ×
+                    </button>
+                    <div className="p-2 bg-gray-50">
+                      <p className="text-xs text-gray-600 truncate">{file.name}</p>
+                      <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB</p>
                     </div>
                   </div>
                 ))}
@@ -733,54 +1654,44 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
             </div>
           )}
 
-          {/* Upload Progress */}
+          {isViewMode && editingInspection?.fims_inspection_photos?.length > 0 && (
+            <div>
+              <h4 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                <Camera className="h-5 w-5 mr-2 text-purple-600" />
+                {editingInspection.fims_inspection_photos.length} उपलब्ध छायाचित्रे
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
+                  <div key={photo.id} className="bg-white rounded-xl shadow-md border overflow-hidden">
+                    <img
+                      src={photo.photourl}
+                      alt={`Photo ${index + 1}`}
+                      className="w-full h-32 object-cover"
+                    />
+                    <div className="p-2 bg-gray-50">
+                      <p className="text-xs text-gray-600 truncate">{photo.photoname || `छायाचित्र ${index + 1}`}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {isUploading && (
-            <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-blue-800">छायाचित्र अपलोड होत आहे...</span>
+                <span className="text-sm font-medium text-blue-800">अपलोड होत आहे...</span>
                 <span className="text-sm text-blue-600">{uploadProgress}%</span>
               </div>
               <div className="w-full bg-blue-200 rounded-full h-2">
                 <div
                   className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
-                ></div>
+                />
               </div>
             </div>
           )}
 
-          {/* Display existing photos in view mode */}
-          {isViewMode && editingInspection?.fims_inspection_photos?.length > 0 && (
-            <div className="mt-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <Camera className="h-5 w-5 mr-2 text-purple-600" />
-                {editingInspection.fims_inspection_photos.length} उपलब्ध छायाचित्रे
-              </h4>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
-                  <div key={photo.id} className="relative bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-                    <div className="relative h-32 bg-gray-100">
-                      <img
-                        src={photo.photourl}
-                        alt={`छायाचित्र ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
-                        {photo.photoname || `छायाचित्र ${index + 1}`}
-                      </div>
-                    </div>
-                    <div className="p-2">
-                      <p className="text-xs text-gray-500">
-                        तपासणी छायाचित्र {index + 1}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* No photos message */}
           {(!uploadedPhotos.length && !isViewMode) || (isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0)) && (
             <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-xl">
               <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
@@ -794,416 +1705,66 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
     </section>
   );
 
-  // Complete Form Content Sections
-  const renderFormContentSections = () => (
-    <div className="space-y-8 mb-8">
-      {/* Section 2 - Monthly Meetings */}
-      <section className="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
-          मासिक सभा (Section 2)
-        </h3>
-        <div className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <label className="text-sm font-medium text-gray-700">
-              मासिक सभा झाल्या का?
-            </label>
-            <div className="flex items-center space-x-6">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="monthlyMeetings"
-                  value="yes"
-                  checked={monthlyMeetings === true}
-                  onChange={(e) => setMonthlyMeetings(e.target.value === 'yes')}
-                  disabled={isViewMode}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700">हो</span>
-              </label>
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="monthlyMeetings"
-                  value="no"
-                  checked={monthlyMeetings === false}
-                  onChange={(e) => setMonthlyMeetings(e.target.value === 'no')}
-                  disabled={isViewMode}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700">नाही</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="ml-6 space-y-3">
-            <div className="flex items-center space-x-4">
-              <label className="text-sm font-medium text-gray-700">
-                दालन सुची अद्ययावत आहे का?
-              </label>
-              <div className="flex items-center space-x-6">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="agendaUpToDate"
-                    value="yes"
-                    checked={agendaUpToDate === true}
-                    onChange={(e) => setAgendaUpToDate(e.target.value === 'yes')}
-                    disabled={isViewMode}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">हो</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="agendaUpToDate"
-                    value="no"
-                    checked={agendaUpToDate === false}
-                    onChange={(e) => setAgendaUpToDate(e.target.value === 'no')}
-                    disabled={isViewMode}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">नाही</span>
-                </label>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <label className="text-sm font-medium text-gray-700">
-                बेत अद्ययावत आहे का?
-              </label>
-              <div className="flex items-center space-x-6">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="minutesUpToDate"
-                    value="yes"
-                    onChange={(e) => {}}
-                    disabled={true}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">हो</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="minutesUpToDate"
-                    value="no"
-                    onChange={(e) => {}}
-                    disabled={true}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">नाही</span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 3 - Tax Collection */}
-      <section className="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
-          कर संकलन (Section 3)
-        </h3>
-        <div className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <label className="text-sm font-medium text-gray-700">
-              कर आकारणी केली का?
-            </label>
-            <div className="flex items-center space-x-6">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="taxLevy"
-                  value="yes"
-                  onChange={(e) => {}}
-                  disabled={true}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700">हो</span>
-              </label>
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="taxLevy"
-                  value="no"
-                  onChange={(e) => {}}
-                  disabled={true}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700">नाही</span>
-              </label>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            <label className="text-sm font-medium text-gray-700">
-              संकलन रक्कम
-            </label>
-            <input
-              type="number"
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-32"
-              disabled={true}
-              placeholder="रक्कम"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Section 6 - Fund Allocation Table */}
-      <section className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
-        <h3 className="text-lg font-semibold text-gray-900 p-6 border-b border-gray-200 bg-gray-50">
-          निधी वाटप (Section 6)
-        </h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                  अ.क्र.
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                  निधी प्रकार
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                  मान्य रक्कम
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                  वाटप रक्कम
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                  खर्च
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                  तारीख
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 col-span-2">
-                  टिप्पणी
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {/* Row 1 - State Finance Commission */}
-              <tr>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
-                  1
-                </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
-                  राज्य वित्त आयोग
-                </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
-                  0
-                </td>
-                <td className="px-4 py-4 border-r border-gray-200">
-                  <input
-                    type="text"
-                    value={section1Amount}
-                    onChange={(e) => setSection1Amount(e.target.value)}
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                    disabled={isViewMode}
-                  />
-                </td>
-                <td className="px-4 py-4 border-r border-gray-200">
-                  <input
-                    type="number"
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                    disabled={true}
-                  />
-                </td>
-                <td className="px-4 py-4 border-r border-gray-200">
-                  <input
-                    type="date"
-                    value={section1Date}
-                    onChange={(e) => setSection1Date(e.target.value)}
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                    disabled={isViewMode}
-                  />
-                </td>
-                <td className="px-4 py-4 col-span-2">
-                  <input
-                    type="text"
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                    disabled={true}
-                  />
-                </td>
-              </tr>
-
-              {/* Row 2 - Central Finance Commission */}
-              <tr>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
-                  2
-                </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
-                  केंद्रीय वित्त आयोग
-                </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
-                  0
-                </td>
-                <td className="px-4 py-4 border-r border-gray-200">
-                  <input
-                    type="text"
-                    value={section2Amount}
-                    onChange={(e) => setSection2Amount(e.target.value)}
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                    disabled={isViewMode}
-                  />
-                </td>
-                <td className="px-4 py-4 border-r border-gray-200">
-                  <input
-                    type="number"
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                    disabled={true}
-                  />
-                </td>
-                <td className="px-4 py-4 border-r border-gray-200">
-                  <input
-                    type="date"
-                    value={section2Date}
-                    onChange={(e) => setSection2Date(e.target.value)}
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                    disabled={isViewMode}
-                  />
-                </td>
-                <td className="px-4 py-4 col-span-2">
-                  <input
-                    type="text"
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                    disabled={true}
-                  />
-                </td>
-              </tr>
-
-              {/* Continue with rows 3-6 similarly */}
-              {[3, 4, 5, 6].map((rowNum) => (
-                <tr key={rowNum}>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
-                    {rowNum}
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
-                    {rowNum === 3 && 'विकास निधी'}
-                    {rowNum === 4 && 'स्थानिक निधी'}
-                    {rowNum === 5 && 'अन्य निधी'}
-                    {rowNum === 6 && 'एकूण'}
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
-                    0
-                  </td>
-                  <td className="px-4 py-4 border-r border-gray-200">
-                    <input
-                      type="text"
-                      className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                      disabled={isViewMode}
-                    />
-                  </td>
-                  <td className="px-4 py-4 border-r border-gray-200">
-                    <input
-                      type="number"
-                      className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                      disabled={true}
-                    />
-                  </td>
-                  <td className="px-4 py-4 border-r border-gray-200">
-                    <input
-                      type="date"
-                      className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                      disabled={isViewMode}
-                    />
-                  </td>
-                  <td className="px-4 py-4 col-span-2">
-                    <input
-                      type="text"
-                      className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm disabled:bg-gray-100"
-                      disabled={true}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* Continue with all other sections following the same enhanced design pattern */}
-      {/* Section 8, 9, 10, 11, 12, 13, 14 - All with enhanced styling similar to above */}
-      
-      {/* For brevity, the remaining sections follow the same pattern with proper styling */}
-      {/* Each section uses rounded-2xl cards with proper spacing and form controls */}
-    </div>
-  );
-
   return (
-    <div className="min-h-screen bg-gray-50 py-6">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-4">
+      <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center justify-between">
             <button
               onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors p-2 rounded-lg hover:bg-gray-50"
             >
               <ArrowLeft className="h-5 w-5" />
               <span className="font-medium">मागे जा</span>
             </button>
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-gray-900">
-                ग्रामपंचायत तपासणी फॉर्म
-              </h1>
-              <p className="text-sm text-gray-500 mt-1">
-                ग्रामपंचायत मूलभूत माहिती आणि तपासणी
-              </p>
+            <div className="text-center flex-1">
+              <h1 className="text-2xl font-bold text-gray-900">ग्रामपंचायत तपासणी फॉर्म</h1>
+              <p className="text-sm text-gray-600 mt-1">ग्रामपंचायत मूलभूत माहिती आणि तपासणी</p>
             </div>
-            <div className="w-20"></div>
+            <div className="w-20" />
           </div>
         </div>
 
-        {/* Form Sections */}
+        {/* Form Content */}
         <div className="space-y-8">
-          {/* Basic Information */}
           {renderBasicInformation()}
-          
-          {/* Form Content Sections */}
-          {renderFormContentSections()}
-          
-          {/* Location Information */}
           {renderLocationSection()}
-          
-          {/* Photo Upload */}
           {renderPhotoUploadSection()}
         </div>
 
-        {/* Action Buttons */}
+        {/* Fixed Action Buttons - Not overlapping */}
         {!isViewMode && (
-          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-md z-10">
-            <div className="bg-white rounded-xl shadow-xl p-4 space-y-3">
-              <button
-                onClick={() => handleSubmit(true)}
-                disabled={isLoading}
-                className="w-full flex items-center justify-center px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition-colors duration-200 font-medium shadow-sm disabled:opacity-50"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                {isLoading ? '...' : 'ड्राफ्ट म्हणून जतन करा'}
-              </button>
-              <button
-                onClick={() => handleSubmit(false)}
-                disabled={isLoading}
-                className="w-full flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-colors duration-200 font-medium shadow-sm disabled:opacity-50"
-              >
-                <Send className="h-4 w-4 mr-2" />
-                {isLoading ? '...' : 'सबमिट करा'}
-              </button>
+          <div className="mt-12 mb-8">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 max-w-2xl mx-auto">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() => handleSubmit(true)}
+                  disabled={isLoading}
+                  className="flex-1 flex items-center justify-center px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-xl font-medium shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  {isLoading ? '...' : 'ड्राफ्ट म्हणून जतन करा'}
+                </button>
+                <button
+                  onClick={() => handleSubmit(false)}
+                  disabled={isLoading}
+                  className="flex-1 flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  {isLoading ? '...' : 'सबमिट करा'}
+                </button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* View Mode Message */}
+        {/* View Mode Notice */}
         {isViewMode && (
-          <div className="text-center mt-8 p-6 bg-blue-50 border border-blue-200 rounded-xl">
+          <div className="mt-12 text-center p-6 bg-blue-50 border border-blue-200 rounded-xl">
             <FileText className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-blue-900 mb-2">
-              दृश्य मोड
-            </h3>
-            <p className="text-blue-700">
+            <h3 className="text-lg font-medium text-blue-900 mb-2">दृश्य मोड</h3>
+            <p className="text-blue-700 text-sm">
               ही दृश्य मोड आहे. बदल करण्यासाठी संपादन मोड वापरा.
             </p>
           </div>
