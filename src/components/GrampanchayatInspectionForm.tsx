@@ -338,7 +338,6 @@ export const GrampanchayatInspectionForm: React.FC = () => {
                   />
                 </div>
               </div>
-
               <button
                 onClick={getCurrentLocation}
                 disabled={isGettingLocation}
