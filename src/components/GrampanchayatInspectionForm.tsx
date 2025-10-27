@@ -224,7 +224,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
               </ol>
             </div>
 
-            {/* Location Section - Added After Basic Information */}
+           {/* Location Section - Added After Basic Information */}
             <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg mb-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <MapPin className="w-6 h-6 text-green-600" />
