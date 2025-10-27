@@ -914,7 +914,6 @@ export const GrampanchayatInspectionForm: React.FC = () => {
             </div>
           </div>
         </div>
-
         {/* Submit Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pb-8">
           <button
