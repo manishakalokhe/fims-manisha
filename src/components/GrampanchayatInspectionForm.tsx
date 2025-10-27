@@ -1489,7 +1489,6 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
       </div>
     </section>
   );
-
   // Location Section
   const renderLocationSection = () => (
     <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-8">
