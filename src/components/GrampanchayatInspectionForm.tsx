@@ -134,92 +134,11 @@ export const GrampanchayatInspectionForm: React.FC = () => {
         </div>
 
         {/* Form Content */}
-        {/* Header Section with Enhanced Design */}
-<div className="w-full mb-8 relative overflow-hidden">
-  {/* Background decoration */}
-  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-emerald-50"></div>
-  
-  {/* Decorative border container */}
-  <div className="relative bg-white rounded-2xl shadow-2xl border-4 border-gradient-to-r from-blue-600 via-purple-600 to-emerald-600 overflow-hidden">
-    
-    {/* Inner gradient border */}
-    <div className="absolute inset-0 border border-white/20"></div>
-    
-    {/* Decorative top banner */}
-    <div className="bg-gradient-to-r from-blue-600 to-purple-700 px-6 py-3 relative">
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
-      <div className="relative flex items-center justify-center">
-        {/* Decorative icon */}
-        <div className="absolute left-0 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-          <FileText className="w-4 h-4 text-white" />
-        </div>
-        <div className="absolute right-0 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-          <Users className="w-4 h-4 text-white" />
-        </div>
-        
-        {/* Main header content */}
-        <div className="text-center text-white font-bold">
-          <h1 className="text-3xl md:text-4xl tracking-wide leading-tight drop-shadow-lg">
-            परिशिष्ट-चार
-          </h1>
-          <div className="mt-1 bg-white/20 w-32 h-1 rounded-full mx-auto drop-shadow"></div>
-          <p className="text-sm md:text-base mt-2 opacity-90 font-medium">
-            (नियम ८० पहा)
-          </p>
-          <p className="text-sm md:text-base mt-1 opacity-80 font-medium">
-            (ख)ग्राम पंचायतांची सर्वसाधारण तपासणीचा नमुना
-          </p>
-        </div>
-      </div>
-    </div>
-    
-    {/* Content area */}
-    <div className="bg-white p-8 md:p-12">
-      {/* Decorative lines */}
-      <div className="flex justify-between mb-6">
-        <div className="w-16 h-px bg-gradient-to-r from-blue-500 to-purple-500"></div>
-        <div className="w-24 h-px bg-gradient-to-r from-purple-500 to-emerald-500"></div>
-        <div className="w-16 h-px bg-gradient-to-r from-emerald-500 to-blue-500"></div>
-      </div>
-      
-      {/* Form Content */}
-      <div className="bg-gradient-to-r from-gray-50/50 to-blue-50/50 rounded-xl border-2 border-white/50 p-6 md:p-8 backdrop-blur-sm">
-        {/* Your existing form content goes here */}
-        <div className="text-center mb-6">
-          <p className="text-gray-600 font-medium text-lg leading-relaxed">
-            ग्राम पंचायत सर्वसाधारण तपासणी फॉर्म
-          </p>
-        </div>
-        
-        {/* Add your form fields here */}
-        {/* Example form structure */}
-        <div className="space-y-6">
-          {/* Basic Information Section */}
-          <div className="bg-white rounded-lg p-6 border-l-4 border-blue-500 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <Building2 className="w-5 h-5 mr-2 text-blue-600" />
-              मूलभूत माहिती
-            </h3>
-            {/* Add your form fields */}
-          </div>
-          
-          {/* Add more sections as needed */}
-        </div>
-      </div>
-      
-      {/* Decorative bottom line */}
-      <div className="mt-8 flex justify-center">
-        <div className="w-48 h-px bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 rounded"></div>
-      </div>
-    </div>
-    
-    {/* Decorative footer badge */}
-    <div className="absolute bottom-2 right-2 bg-emerald-500/20 border border-emerald-500/30 rounded-lg px-3 py-1 text-xs text-emerald-800 font-medium">
-      तपासणी प्रणाली
-    </div>
-  </div>
-</div>
-
+        <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
+          <div style={{ fontFamily: 'Arial, sans-serif', direction: 'ltr' }}>
+            <h1 style={{ textAlign: 'center', color: '#1f2937', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>परिशिष्ट-चार</h1>
+            <p style={{ textAlign: 'center', fontWeight: 'bold', color: '#374151' }}>(नियम 80 पहा)</p>
+            <p style={{ textAlign: 'center', fontWeight: 'bold', color: '#374151', marginBottom: '2rem' }}>(ख)ग्राम पंचायतांची सर्वसाधारण तपासणीचा नमुना</p>
 
             {/* Basic Information Section */}
             <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
@@ -305,7 +224,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
               </ol>
             </div>
 
-           {/* Location Section - Added After Basic Information */}
+            {/* Location Section - Added After Basic Information */}
             <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg mb-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <MapPin className="w-6 h-6 text-green-600" />
@@ -338,6 +257,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
                   />
                 </div>
               </div>
+
               <button
                 onClick={getCurrentLocation}
                 disabled={isGettingLocation}
@@ -994,6 +914,7 @@ export const GrampanchayatInspectionForm: React.FC = () => {
             </div>
           </div>
         </div>
+
         {/* Submit Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pb-8">
           <button
