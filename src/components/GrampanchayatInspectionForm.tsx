@@ -1017,7 +1017,7 @@ ectionCreated,
   });
 
   // Get category details based on categories prop
-  const grampanchayatCategory = categories?.find(cat => cat.formtype === 'Grampanchayat Inspection');
+  const grampanchayatCategory = categories?.find(cat => cat.formtype === 'gram_panchayat');
 
   useEffect(() => {
     if (grampanchayatCategory) {
