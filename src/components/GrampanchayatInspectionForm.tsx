@@ -113,136 +113,18 @@ export const GrampanchayatInspectionForm: React.FC = () => {
       }
     );
   };
-
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const files = Array.from(event.target.files || []);
-  if (uploadedPhotos.length + files.length > 5) {
-    alert('Maximum 5 photos allowed');
-    return;
-  }
-  setUploadedPhotos(prev => [...prev, ...files]);
-};
-
-
-  const handlePlaceSelect = (event: any) => {
-    if (!event.detail) {
-      console.warn('Place picker event does not contain place data');
+    const files = Array.from(event.target.files || []);
+    if (files.length + uploadedPhotos.length > 5) {
+      alert('Maximum 5 photos allowed');
       return;
     }
-    
-    const place = event.detail?.place;
-    if (!place) {
-      return;
-    }
-    
-    // Handle place selection logic here
+    setUploadedPhotos(prev => [...prev, ...files]);
   };
 
-  const handleFileUpload = (files: File[]) => {
-    if (uploadedPhotos.length + files.length > 5) {
-      alert(t('fims.maxPhotosAllowed'));
-      return;
-    }
-
-    // Filter out files that are too large (>10MB) or invalid formats
-    const validFiles = files.filter(file => {
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        console.warn(`File ${file.name} is too large (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
-        return false;
-      }
-      if (!file.type.startsWith('image/')) {
-        console.warn(`File ${file.name} is not an image`);
-        return false;
-      }
-      return true;
-    });
-
-    if (validFiles.length !== files.length) {
-      alert('Some files were skipped. Only image files under 10MB are allowed.');
-    }
-
-    if (validFiles.length > 0) {
-      setUploadedPhotos(prev => [...prev, ...validFiles]);
-    }
+  const removePhoto = (index: number) => {
+    setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
   };
-
-const removePhoto = (index: number) => {
-  setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
-};
-
-
-  // Clean up preview URLs when component unmounts
-  useEffect(() => {
-    return () => {
-      photoPreviews.forEach(url => URL.revokeObjectURL(url));
-    };
-  }, []);
-
-const uploadPhotosToSupabase = async (inspectionId: string) => {
-
-  if (uploadedPhotos.length === 0) return;
- 
-  setIsUploading(true);
-
-  try {
-
-    for (let i = 0; i < uploadedPhotos.length; i++) {
-
-      const file = uploadedPhotos[i];
-
-      const fileExt = file.name.split('.').pop();
-
-      const fileName = `anganwadi_${inspectionId}_${Date.now()}_${i}.${fileExt}`;
- 
-      const { data: uploadData, error: uploadError } = await supabase.storage
-
-        .from('field-visit-images')
-
-        .upload(fileName, file);
- 
-      if (uploadError) throw uploadError;
- 
-      const { data: { publicUrl } } = supabase.storage
-
-        .from('field-visit-images')
-
-        .getPublicUrl(fileName);
- 
-      const { error: dbError } = await supabase
-
-        .from('fims_inspection_photos')
-
-        .insert({
-
-          inspection_id: inspectionId,
-
-          photo_url: publicUrl,
-
-          photo_name: file.name,
-
-          description: `Anganwadi inspection photo ${i + 1}`,
-
-          photo_order: i + 1,
-
-        });
- 
-      if (dbError) throw dbError;
-
-    }
-
-  } catch (error) {
-
-    console.error('Error uploading photos:', error);
-
-    throw error;
-
-  } finally {
-
-    setIsUploading(false);
-
-  }
-
-};
 
   const handleSubmit = async (isDraft: boolean = false) => {
     if (!gpName.trim()) {
