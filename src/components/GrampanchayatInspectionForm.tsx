@@ -1017,29 +1017,84 @@ const uploadPhotosToSupabase = async (inspectionId: string) => {
             </div>
 
             {/* Photo Upload Section */}
-                   {/* Submit Buttons */}
-          {!isViewMode && (
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pb-8">
-              <button
-                onClick={() => handleSubmit(true)}
-                disabled={isLoading || isUploading}
-                className="px-8 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base flex items-center justify-center gap-2 w-full sm:w-auto"
-              >
-                <Save className="w-4 h-4" />
-                <span>{isLoading ? 'सेव्ह होत आहे...' : 'ड्राफ्ट म्हणून सेव्ह करा'}</span>
-              </button>
-              
-              <button
-                onClick={() => handleSubmit(false)}
-                disabled={isLoading || isUploading}
-                className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base flex items-center justify-center gap-2 w-full sm:w-auto"
-              >
-                <Send className="w-4 h-4" />
-                <span>{isLoading ? 'सबमिट होत आहे...' : isEditMode ? 'तपासणी अपडेट करा' : 'तपासणी सबमिट करा'}</span>
-              </button>
-            </div>
-          )}
-        </div>
+                  {/* Submit Buttons */}
+
+    {!isViewMode && (
+<div className="flex justify-center space-x-4">
+<button
+
+          type="button"
+
+          onClick={() => handleSubmit(true)}
+
+          disabled={isLoading || isUploading}
+
+          className="px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+>
+<Save className="h-5 w-5" />
+<span>{isLoading ? 'सेव्ह करत आहे...' : 'मसुदा म्हणून जतन करा'}</span>
+</button>
+<button
+
+          type="button"
+
+          onClick={() => handleSubmit(false)}
+
+          disabled={isLoading || isUploading}
+
+          className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+>
+<Send className="h-5 w-5" />
+<span>{isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}</span>
+</button>
+</div>
+
+    )}
+</div>
+
+);
+
+ 
+  return (
+    <div className="container mx-auto px-4 py-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <button
+          onClick={onBack}
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span>{t('common.back')}</span>
+        </button>
       </div>
+
+      {/* Step Indicator */}
+      {renderStepIndicator()}
+
+      {/* Form Content */}
+      {currentStep === 1 && renderBasicDetailsAndLocation()}
+      {currentStep === 2 && renderAnganwadiInspectionForm()}
+      {currentStep === 3 && renderPhotosAndSubmit()}
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-8">
+        <button
+          onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
+          disabled={currentStep === 1}
+          className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-400 transition-colors"
+        >
+          {t('common.previous')}
+        </button>
+        
+        {currentStep < 3 && (
+          <button
+            onClick={() => setCurrentStep(Math.min(3, currentStep + 1))}
+            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            {t('common.next')}
+          </button>
+        )}
+      </div>
+    </div>
   );
 };
