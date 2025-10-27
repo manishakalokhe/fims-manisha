@@ -1,36 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Camera, MapPin, Save, Send, FileText, Users } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-import type { User as SupabaseUser } from 'supabase/supabase-js';
+import {
+  ArrowLeft,
+  Camera,
+  MapPin,
+  Save,
+  Send,
+  FileText,
+  Users
+} from 'lucide-react';
 
-interface GrampanchayatFormProps {
-  user: SupabaseUser;
-  onBack: () => void;
-  categories: any[];
-  onInspectionCreated: () => void;
-  editingInspection?: any;
-}
+export const GrampanchayatInspectionForm: React.FC = () => {
+  const [monthlyMeetings, setMonthlyMeetings] = useState('');
+  const [agendaUpToDate, setAgendaUpToDate] = useState('');
+  const [receiptUpToDate, setReceiptUpToDate] = useState('');
+  const [reassessmentDone, setReassessmentDone] = useState('');
+  const [reassessmentAction, setReassessmentAction] = useState('');
 
-export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({ 
-  user, onBack, categories, onInspectionCreated, editingInspection 
-}) => {
-  const { t } = useTranslation();
-  const isViewMode = editingInspection?.mode === 'view';
-  const isEditMode = editingInspection?.mode === 'edit';
-
-  // State for yes/no radio buttons and other inputs
-  const [monthlyMeetings, setMonthlyMeetings] = useState<boolean | null>(null);
-  const [agendaUpToDate, setAgendaUpToDate] = useState<boolean | null>(null);
-  const [receiptUpToDate, setReceiptUpToDate] = useState<boolean | null>(null);
-  const [reassessmentDone, setReassessmentDone] = useState<boolean | null>(null);
-  const [reassessmentAction, setReassessmentAction] = useState<boolean | null>(null);
-  const [budgetProvision, setBudgetProvision] = useState<boolean | null>(null);
-  const [tendersCalled, setTendersCalled] = useState<boolean | null>(null);
-  const [entriesMade, setEntriesMade] = useState<boolean | null>(null);
-  const [certificate1, setCertificate1] = useState<boolean | null>(null);
-
-  // States for other form fields
   const [gpName, setGpName] = useState('');
   const [psName, setPsName] = useState('');
   const [inspectionDate, setInspectionDate] = useState('');
@@ -41,25 +26,7 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
   const [secretaryTenure, setSecretaryTenure] = useState('');
   const [resolutionNo, setResolutionNo] = useState('');
   const [resolutionDate, setResolutionDate] = useState('');
-  const [gpCode, setGpCode] = useState('');
-  const [villageName, setVillageName] = useState('');
-  const [population, setPopulation] = useState('');
 
-  // Additional states for form sections
-  const [section1Amount, setSection1Amount] = useState('');
-  const [section1Date, setSection1Date] = useState('');
-  const [section2Amount, setSection2Amount] = useState('');
-  const [section2Date, setSection2Date] = useState('');
-  const [section3Amount, setSection3Amount] = useState('');
-  const [section3Date, setSection3Date] = useState('');
-  const [section4Amount, setSection4Amount] = useState('');
-  const [section4Date, setSection4Date] = useState('');
-  const [section5Amount, setSection5Amount] = useState('');
-  const [section5Date, setSection5Date] = useState('');
-  const [section6Amount, setSection6Amount] = useState('');
-  const [section6Date, setSection6Date] = useState('');
-
-  // Location and Photo states
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -67,66 +34,14 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const [inspectionData, setInspectionData] = useState({
-    categoryid: '',
-    locationname: '',
-    planneddate: '',
+    category_id: '',
+    location_name: '',
+    planned_date: '',
     latitude: null as number | null,
     longitude: null as number | null,
-    locationaccuracy: null as number | null,
-    locationdetected: ''
+    location_accuracy: null as number | null,
+    location_detected: ''
   });
-
-  const grampanchayatCategory = categories.find((cat: any) => cat.formtype === 'grampanchayat');
-
-  useEffect(() => {
-    if (grampanchayatCategory) {
-      setInspectionData(prev => ({ ...prev, categoryid: grampanchayatCategory.id, grampanchayatCategory }));
-    }
-  }, [grampanchayatCategory]);
-
-  useEffect(() => {
-    if (editingInspection) {
-      editingInspection.id;
-      setInspectionData({
-        categoryid: editingInspection.categoryid,
-        locationname: editingInspection.locationname,
-        planneddate: editingInspection.planneddate ? editingInspection.planneddate.split('T')[0] : '',
-        latitude: editingInspection.latitude,
-        longitude: editingInspection.longitude,
-        locationaccuracy: editingInspection.locationaccuracy,
-        locationdetected: editingInspection.locationdetected
-      });
-      const formData = editingInspection.formdata;
-      if (formData) {
-        setMonthlyMeetings(formData.monthlyMeetings);
-        setAgendaUpToDate(formData.agendaUpToDate);
-        setReceiptUpToDate(formData.receiptUpToDate);
-        setReassessmentDone(formData.reassessmentDone);
-        setReassessmentAction(formData.reassessmentAction);
-        setBudgetProvision(formData.budgetProvision);
-        setTendersCalled(formData.tendersCalled);
-        setEntriesMade(formData.entriesMade);
-        setCertificate1(formData.certificate1);
-        setGpName(formData.gpName);
-        setPsName(formData.psName);
-        setInspectionDate(formData.inspectionDate);
-        setInspectionPlace(formData.inspectionPlace);
-        setOfficerName(formData.officerName);
-        setOfficerPost(formData.officerPost);
-        setSecretaryName(formData.secretaryName);
-        setSecretaryTenure(formData.secretaryTenure);
-        setResolutionNo(formData.resolutionNo);
-        setResolutionDate(formData.resolutionDate);
-        setGpCode(formData.gpCode || '');
-        setVillageName(formData.villageName || '');
-        setPopulation(formData.population || '');
-        // Set other form section states
-        setSection1Amount(formData.section1Amount || '');
-        setSection1Date(formData.section1Date || '');
-        // ... continue for all sections
-      }
-    }
-  }, [editingInspection]);
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -136,12 +51,19 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
 
     setIsGettingLocation(true);
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         const accuracy = position.coords.accuracy;
 
-        setInspectionData(prev => ({ ...prev, latitude: lat, longitude: lng, locationaccuracy: accuracy, locationdetected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}` }));
+        setInspectionData(prev => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng,
+          location_accuracy: accuracy,
+          location_detected: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
+        }));
+
         setIsGettingLocation(false);
       },
       (error) => {
@@ -149,13 +71,17 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
         setIsGettingLocation(false);
         alert('Error getting location. Please try again.');
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
     );
   };
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    if (uploadedPhotos.length + files.length > 5) {
+    if (files.length + uploadedPhotos.length > 5) {
       alert('Maximum 5 photos allowed');
       return;
     }
@@ -166,1190 +92,848 @@ export const GrampanchayatInspectionForm: React.FC<GrampanchayatFormProps> = ({
     setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
   };
 
-  const generateInspectionNumber = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const time = String(now.getTime()).slice(-6);
-    return `GP-${year}${month}${day}-${time}`;
-  };
-
   const handleSubmit = async (isDraft: boolean = false) => {
     if (!gpName.trim()) {
-      alert('Please enter Gram Panchayat name');
+      alert('ग्राम पंचायतिचे नांव आवश्यक आहे');
       return;
     }
 
     try {
       setIsLoading(true);
-      const formData = {
-        monthlyMeetings,
-        agendaUpToDate,
-        receiptUpToDate,
-        reassessmentDone,
-        reassessmentAction,
-        budgetProvision,
-        tendersCalled,
-        entriesMade,
-        certificate1,
-        gpName,
-        psName,
-        inspectionDate,
-        inspectionPlace,
-        officerName,
-        officerPost,
-        secretaryName,
-        secretaryTenure,
-        resolutionNo,
-        resolutionDate,
-        gpCode,
-        villageName,
-        population,
-        section1Amount,
-        section1Date,
-        section2Amount,
-        section2Date,
-        // ... include all section states
-      };
-
-      const sanitizedInspectionData = {
-        ...inspectionData,
-        planneddate: inspectionData.planneddate ? new Date(inspectionData.planneddate).toISOString().split('T')[0] : null
-      };
-
-      let inspectionResult;
-      if (editingInspection && editingInspection.id) {
-        // Update existing inspection
-        const { data: updateResult, error: updateError } = await supabase
-          .from('fims_inspections')
-          .update({
-            locationname: sanitizedInspectionData.locationname || gpName,
-            latitude: sanitizedInspectionData.latitude,
-            longitude: sanitizedInspectionData.longitude,
-            locationaccuracy: sanitizedInspectionData.locationaccuracy,
-            locationdetected: sanitizedInspectionData.locationdetected,
-            planneddate: sanitizedInspectionData.planneddate,
-            inspectiondate: new Date().toISOString(),
-            status: isDraft ? 'draft' : 'submitted',
-            formdata: formData
-          })
-          .eq('id', editingInspection.id)
-          .select()
-          .single();
-
-        if (updateError) throw updateError;
-        inspectionResult = updateResult;
-      } else {
-        // Create new inspection
-        const inspectionNumber = generateInspectionNumber();
-        const categoryId = grampanchayatCategory?.id || categories[0]?.id;
-        const { data: createResult, error: createError } = await supabase
-          .from('fims_inspections')
-          .insert({
-            inspectionnumber: inspectionNumber,
-            categoryid: categoryId,
-            inspectorid: user.id,
-            locationname: sanitizedInspectionData.locationname || gpName,
-            latitude: sanitizedInspectionData.latitude,
-            longitude: sanitizedInspectionData.longitude,
-            locationaccuracy: sanitizedInspectionData.locationaccuracy,
-            locationdetected: sanitizedInspectionData.locationdetected,
-            planneddate: sanitizedInspectionData.planneddate,
-            inspectiondate: new Date().toISOString(),
-            status: isDraft ? 'draft' : 'submitted',
-            formdata: formData
-          })
-          .select()
-          .single();
-
-        if (createError) throw createError;
-        inspectionResult = createResult;
-      }
-
-      // Upload photos if any
-      if (uploadedPhotos.length > 0 && !isUploading) {
-        try {
-          for (let i = 0; i < uploadedPhotos.length; i++) {
-            const file = uploadedPhotos[i];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `grampanchayat-${inspectionResult.id}-${Date.now()}-${i}.${fileExt}`;
-            const { error: uploadError } = await supabase.storage
-              .from('field-visit-images')
-              .upload(fileName, file);
-
-            if (uploadError) {
-              console.error('Photo upload error:', uploadError);
-              // Continue with other photos
-            } else {
-              const { data } = supabase.storage
-                .from('field-visit-images')
-                .getPublicUrl(fileName);
-
-              const { error: dbError } = await supabase
-                .from('fims_inspection_photos')
-                .insert({
-                  inspectionid: inspectionResult.id,
-                  photourl: data.publicUrl,
-                  photoname: file.name,
-                  description: `Gram Panchayat inspection photo ${i + 1}`,
-                  photoorder: i + 1
-                });
-
-              if (dbError) throw dbError;
-            }
-          }
-        } catch (photoError) {
-          console.error('Error uploading photos:', photoError);
-        }
-      }
-
-      const message = isDraft
-        ? editingInspection?.id
-          ? `Inspection ${editingInspection.id} updated as draft`
-          : 'Inspection saved as draft'
-        : editingInspection?.id
-        ? 'Inspection updated successfully'
-        : 'Inspection submitted successfully';
-
+      const message = isDraft ? 'मसुदा सेव्ह झाला' : 'तपासणी सबमिट झाली';
       alert(message);
-      onInspectionCreated();
-      onBack();
     } catch (error: any) {
       console.error('Error saving inspection:', error);
-      alert(error.message);
+      alert('तपासणी सेव्ह करताना त्रुटी: ' + (error.message || 'अज्ञात त्रुटी'));
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Basic Information Section (complete with all form content)
-  const renderBasicInformation = () => (
-    <div style={{ fontFamily: 'Arial, sans-serif', direction: 'ltr', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', color: '#333' }}>ग्रामपंचायतीसाठी मूलभूत माहिती</h1>
-      <p style={{ textAlign: 'center', fontWeight: 'bold' }}>ग्रामपंचायतीची नाव आणि इतर माहिती</p>
-      
-      {/* Section 1 - Basic Details */}
-      <ol style={{ marginLeft: '20px' }}>
-        <li>
-          - ग्रामपंचायतीचे नाव{' '}
-          <input
-            type="text"
-            value={gpName}
-            onChange={(e) => setGpName(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </li>
-        <li>
-          - पंचायत समिती{' '}
-          <input
-            type="text"
-            value={psName}
-            onChange={(e) => setPsName(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </li>
-        <li>
-          - ग्रामपंचायत कोड{' '}
-          <input
-            type="text"
-            value={gpCode}
-            onChange={(e) => setGpCode(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </li>
-        <li>
-          - गावाचे नाव{' '}
-          <input
-            type="text"
-            value={villageName}
-            onChange={(e) => setVillageName(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </li>
-        <li>
-          - लोकसंख्या{' '}
-          <input
-            type="number"
-            value={population}
-            onChange={(e) => setPopulation(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </li>
-        <li>
-          - तपासणीची तारीख{' '}
-          <input
-            type="date"
-            value={inspectionDate}
-            onChange={(e) => setInspectionDate(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </li>
-        <li>
-          - तपासणीचे ठिकाण{' '}
-          <input
-            type="text"
-            value={inspectionPlace}
-            onChange={(e) => setInspectionPlace(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </li>
-        <li>
-          - अधिकाऱ्याचे नाव{' '}
-          <input
-            type="text"
-            value={officerName}
-            onChange={(e) => setOfficerName(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />{' '}
-          पद{' '}
-          <input
-            type="text"
-            value={officerPost}
-            onChange={(e) => setOfficerPost(e.target.value)}
-            style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </li>
-        <li>
-          - सचिवाचे नाव{' '}
-          <input
-            type="text"
-            value={secretaryName}
-            onChange={(e) => setSecretaryName(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />{' '}
-          कालावधी{' '}
-          <input
-            type="text"
-            value={secretaryTenure}
-            onChange={(e) => setSecretaryTenure(e.target.value)}
-            style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </li>
-      </ol>
-
-      <br />
-      <br />
-
-      {/* Section: Monthly Meetings */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>मासिक सभा / Monthly Meetings</h3>
-        <p style={{ textAlign: 'center', fontWeight: 'bold' }}>सभांची माहिती</p>
-        <ol style={{ marginLeft: '20px' }}>
-          <li>
-            ? मासिक सभा होतात का?{' '}
-            <label style={{ marginLeft: '10px' }}>
-              <input
-                type="radio"
-                name="monthlyMeetings"
-                value="yes"
-                checked={monthlyMeetings === true}
-                onChange={(e) => setMonthlyMeetings(e.target.value === 'yes')}
-                disabled={isViewMode}
-              />{' '}
-              हो
-            </label>{' '}
-            <label style={{ marginLeft: '10px' }}>
-              <input
-                type="radio"
-                name="monthlyMeetings"
-                value="no"
-                checked={monthlyMeetings === false}
-                onChange={(e) => setMonthlyMeetings(e.target.value === 'no')}
-                disabled={isViewMode}
-              />{' '}
-              नाही
-            </label>
-          </li>
-          <ul style={{ marginLeft: '20px' }}>
-            <li>
-              ? परिपत्रक वेळेवर{' '}
-              <label style={{ marginLeft: '10px' }}>
-                <input
-                  type="radio"
-                  name="agendaUpToDate"
-                  value="yes"
-                  checked={agendaUpToDate === true}
-                  onChange={(e) => setAgendaUpToDate(e.target.value === 'yes')}
-                  disabled={isViewMode}
-                />{' '}
-                हो
-              </label>{' '}
-              <label style={{ marginLeft: '10px' }}>
-                <input
-                  type="radio"
-                  name="agendaUpToDate"
-                  value="no"
-                  checked={agendaUpToDate === false}
-                  onChange={(e) => setAgendaUpToDate(e.target.value === 'no')}
-                  disabled={isViewMode}
-                />{' '}
-                नाही
-              </label>
-            </li>
-            <li>
-              ? सभेची नोंद वेळेवर{' '}
-              <label style={{ marginLeft: '10px' }}>
-                <input
-                  type="radio"
-                  name="minutesUpToDate"
-                  value="yes"
-                  onChange={(e) => {}}
-                  disabled={isViewMode}
-                />{' '}
-                हो
-              </label>{' '}
-              <label style={{ marginLeft: '10px' }}>
-                <input
-                  type="radio"
-                  name="minutesUpToDate"
-                  value="no"
-                  onChange={(e) => {}}
-                  disabled={isViewMode}
-                />{' '}
-                नाही
-              </label>
-            </li>
-          </ul>
-        </ol>
-      </div>
-
-      {/* Table 1 - Section 6 */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>विभाग ६ - निधी वाटप / Section 6 - Fund Allocation</h3>
-        <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>क्रमांक / Sr. No.</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>निधी प्रकार / Fund Type</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>मंजूर रक्कम / Approved Amount</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>वाटप केलेली रक्कम / Allocated Amount</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>खर्च / Expenditure</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>तारीख / Date</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }} colSpan={2}>टिप्पणी / Remarks</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>1</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>ग्रामपंचायत निधी</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input 
-                  type="text" 
-                  style={{ width: '100%', border: 'none' }} 
-                  value={section1Amount}
-                  onChange={(e) => setSection1Amount(e.target.value)}
-                  disabled={isViewMode}
-                />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input 
-                  type="text" 
-                  style={{ width: '100%', border: 'none' }} 
-                  disabled={isViewMode}
-                />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input 
-                  type="number" 
-                  style={{ width: '100%', border: 'none' }} 
-                  disabled={isViewMode}
-                />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input 
-                  type="date" 
-                  style={{ width: '100%', border: 'none' }} 
-                  value={section1Date}
-                  onChange={(e) => setSection1Date(e.target.value)}
-                  disabled={isViewMode}
-                />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }} colSpan={2}>
-                <input 
-                  type="text" 
-                  style={{ width: '100%', border: 'none' }} 
-                  disabled={isViewMode}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>2</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>विकास निधी</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input 
-                  type="text" 
-                  style={{ width: '100%', border: 'none' }} 
-                  disabled={isViewMode}
-                />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input 
-                  type="text" 
-                  style={{ width: '100%', border: 'none' }} 
-                  disabled={isViewMode}
-                />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input 
-                  type="number" 
-                  style={{ width: '100%', border: 'none' }} 
-                  disabled={isViewMode}
-                />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input 
-                  type="date" 
-                  style={{ width: '100%', border: 'none' }} 
-                  disabled={isViewMode}
-                />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }} colSpan={2}>
-                <input 
-                  type="text" 
-                  style={{ width: '100%', border: 'none' }} 
-                  disabled={isViewMode}
-                />
-              </td>
-            </tr>
-            {/* Add more rows as needed */}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Section 8 - Resolution Details */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>विभाग ८ - ठराव माहिती / Section 8 - Resolution Information</h3>
-        <p>1. 9-</p>
-        <p>
-          2. 10- ?{' '}
-          <label style={{ marginLeft: '10px' }}>
-            <input
-              type="radio"
-              name="receiptUpToDate"
-              value="yes"
-              checked={receiptUpToDate === true}
-              onChange={(e) => setReceiptUpToDate(e.target.value === 'yes')}
-              disabled={isViewMode}
-            />{' '}
-            हो
-          </label>{' '}
-          <label style={{ marginLeft: '10px' }}>
-            <input
-              type="radio"
-              name="receiptUpToDate"
-              value="no"
-              checked={receiptUpToDate === false}
-              onChange={(e) => setReceiptUpToDate(e.target.value === 'no')}
-              disabled={isViewMode}
-            />{' '}
-            नाही
-          </label>
-        </p>
-        <p>
-          <input
-            type="date"
-            value={resolutionDate}
-            onChange={(e) => setResolutionDate(e.target.value)}
-            style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }}
-            disabled={isViewMode}
-          />{' '}
-          <input
-            type="text"
-            value={resolutionNo}
-            onChange={(e) => setResolutionNo(e.target.value)}
-            placeholder="ठराव क्रमांक"
-            style={{ marginLeft: '5px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }}
-            disabled={isViewMode}
-          />
-        </p>
-        <p>
-          <p>, ?</p>
-          <p>
-            <label style={{ marginLeft: '10px' }}>
-              <input
-                type="radio"
-                name="reassessmentAction"
-                value="yes"
-                checked={reassessmentAction === true}
-                onChange={(e) => setReassessmentAction(e.target.value === 'yes')}
-                disabled={isViewMode}
-              />
-              हो
-            </label>{' '}
-            <label style={{ marginLeft: '10px' }}>
-              <input
-                type="radio"
-                name="reassessmentAction"
-                value="no"
-                checked={reassessmentAction === false}
-                onChange={(e) => setReassessmentAction(e.target.value === 'no')}
-                disabled={isViewMode}
-              />
-              नाही
-            </label>
-          </p>
-        </p>
-      </div>
-
-      {/* Section 9 - Staff Information */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>विभाग ९ - कर्मचारी माहिती / Section 9 - Staff Information</h3>
-        <ul style={{ marginLeft: '20px' }}>
-          <li>1 - कर्मचारी संख्या{' '}
-            <input 
-              type="number" 
-              style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />{' '}
-            रिक्त पदे{' '}
-            <input 
-              type="number" 
-              style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          <li>2 - तांत्रिक कर्मचारी संख्या{' '}
-            <input 
-              type="number" 
-              style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />{' '}
-            रिक्त{' '}
-            <input 
-              type="number" 
-              style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          <li>3 - प्रशिक्षण घेतलेले कर्मचारी{' '}
-            <input 
-              type="number" 
-              style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          {/* Continue with sections 4-7 */}
-          <li>4 - संगणक प्रशिक्षण{' '}
-            <input 
-              type="text" 
-              style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          <li>5 - वार्षिक आरोग्य तपासणी{' '}
-            <input 
-              type="number" 
-              style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          <li>6 - विमा कव्हरेज{' '}
-            <input 
-              type="number" 
-              style={{ margin: '0 5px', padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          <li>7 - हजेरी नोंद{' '}
-            <input 
-              type="text" 
-              style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-        </ul>
-      </div>
-
-      {/* Section 10 - Development Works */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>विभाग १० - विकासकामे / Section 10 - Development Works</h3>
-        <ul style={{ marginLeft: '20px' }}>
-          <li>1 - पूर्ण झालेले कामे{' '}
-            <input 
-              type="number" 
-              style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          <li>2 - 15% पूर्ण{' '}
-            <input 
-              type="number" 
-              style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          <li>3 - प्रगतपथावर{' '}
-            <input 
-              type="number" 
-              style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          <li>4 - मागील वर्षातील अपूर्ण{' '}
-            <input 
-              type="number" 
-              style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          <li>5 - विलंबित कामे{' '}
-            <input 
-              type="number" 
-              style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-          <li>6 - दर्जा प्रमाणपत्र{' '}
-            <input 
-              type="number" 
-              style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-              disabled={isViewMode}
-            />
-          </li>
-        </ul>
-      </div>
-
-      {/* Section 11 - Financial Management */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>विभाग ७ - आर्थिक व्यवस्थापन / Section 7 - Financial Management</h3>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>विभाग ११ - बजेट माहिती / Section 11 - Budget Information</h3>
-        <p>? बजेट प्रावधान आहे का?{' '}
-          <label style={{ marginLeft: '10px' }}>
-            <input
-              type="radio"
-              name="budgetProvision"
-              value="yes"
-              checked={budgetProvision === true}
-              onChange={(e) => setBudgetProvision(e.target.value === 'yes')}
-              disabled={isViewMode}
-            />
-            हो
-          </label>{' '}
-          <label style={{ marginLeft: '10px' }}>
-            <input
-              type="radio"
-              name="budgetProvision"
-              value="no"
-              checked={budgetProvision === false}
-              onChange={(e) => setBudgetProvision(e.target.value === 'no')}
-              disabled={isViewMode}
-            />
-            नाही
-          </label>
-        </p>
-        <p>? बजेट मंजूर झाले?{' '}
-          <input 
-            type="text" 
-            style={{ padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />{' '}
-          <input 
-            type="date" 
-            style={{ padding: '2px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </p>
-        <p>? टेंडर बोलावले?{' '}
-          <label style={{ marginLeft: '10px' }}>
-            <input
-              type="radio"
-              name="tendersCalled"
-              value="yes"
-              checked={tendersCalled === true}
-              onChange={(e) => setTendersCalled(e.target.value === 'yes')}
-              disabled={isViewMode}
-            />
-            हो
-          </label>{' '}
-          <label style={{ marginLeft: '10px' }}>
-            <input
-              type="radio"
-              name="tendersCalled"
-              value="no"
-              checked={tendersCalled === false}
-              onChange={(e) => setTendersCalled(e.target.value === 'no')}
-              disabled={isViewMode}
-            />
-            नाही
-          </label>
-        </p>
-        <p>9,15 16 ?{' '}
-          <label style={{ marginLeft: '10px' }}>
-            <input
-              type="radio"
-              name="entriesMade"
-              value="yes"
-              checked={entriesMade === true}
-              onChange={(e) => setEntriesMade(e.target.value === 'yes')}
-              disabled={isViewMode}
-            />
-            हो
-          </label>{' '}
-          <label style={{ marginLeft: '10px' }}>
-            <input
-              type="radio"
-              name="entriesMade"
-              value="no"
-              checked={entriesMade === false}
-              onChange={(e) => setEntriesMade(e.target.value === 'no')}
-              disabled={isViewMode}
-            />
-            नाही
-          </label>
-        </p>
-      </div>
-
-      {/* Table 2 - Section 12 - Work Progress */}
-      <div style={{ marginBottom: '20px' }}>
-        <p>विभाग १२ - कामाची प्रगती / Section 12 - Work Progress</p>
-        <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>क्रमांक</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>कामाचे नाव</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>अंदाजे खर्च</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>मंजूर रक्कम</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>खर्च झालेली रक्कम</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>प्रगती %</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>तारीख</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Add dynamic rows as needed */}
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>
-                <input type="text" style={{ width: '100%', border: 'none', textAlign: 'center' }} disabled={isViewMode} />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input type="number" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input type="number" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input type="number" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input type="date" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-              </td>
-            </tr>
-            {/* More rows can be added */}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Table 3 - Section 13 - Certificates */}
-      <div style={{ marginBottom: '20px' }}>
-        <p>विभाग १३ - प्रमाणपत्रे / Section 13 - Certificates</p>
-        <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>क्रमांक</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>प्रमाणपत्र प्रकार</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>तारीख</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>स्थिती</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>टिप्पणी</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>1</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>वित्तीय ऑडिट</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input type="date" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <label>
-                  <input type="radio" name="certificate1" value="yes" checked={certificate1 === true} onChange={(e) => setCertificate1(e.target.value === 'yes')} disabled={isViewMode} />
-                  हो
-                </label>{' '}
-                <label style={{ marginLeft: '10px' }}>
-                  <input type="radio" name="certificate1" value="no" checked={certificate1 === false} onChange={(e) => setCertificate1(e.target.value === 'no')} disabled={isViewMode} />
-                  नाही
-                </label>
-              </td>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                <input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-              </td>
-            </tr>
-            {/* Add more certificate rows */}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Section 14 - Assets Table */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ color: '#333', marginBottom: '10px' }}>विभाग १४ - मालमत्ता नोंद / Section 14 - Asset Register</h3>
-        <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th colSpan={6} style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>१४ १४ .</th>
-            </tr>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>क्रमांक</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>मालमत्ता वर्णन</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>खरेदी वर्ष</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>खरेदी किंमत</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>सध्याची किंमत</th>
-              <th style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>स्थिती</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((row, index) => (
-              <tr key={index}>
-                <td style={{ padding: '8px', textAlign: 'center', border: '1px solid #ddd' }}>{row}</td>
-                <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                  {row === 1 ? 'भूमी' : row === 2 ? 'इमारत' : row === 3 ? 'वाहन' : row === 4 ? 'संगणक' : row === 5 ? 'फर्निचर' : row === 6 ? 'ऑफिस उपकरणे' : row === 7 ? 'वाहतूक उपकरणे' : row === 8 ? 'कृषी उपकरणे' : row === 9 ? 'पाणीपुरवठा उपकरणे' : row === 10 ? 'स्वच्छता उपकरणे' : 'इतर'}
-                  <input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-                </td>
-                <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                  <input type="number" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-                </td>
-                <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                  <input type="number" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-                </td>
-                <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                  <input type="number" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-                </td>
-                <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                  <input type="text" style={{ width: '100%', border: 'none' }} disabled={isViewMode} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Final Sections */}
-      <div style={{ marginBottom: '20px' }}>
-        <h1 style={{ textAlign: 'center', color: '#333' }}>अंतिम माहिती / Final Information</h1>
-        <p>1 - - - - -{' '}
-          <input 
-            type="text" 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </p>
-        <p>2 - -----{' '}
-          <input 
-            type="text" 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </p>
-        <br />
-        <p>3 ---{' '}
-          <input 
-            type="text" 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </p>
-        <p>4 ---{' '}
-          <input 
-            type="text" 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </p>
-        <p>5 ---{' '}
-          <input 
-            type="text" 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </p>
-        <p>6 ---{' '}
-          <input 
-            type="text" 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </p>
-        <p>7 ---{' '}
-          <input 
-            type="text" 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </p>
-        <p>8 ---{' '}
-          <input 
-            type="text" 
-            style={{ marginLeft: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '4px' }} 
-            disabled={isViewMode}
-          />
-        </p>
-      </div>
-    </div>
-  );
-
-  // Location Information Section (from Anganwadi design)
-  const renderLocationSection = () => (
-    <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
-        <div className="flex items-center text-white">
-          <MapPin className="w-8 h-8 mr-4" />
-          <h3 className="text-2xl font-bold">स्थानिक माहिती / Location Information</h3>
-        </div>
-      </div>
-      <div className="p-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.locationName')}</label>
-            <input
-              type="text"
-              value={inspectionData.locationname || gpName}
-              onChange={(e) => setInspectionData(prev => ({ ...prev, locationname: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 disabled:opacity-50"
-              placeholder={t('fims.enterLocationName')}
-              required
-              disabled={isViewMode}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.plannedDate')}</label>
-            <input
-              type="date"
-              value={inspectionData.planneddate}
-              onChange={(e) => setInspectionData(prev => ({ ...prev, planneddate: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
-              disabled={isViewMode}
-            />
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">GPS स्थान</label>
-            {!isViewMode && (
-              <button
-                type="button"
-                onClick={getCurrentLocation}
-                disabled={isGettingLocation}
-                className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-              >
-                <MapPin className="h-4 w-4" />
-                <span>{isGettingLocation ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
-              </button>
-            )}
-            {inspectionData.latitude && inspectionData.longitude && (
-              <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
-                <p className="text-xs text-green-600">
-                  {t('fims.latitude')}: {inspectionData.latitude?.toFixed(6)}<br />
-                  {t('fims.longitude')}: {inspectionData.longitude?.toFixed(6)}<br />
-                  {t('fims.accuracy')}: {inspectionData.locationaccuracy ? Math.round(inspectionData.locationaccuracy) + ' m' : 'NA'}
-                </p>
-              </div>
-            )}
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-xs font-medium text-gray-700 mb-1">स्थान ओळखले गेले</label>
-            <input
-              type="text"
-              value={inspectionData.locationdetected}
-              onChange={(e) => setInspectionData(prev => ({ ...prev, locationdetected: e.target.value }))}
-              className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent text-xs placeholder-gray-500"
-              placeholder="GPS"
-              readOnly={isViewMode}
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-
-  // Photo Upload Section (from Anganwadi design)
-  const renderPhotoUploadSection = () => (
-    <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
-        <div className="flex items-center text-white">
-          <Camera className="w-8 h-8 mr-4" />
-          <h3 className="text-2xl font-bold">छायाचित्र अपलोड / Photo Upload</h3>
-        </div>
-      </div>
-      <div className="p-10">
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">फोटो अपलोड क्षेत्र</h3>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-purple-400 transition-colors duration-200">
-            <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h4 className="text-lg font-medium text-gray-900 mb-2">छायाचित्रे निवडा</h4>
-            <p className="text-gray-600 mb-4">
-              {uploadedPhotos.length === 0 ? 'अपलोड करण्यासाठी फोटो निवडा' : uploadedPhotos.length < 5 ? `${uploadedPhotos.length}/5` : '5/5'}
-            </p>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handlePhotoUpload}
-              disabled={isViewMode}
-              className="mb-4"
-            />
-            {!isViewMode && uploadedPhotos.length < 5 && (
-              <label
-                htmlFor="photo-upload"
-                className="inline-flex items-center px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200 bg-purple-600 hover:bg-purple-700 text-white"
-              >
-                <Camera className="h-4 w-4 mr-2" />
-                फोटो निवडा / Select Photos
-              </label>
-            )}
-            <input id="photo-upload" type="file" multiple accept="image/*" onChange={handlePhotoUpload} disabled={isViewMode} style={{ display: 'none' }} />
-          </div>
-
-          {/* Photo Previews */}
-          {uploadedPhotos.length > 0 && (
-            <div className="mt-6">
-              <h4 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <Camera className="h-5 w-5 mr-2 text-purple-600" />
-                {uploadedPhotos.length} फोटो निवडले गेले / Selected Photos
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {uploadedPhotos.map((file, index) => (
-                  <div key={index} className="relative bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-200">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-40 object-cover"
-                    />
-                    {!isViewMode && (
-                      <button
-                        onClick={() => removePhoto(index)}
-                        className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg transition-colors duration-200"
-                      >
-                        <span className="text-sm font-bold">×</span>
-                      </button>
-                    )}
-                    <div className="p-3">
-                      <p className="text-sm font-medium text-gray-800 truncate mb-1">{file.name}</p>
-                      <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Upload Progress */}
-          {isUploading && (
-            <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-blue-800">अपलोड होत आहे / Uploading...</span>
-                <span className="text-sm text-blue-600">{uploadProgress}%</span>
-              </div>
-              <div className="w-full bg-blue-200 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${uploadProgress}%` }}
-                ></div>
-              </div>
-            </div>
-          )}
-
-          {/* Display existing photos when viewing */}
-          {isViewMode && editingInspection?.fims_inspection_photos && editingInspection.fims_inspection_photos.length > 0 && (
-            <div className="mt-6">
-              <h4 className="text-md font-medium text-gray-900 mb-3">
-                {editingInspection.fims_inspection_photos.length} फोटो उपलब्ध / Available Photos
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {editingInspection.fims_inspection_photos.map((photo: any, index: number) => (
-                  <div key={photo.id} className="relative bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-                    <img
-                      src={photo.photourl}
-                      alt={`${photo.description} Gram Panchayat photo ${index + 1}`}
-                      className="w-full h-40 object-cover"
-                    />
-                    <div className="p-3">
-                      <p className="text-sm font-medium text-gray-800 truncate mb-1">
-                        Photo {index + 1}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">{photo.photoname}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* No photos message for view mode */}
-          {isViewMode && (!editingInspection?.fims_inspection_photos || editingInspection.fims_inspection_photos.length === 0) && (
-            <div className="text-center py-8 text-gray-500">
-              <Camera className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-              <p>कोणतेही फोटो उपलब्ध नाहीत / No photos available</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-6">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 md:p-8 mb-6">
+          <div className="flex items-center justify-between mb-6">
             <button
-              onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg"
             >
               <ArrowLeft className="h-5 w-5" />
-              <span>मागे / Back</span>
+              <span className="font-medium">Back</span>
             </button>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 text-center flex-1">
+              ग्राम पंचायत तपासणी
+            </h1>
+            <div className="w-24"></div>
           </div>
-          <div className="w-20"></div>
-          <div>
-            <p className="text-sm md:text-base text-gray-600 text-center">
-              ग्रामपंचायत तपासणी फॉर्म / Grampanchayat Inspection Form
-            </p>
-          </div>
+
+          <p className="text-base md:text-lg text-gray-600 text-center font-medium">
+            ग्राम पंचायत निरीक्षण प्रपत्र भरा
+          </p>
         </div>
 
         {/* Form Content */}
-        <div className="space-y-8">
-          {/* Basic Information - Complete */}
-          {renderBasicInformation()}
-          
-          {/* Location Section - Added after Basic Information */}
-          {renderLocationSection()}
+        <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
+          <div style={{ fontFamily: 'Arial, sans-serif', direction: 'ltr' }}>
+            <h1 style={{ textAlign: 'center', color: '#1f2937', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>परिशिष्ट-चार</h1>
+            <p style={{ textAlign: 'center', fontWeight: 'bold', color: '#374151' }}>(नियम 80 पहा)</p>
+            <p style={{ textAlign: 'center', fontWeight: 'bold', color: '#374151', marginBottom: '2rem' }}>(ख)ग्राम पंचायतांची सर्वसाधारण तपासणीचा नमुना</p>
 
-          {/* Photo Upload Section */}
-          {renderPhotoUploadSection()}
+            {/* Basic Information Section */}
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <FileText className="w-6 h-6 text-blue-600" />
+                मूळ माहिती
+              </h2>
 
-          {/* Submit Buttons */}
-          {!isViewMode && (
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <button
-                onClick={() => handleSubmit(true)}
-                disabled={isLoading}
-                className="px-8 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
-              >
-                {isLoading ? 'साठवत आहे...' : 'ड्राफ्ट म्हणून साठवा / Save as Draft'}
-                <Save className="h-5 w-5 inline ml-2" />
-              </button>
-              <button
-                onClick={() => handleSubmit(false)}
-                disabled={isLoading}
-                className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-              >
-                {isLoading ? 'सबमिट करत आहे...' : 'सबमिट करा / Submit'}
-                <Send className="h-5 w-5 inline ml-2" />
-              </button>
+              <ol style={{ marginLeft: '20px', lineHeight: '2.5' }}>
+                <li className="mb-4">
+                  <label className="font-semibold text-gray-700">ग्राम पंचायतिचे नांव:</label>
+                  <input
+                    type="text"
+                    value={gpName}
+                    onChange={(e) => setGpName(e.target.value)}
+                    className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+                    placeholder="ग्राम पंचायतिचे नांव"
+                  />
+                  <label className="ml-4 font-semibold text-gray-700">पंचायत समिती:</label>
+                  <input
+                    type="text"
+                    value={psName}
+                    onChange={(e) => setPsName(e.target.value)}
+                    className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+                    placeholder="पंचायत समिती"
+                  />
+                </li>
+                <li className="mb-4">
+                  <label className="font-semibold text-gray-700">(क) सर्वसाधारण तपासणीची तारीख:</label>
+                  <input
+                    type="date"
+                    value={inspectionDate}
+                    onChange={(e) => setInspectionDate(e.target.value)}
+                    className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </li>
+                <li className="mb-4">
+                  <label className="font-semibold text-gray-700">(ख) सर्वसाधारण तपासणीचे ठिकाण:</label>
+                  <input
+                    type="text"
+                    value={inspectionPlace}
+                    onChange={(e) => setInspectionPlace(e.target.value)}
+                    className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-80"
+                    placeholder="तपासणीचे ठिकाण"
+                  />
+                </li>
+                <li className="mb-4">
+                  <label className="font-semibold text-gray-700">तपासणी अधिकारीाचे नांव व हुद्दा:</label>
+                  <input
+                    type="text"
+                    value={officerName}
+                    onChange={(e) => setOfficerName(e.target.value)}
+                    className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-56"
+                    placeholder="अधिकारीाचे नांव"
+                  />
+                  <span className="mx-2 text-gray-500">/</span>
+                  <input
+                    type="text"
+                    value={officerPost}
+                    onChange={(e) => setOfficerPost(e.target.value)}
+                    className="px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-56"
+                    placeholder="हुद्दा"
+                  />
+                </li>
+                <li className="mb-4">
+                  <label className="font-semibold text-gray-700">सचिवाचे नांव व तो सदस्य पंचायतीत केलेला पासून काम करीत आहे:</label>
+                  <input
+                    type="text"
+                    value={secretaryName}
+                    onChange={(e) => setSecretaryName(e.target.value)}
+                    className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-56"
+                    placeholder="सचिवाचे नांव"
+                  />
+                  <span className="mx-2 text-gray-500">/</span>
+                  <input
+                    type="text"
+                    value={secretaryTenure}
+                    onChange={(e) => setSecretaryTenure(e.target.value)}
+                    className="px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-56"
+                    placeholder="कार्यकाळ"
+                  />
+                </li>
+              </ol>
             </div>
-          )}
 
-          {isViewMode && (
-            <div className="text-center mt-8 p-6 bg-blue-50 rounded-lg">
-              <FileText className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-              <p className="text-gray-700">हा दृश्य मोड आहे. संपादन करण्यासाठी संपादन मोड वापरा / This is view mode. Use edit mode to make changes.</p>
+            {/* Location Section - Added After Basic Information */}
+            <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg mb-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <MapPin className="w-6 h-6 text-green-600" />
+                स्थान माहिती
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    स्थानाचे नाव
+                  </label>
+                  <input
+                    type="text"
+                    value={inspectionData.location_name || gpName}
+                    onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="स्थानाचे नाव"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    तारीख
+                  </label>
+                  <input
+                    type="date"
+                    value={inspectionData.planned_date || ''}
+                    onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={getCurrentLocation}
+                disabled={isGettingLocation}
+                className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 px-6 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 flex items-center justify-center gap-3 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg mb-4"
+              >
+                <MapPin className="w-6 h-6" />
+                {isGettingLocation ? 'स्थान मिळवत आहे...' : 'GPS स्थान मिळवा'}
+              </button>
+
+              {inspectionData.latitude && (
+                <div className="p-4 bg-white border-2 border-green-300 rounded-lg shadow-sm">
+                  <p className="text-sm text-green-800">
+                    <strong className="text-lg">स्थान कॅप्चर केले:</strong><br />
+                    <span className="inline-block mt-2">
+                      <strong>अक्षांश:</strong> {inspectionData.latitude.toFixed(6)}<br />
+                      <strong>रेखांश:</strong> {inspectionData.longitude?.toFixed(6)}<br />
+                      <strong>अचूकता:</strong> {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                    </span>
+                  </p>
+                </div>
+              )}
             </div>
-          )}
+
+            {/* Meeting Information */}
+            <div className="bg-purple-50 border-l-4 border-purple-500 p-6 rounded-lg mb-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <Users className="w-6 h-6 text-purple-600" />
+                सभा माहिती
+              </h2>
+
+              <ol start={6} style={{ marginLeft: '20px', lineHeight: '2.5' }}>
+                <li className="mb-4">
+                  <label className="font-semibold text-gray-700">मासिक सभा नियमांनुसार नियमितपणे होतात काय ?</label>
+                  <div className="ml-6 mt-2 space-x-6">
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name="monthlyMeetings"
+                        value="होय"
+                        checked={monthlyMeetings === 'होय'}
+                        onChange={(e) => setMonthlyMeetings(e.target.value)}
+                        className="w-5 h-5 text-purple-600 focus:ring-purple-500"
+                      />
+                      <span className="ml-2 text-gray-800 font-medium">होय</span>
+                    </label>
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name="monthlyMeetings"
+                        value="नाही"
+                        checked={monthlyMeetings === 'नाही'}
+                        onChange={(e) => setMonthlyMeetings(e.target.value)}
+                        className="w-5 h-5 text-purple-600 focus:ring-purple-500"
+                      />
+                      <span className="ml-2 text-gray-800 font-medium">नाही</span>
+                    </label>
+                  </div>
+                </li>
+                <ul style={{ marginLeft: '20px' }}>
+                  <li className="mb-4">
+                    <label className="font-semibold text-gray-700">सभेची कार्यसूची व सभेची नोंदवही ईत्यादी अद्यावत आहे काय ?</label>
+                    <div className="ml-6 mt-2 space-x-6">
+                      <label className="inline-flex items-center cursor-pointer">
+                        <input
+                          type="radio"
+                          name="agendaUpToDate"
+                          value="होय"
+                          checked={agendaUpToDate === 'होय'}
+                          onChange={(e) => setAgendaUpToDate(e.target.value)}
+                          className="w-5 h-5 text-purple-600 focus:ring-purple-500"
+                        />
+                        <span className="ml-2 text-gray-800 font-medium">होय</span>
+                      </label>
+                      <label className="inline-flex items-center cursor-pointer">
+                        <input
+                          type="radio"
+                          name="agendaUpToDate"
+                          value="नाही"
+                          checked={agendaUpToDate === 'नाही'}
+                          onChange={(e) => setAgendaUpToDate(e.target.value)}
+                          className="w-5 h-5 text-purple-600 focus:ring-purple-500"
+                        />
+                        <span className="ml-2 text-gray-800 font-medium">नाही</span>
+                      </label>
+                    </div>
+                  </li>
+                </ul>
+              </ol>
+            </div>
+
+            <div className="overflow-x-auto mb-6">
+              <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+                <thead>
+                  <tr className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                    <th className="px-4 py-3 text-center border border-blue-500">अ.क्र.</th>
+                    <th className="px-4 py-3 text-center border border-blue-500">नोंदवहीचे नाव</th>
+                    <th className="px-4 py-3 text-center border border-blue-500">तपासणीच्या तारखेला शिल्लक</th>
+                    <th className="px-4 py-3 text-center border border-blue-500">बँकेतिल शिल्लक</th>
+                    <th className="px-4 py-3 text-center border border-blue-500">पोस्टातिल शिल्लक</th>
+                    <th className="px-4 py-3 text-center border border-blue-500">हाती असलेली शिल्लक</th>
+                    <th className="px-4 py-3 text-center border border-blue-500">चेक</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">1</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">ग्रामनिधी</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">2</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">पाणी पुरवठा</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="overflow-x-auto mb-6">
+              <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+                <thead>
+                  <tr className="bg-gradient-to-r from-teal-600 to-teal-700 text-white">
+                    <th colSpan={7} className="px-4 py-3 text-center border border-teal-500 text-lg font-bold">(7) रोकड वहीचा तपशील</th>
+                  </tr>
+                  <tr className="bg-teal-100">
+                    <th className="px-4 py-3 text-center border border-gray-300">अ.क्र.</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">नोंदवहीचे नाव</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">तपासणीच्या तारीखेला शिल्लक</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">बँकेतिल शिल्लक</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">पोस्टातिल शिल्लक</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">हाती असलेली शिल्लक</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">चेक</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["1", "ग्रामनिधी"],
+                    ["2", "पाणी पुरवठा"],
+                    ["3", "14 वा वित्त आयोग"],
+                    ["4", "इं.गा.यो."],
+                    ["5", "अ.जा.विकास"],
+                    ["6", "मजगारोहयो"],
+                    ["7", "ठक्कर बाप्पा"],
+                    ["8", "ग्रामकोष पैसा"],
+                    ["9", "नागरी सुविधा"],
+                    ["10", "दलित वस्ती विकास"],
+                    ["11", "तंटा मुक्त योजना"],
+                    ["12", "जनसुविधा"],
+                    ["13", "पायका"],
+                    ["14", "प.सं.योजना"],
+                    ["15", "SBM"],
+                    ["16", "तीर्थक्षेत्र विकास निधी"],
+                    ["17", "अल्पसंख्यांक विकास निधी"]
+                  ].map((row, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50 hover:bg-gray-100' : 'bg-white hover:bg-gray-50'}>
+                      <td className="px-4 py-3 text-center border border-gray-300">{row[0]}</td>
+                      <td className="px-4 py-3 border border-gray-300 font-medium">{row[1]}</td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-teal-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-teal-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-teal-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-teal-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-teal-500 focus:outline-none" /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg mb-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">(8)(क) कर आकारणी नोंदवही(नमुना 8) :- नाही</h3>
+              <p className="mb-3 text-gray-700">1.कराच्या मागणीचे नोंदणी पुस्तक (नमुना 9):-</p>
+              <p className="mb-4 text-gray-700">
+                2.कराची पावती (नमुना 10):-हे अद्यावत आहे काय ?
+                <span className="ml-6 space-x-6">
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name="receiptUpToDate"
+                      value="होय"
+                      checked={receiptUpToDate === 'होय'}
+                      onChange={(e) => setReceiptUpToDate(e.target.value)}
+                      className="w-5 h-5 text-yellow-600 focus:ring-yellow-500"
+                    />
+                    <span className="ml-2 text-gray-800 font-medium">होय</span>
+                  </label>
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name="receiptUpToDate"
+                      value="नाही"
+                      checked={receiptUpToDate === 'नाही'}
+                      onChange={(e) => setReceiptUpToDate(e.target.value)}
+                      className="w-5 h-5 text-yellow-600 focus:ring-yellow-500"
+                    />
+                    <span className="ml-2 text-gray-800 font-medium">नाही</span>
+                  </label>
+                </span>
+              </p>
+              <p className="mb-3 text-gray-700">(ख) मागील फेर आकारणी केलेली झाली ? दिनांक
+                <input type="date" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" />
+                / / ठराव क्रमांक -
+                <input
+                  type="text"
+                  value={resolutionNo}
+                  onChange={(e) => setResolutionNo(e.target.value)}
+                  className="ml-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 w-40"
+                />
+              </p>
+              <p className="mb-3 text-gray-700">नाही</p>
+              <p className="mb-3 text-gray-700">(ग) चार वर्षे पूर्ण झालेली असल्यास ,नटल्याने फेर आकारणी करण्यासाठी कार्यवाही चालू आहे किंवा नाही ?</p>
+              <div className="ml-6 space-x-6">
+                <label className="inline-flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="reassessmentAction"
+                    value="होय"
+                    checked={reassessmentAction === 'होय'}
+                    onChange={(e) => setReassessmentAction(e.target.value)}
+                    className="w-5 h-5 text-yellow-600 focus:ring-yellow-500"
+                  />
+                  <span className="ml-2 text-gray-800 font-medium">होय</span>
+                </label>
+                <label className="inline-flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="reassessmentAction"
+                    value="नाही"
+                    checked={reassessmentAction === 'नाही'}
+                    onChange={(e) => setReassessmentAction(e.target.value)}
+                    className="w-5 h-5 text-yellow-600 focus:ring-yellow-500"
+                  />
+                  <span className="ml-2 text-gray-800 font-medium">नाही</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="bg-pink-50 border-l-4 border-pink-500 p-6 rounded-lg mb-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">(9) तपासणी तारखेस कर वसुलीची प्रगती खालीलप्रमाणे आहे :-</h3>
+              <ul style={{ marginLeft: '20px', lineHeight: '2.5' }}>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(1) मागील येणे रक्कम :- </label>
+                  गृहकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                  पाणीकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(2) चालू वर्षात मागणी :- </label>
+                  गृहकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                  पाणीकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(3) एकुण मागणी :- </label>
+                  गृहकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                  पाणीकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(4) एकुण वसूली :- </label>
+                  गृहकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                  पाणीकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(5) शिल्लक वसूली :- </label>
+                  गृहकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                  पाणीकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(6) टक्केवारी :- </label>
+                  गृहकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                  पाणीकर- <input type="number" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-32" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(7) शेरा :- </label>
+                  <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 w-96" />
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-lg mb-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">(10) मागास वर्गीयाकरीता राखून ठेवलेल्या 15% निधीच्या खर्चाचा तपशील:-</h3>
+              <ul style={{ marginLeft: '20px', lineHeight: '2.5' }}>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(1) ग्राम पंचायतीचे एकुण उत्पन्न :- </label>
+                  <input type="number" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(2) 15% रक्कम :- </label>
+                  <input type="number" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(3) मागील अनुशेष </label>
+                  <input type="number" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(4) करावयाचा एकुण खर्च </label>
+                  <input type="number" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(5) तपासणीत्या दिनांक पर्यंत झालेला खर्च: </label>
+                  <input type="number" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48" />
+                </li>
+                <li className="mb-3">
+                  <label className="font-semibold text-gray-700">(6) शिल्लक खर्च </label>
+                  <input type="number" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48" />
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-orange-50 border-l-4 border-orange-500 p-6 rounded-lg mb-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-3">(7) सूचना-</h3>
+              <h3 className="text-lg font-bold text-gray-800 mb-4">(11) आर्थिक व्यवहारात निर्देशानुसार आलेल्या नियमबाह्यता -</h3>
+              <p className="mb-4 text-gray-700">
+                (क) कोणत्याही चालू खरेदी करणाऱ्यापूर्वी अंदाजपत्रकात योग्य तरतूद केली आहे काय ?
+                <span className="ml-6 space-x-6">
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input type="radio" name="budgetProvision" value="होय" className="w-5 h-5 text-orange-600 focus:ring-orange-500" />
+                    <span className="ml-2 text-gray-800 font-medium">होय</span>
+                  </label>
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input type="radio" name="budgetProvision" value="नाही" className="w-5 h-5 text-orange-600 focus:ring-orange-500" />
+                    <span className="ml-2 text-gray-800 font-medium">नाही</span>
+                  </label>
+                </span>
+              </p>
+              <p className="mb-4 text-gray-700">(ख) ग्राम पंचायत खरेदीसाठी मान्यता दिली आहे काय ? ठराव क्र.
+                <input type="text" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 w-32" />
+                दि.
+                <input type="date" className="mx-2 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                /
+              </p>
+              <p className="mb-4 text-gray-700">(ग) खरेदी करण्यासाठी नियमप्रमाणे दरपत्रके मागविली होती काय ?
+                <span className="ml-6 space-x-6">
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input type="radio" name="tendersCalled" value="होय" className="w-5 h-5 text-orange-600 focus:ring-orange-500" />
+                    <span className="ml-2 text-gray-800 font-medium">होय</span>
+                  </label>
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input type="radio" name="tendersCalled" value="नाही" className="w-5 h-5 text-orange-600 focus:ring-orange-500" />
+                    <span className="ml-2 text-gray-800 font-medium">नाही</span>
+                  </label>
+                </span>
+              </p>
+              <p className="mb-4 text-gray-700">(घ) खरेदी केलेल्या साहित्याचा नमुना 9,15 व 16 मधील नोंदवहीत नोंदी घेण्यात आल्या आहेत काय ?</p>
+              <div className="ml-6 space-x-6">
+                <label className="inline-flex items-center cursor-pointer">
+                  <input type="radio" name="entriesMade" value="होय" className="w-5 h-5 text-orange-600 focus:ring-orange-500" />
+                  <span className="ml-2 text-gray-800 font-medium">होय</span>
+                </label>
+                <label className="inline-flex items-center cursor-pointer">
+                  <input type="radio" name="entriesMade" value="नाही" className="w-5 h-5 text-orange-600 focus:ring-orange-500" />
+                  <span className="ml-2 text-gray-800 font-medium">नाही</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 border-l-4 border-gray-500 p-6 rounded-lg mb-6">
+              <p className="text-gray-700 font-semibold mb-4">(12) ग्राम पंचायताने स्वतःच्या निधीतून किंवा शासकीय/जिल्हा परिषद योजनेंतर्गत हात घेतलेल्या कामांचा तपशील-</p>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden mb-4">
+                  <thead>
+                    <tr className="bg-gradient-to-r from-gray-600 to-gray-700 text-white">
+                      <th className="px-4 py-3 text-center border border-gray-500">अ.क्र.</th>
+                      <th className="px-4 py-3 text-center border border-gray-500">योजनेचे नांव</th>
+                      <th className="px-4 py-3 text-center border border-gray-500">कामाचा प्रकार</th>
+                      <th className="px-4 py-3 text-center border border-gray-500">अंदाजित रक्कम</th>
+                      <th className="px-4 py-3 text-center border border-gray-500">मिळालेले अनुदान</th>
+                      <th className="px-4 py-3 text-center border border-gray-500">झालेला खर्च</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-center border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-gray-500 focus:outline-none text-center" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-gray-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-gray-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-gray-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-gray-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-gray-500 focus:outline-none" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+                  <thead>
+                    <tr className="bg-gradient-to-r from-gray-600 to-gray-700 text-white">
+                      <th className="px-4 py-3 text-center border border-gray-500">काम सुरु झाल्याची तारीख</th>
+                      <th className="px-4 py-3 text-center border border-gray-500">काम पूर्ण झाल्याची तारीख</th>
+                      <th className="px-4 py-3 text-center border border-gray-500">प्रगतीवर असलेल्या कामाची सद्य:स्थिती</th>
+                      <th className="px-4 py-3 text-center border border-gray-500">पूर्णत्वाचे प्रमाणपत्र प्राप्त केले किंवा नाही</th>
+                      <th className="px-4 py-3 text-center border border-gray-500">शेरा</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 border border-gray-300"><input type="date" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-gray-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="date" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-gray-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-gray-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300">
+                        <div className="space-x-4">
+                          <label className="inline-flex items-center"><input type="radio" name="certificate1" value="होय" className="w-4 h-4 text-gray-600" /> <span className="ml-1">होय</span></label>
+                          <label className="inline-flex items-center"><input type="radio" name="certificate1" value="नाही" className="w-4 h-4 text-gray-600" /> <span className="ml-1">नाही</span></label>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-gray-500 focus:outline-none" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="bg-cyan-50 border-l-4 border-cyan-500 p-6 rounded-lg mb-6">
+              <p className="text-gray-700 font-semibold mb-4">(13) ग्राम पंचायतांनी इतर योजनामध्ये केलेली प्रगती</p>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+                  <thead>
+                    <tr className="bg-gradient-to-r from-cyan-600 to-cyan-700 text-white">
+                      <th className="px-4 py-3 text-center border border-cyan-500">अ.क्र.</th>
+                      <th className="px-4 py-3 text-center border border-cyan-500">योजनेचे नाव</th>
+                      <th className="px-4 py-3 text-center border border-cyan-500">दिलेली उद्दिष्टे</th>
+                      <th className="px-4 py-3 text-center border border-cyan-500">तपासणीच्या दिनांकास</th>
+                      <th className="px-4 py-3 text-center border border-cyan-500">शेरा</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-center border border-gray-300">1</td>
+                      <td className="px-4 py-3 border border-gray-300 font-medium">एगाविका.</td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-center border border-gray-300">2</td>
+                      <td className="px-4 py-3 border border-gray-300 font-medium">बॉयोगॅस</td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-center border border-gray-300">3</td>
+                      <td className="px-4 py-3 border border-gray-300 font-medium">निर्धूर चुल</td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-center border border-gray-300">4</td>
+                      <td className="px-4 py-3 border border-gray-300 font-medium">कुंटुंब कल्याण</td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-center border border-gray-300">5</td>
+                      <td className="px-4 py-3 border border-gray-300 font-medium">अल्पवचत</td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-center border border-gray-300">6</td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-center border border-gray-300">7</td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                      <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-cyan-500 focus:outline-none" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto mb-6">
+              <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+                <thead>
+                  <tr className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white">
+                    <th colSpan={6} className="px-4 py-3 text-center border border-emerald-500 text-lg font-bold">(14) 14 वा वित्त आयोगामधून हाती घेतलेली कामे व त्याची प्रगती .</th>
+                  </tr>
+                  <tr className="bg-emerald-100">
+                    <th className="px-4 py-3 text-center border border-gray-300">अ. क्र.</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">योजनेचे नाव</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">कामाचा प्रकार</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">अंदाजित रक्कम</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">मिळालेले अनुदान</th>
+                    <th className="px-4 py-3 text-center border border-gray-300">झालेला खर्च</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">1</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">14 वा वित्त आयोग</td>
+                    <td className="px-4 py-3 border border-gray-300">एल.ई.डी.लाईट खरेदी</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">2</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">कचरा कुंडी</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">3</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">फर्निचर</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">4</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">टि.व्हि.संच खरेदी</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">5</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">आपले सरकार सेवा केंद्र खर्च</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">6</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">वाटर मिटर</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">7</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">सीसीरोड</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">8</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">आपले सरकार सेवा केंद्र खर्च</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">9</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">फॉगिंग मशीन</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">10</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">ग्रांपभवन</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-center border border-gray-300">11</td>
+                    <td className="px-4 py-3 border border-gray-300 font-medium">कंप्युटर</td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="text" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                    <td className="px-4 py-3 border border-gray-300"><input type="number" className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-500 focus:outline-none" /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg mb-6">
+              <h1 className="text-xl font-bold text-gray-900 mb-4 text-center">तपासणी अधिकार्‍याचा अभिप्राय</h1>
+              <div className="space-y-3">
+                <p className="text-gray-700">1) नमुना - - - - -  अपूर्ण आहेत. <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-96" /></p>
+                <p className="text-gray-700">2) - ----- . <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-96" /></p>
+                <br />
+                <p className="text-gray-700">3) --- . <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-96" /></p>
+                <p className="text-gray-700">4) --- . <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-96" /></p>
+                <p className="text-gray-700">5) --- . <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-96" /></p>
+                <p className="text-gray-700">6) --- . <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-96" /></p>
+                <p className="text-gray-700">7) --- . <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-96" /></p>
+                <p className="text-gray-700">8) --- . <input type="text" className="ml-3 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-96" /></p>
+              </div>
+            </div>
+
+            {/* Photo Upload Section */}
+            <div className="bg-violet-50 border-l-4 border-violet-500 p-6 rounded-lg mb-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <Camera className="w-6 h-6 text-violet-600" />
+                फोटो अपलोड
+              </h3>
+
+              <div>
+                <label className="block mb-3">
+                  <span className="sr-only">Choose photos</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="block w-full text-sm text-gray-500
+                      file:mr-4 file:py-3 file:px-6
+                      file:rounded-lg file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-violet-600 file:text-white
+                      hover:file:bg-violet-700
+                      file:cursor-pointer cursor-pointer
+                      file:transition-colors"
+                  />
+                </label>
+
+                {uploadedPhotos.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+                    {uploadedPhotos.map((file, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-40 object-cover rounded-lg shadow-md"
+                        />
+                        <button
+                          onClick={() => removePhoto(index)}
+                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold shadow-lg transition-colors"
+                        >
+                          ×
+                        </button>
+                        <p className="text-xs text-gray-600 truncate mt-2 px-1">{file.name}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pb-8">
+          <button
+            onClick={() => handleSubmit(true)}
+            disabled={isLoading}
+            className="px-10 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg flex items-center justify-center gap-2"
+          >
+            <Save className="w-5 h-5" />
+            {isLoading ? 'सेव्ह करत आहे...' : 'मसुदा सेव्ह करा'}
+          </button>
+
+          <button
+            onClick={() => handleSubmit(false)}
+            disabled={isLoading}
+            className="px-10 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg flex items-center justify-center gap-2"
+          >
+            <Send className="w-5 h-5" />
+            {isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}
+          </button>
         </div>
       </div>
     </div>
