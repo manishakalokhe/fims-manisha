@@ -225,77 +225,62 @@ export const GrampanchayatInspectionForm: React.FC = () => {
             </div>
 
             {/* Location Section - Added After Basic Information */}
-            const renderLocationSection = () => (
-    <section className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
-        <div className="flex items-center text-white">
-          <MapPin className="w-8 h-8 mr-4" />
-          <h3 className="text-2xl font-bold">स्थानिक माहिती / Location Information</h3>
-        </div>
-      </div>
-      <div className="p-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.locationName')}</label>
-            <input
-              type="text"
-              value={inspectionData.locationname || gpName}
-              onChange={(e) => setInspectionData(prev => ({ ...prev, locationname: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 disabled:opacity-50"
-              placeholder={t('fims.enterLocationName')}
-              required
-              disabled={isViewMode}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">{t('fims.plannedDate')}</label>
-            <input
-              type="date"
-              value={inspectionData.planneddate}
-              onChange={(e) => setInspectionData(prev => ({ ...prev, planneddate: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
-              disabled={isViewMode}
-            />
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">GPS स्थान</label>
-            {!isViewMode && (
+            <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg mb-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <MapPin className="w-6 h-6 text-green-600" />
+                स्थान माहिती
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    स्थानाचे नाव
+                  </label>
+                  <input
+                    type="text"
+                    value={inspectionData.location_name || gpName}
+                    onChange={(e) => setInspectionData(prev => ({...prev, location_name: e.target.value}))}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="स्थानाचे नाव"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    तारीख
+                  </label>
+                  <input
+                    type="date"
+                    value={inspectionData.planned_date || ''}
+                    onChange={(e) => setInspectionData(prev => ({...prev, planned_date: e.target.value}))}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
               <button
-                type="button"
                 onClick={getCurrentLocation}
                 disabled={isGettingLocation}
-                className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+                className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 px-6 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 flex items-center justify-center gap-3 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg mb-4"
               >
-                <MapPin className="h-4 w-4" />
-                <span>{isGettingLocation ? t('fims.gettingLocation') : t('fims.getCurrentLocation')}</span>
+                <MapPin className="w-6 h-6" />
+                {isGettingLocation ? 'स्थान मिळवत आहे...' : 'GPS स्थान मिळवा'}
               </button>
-            )}
-            {inspectionData.latitude && inspectionData.longitude && (
-              <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-800 font-medium">{t('fims.locationCaptured')}</p>
-                <p className="text-xs text-green-600">
-                  {t('fims.latitude')}: {inspectionData.latitude?.toFixed(6)}<br />
-                  {t('fims.longitude')}: {inspectionData.longitude?.toFixed(6)}<br />
-                  {t('fims.accuracy')}: {inspectionData.locationaccuracy ? Math.round(inspectionData.locationaccuracy) + ' m' : 'NA'}
-                </p>
-              </div>
-            )}
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-xs font-medium text-gray-700 mb-1">स्थान ओळखले गेले</label>
-            <input
-              type="text"
-              value={inspectionData.locationdetected}
-              onChange={(e) => setInspectionData(prev => ({ ...prev, locationdetected: e.target.value }))}
-              className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent text-xs placeholder-gray-500"
-              placeholder="GPS"
-              readOnly={isViewMode}
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+
+              {inspectionData.latitude && (
+                <div className="p-4 bg-white border-2 border-green-300 rounded-lg shadow-sm">
+                  <p className="text-sm text-green-800">
+                    <strong className="text-lg">स्थान कॅप्चर केले:</strong><br />
+                    <span className="inline-block mt-2">
+                      <strong>अक्षांश:</strong> {inspectionData.latitude.toFixed(6)}<br />
+                      <strong>रेखांश:</strong> {inspectionData.longitude?.toFixed(6)}<br />
+                      <strong>अचूकता:</strong> {inspectionData.location_accuracy ? Math.round(inspectionData.location_accuracy) + 'm' : 'N/A'}
+                    </span>
+                  </p>
+                </div>
+              )}
+            </div>
+            
             {/* Meeting Information */}
             <div className="bg-purple-50 border-l-4 border-purple-500 p-6 rounded-lg mb-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
