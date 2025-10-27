@@ -1037,7 +1037,5 @@ const uploadPhotosToSupabase = async (inspectionId: string) => {
             {isLoading ? 'सबमिट करत आहे...' : 'तपासणी सबमिट करा'}
           </button>
         </div>
-      </div>
-    </div>
   );
 };
