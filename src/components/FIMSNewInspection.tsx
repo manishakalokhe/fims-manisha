@@ -370,6 +370,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             { key: 'mumbai_nyayalay', title: 'मुंबई न्यायालय तपासणी प्रपत्र', subtitle: 'Mumbai High Court School Inspection Form', color: 'red', active: true },
             { key: 'pashutapasani', title: 'पशुवैद्यकीय संस्थांचे तांत्रिक निरीक्षण', subtitle: 'Veterinary Institution Technical Inspection Form', color: 'red', active: true },
       { key: 'gram_panchayat', title: 'ग्राम पंचायतांची तपासणीचा नमुना', subtitle: 'Grampanchayat Inspection Form', color: 'purple', active: true },
+      { key: 'bhet_form', title: 'भेट प्रपत्र', subtitle: 'Bhet Form', color: 'purple', active: true },
          //   { key: 'form_10', title: 'Form 10 Title', subtitle: 'Form 10 Description', color: 'cyan' },
          //   { key: 'form_11', title: 'Form 11 Title', subtitle: 'Form 11 Description', color: 'violet' },
          //   { key: 'form_12', title: 'Form 12 Title', subtitle: 'Form 12 Description', color: 'lime' },
@@ -455,6 +456,13 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
                     <p>• सभेची कार्यसूची व सभेची नोंदवही</p>
                     <p>• मासिक सभा</p>
                     <p>• सर्वसाधारण तपासणीचे ठिकाण</p>
+                    </>
+              ) : form.key === 'bhet_form' ? (
+                  <>
+                    <p>• कृती आराखडा</p>
+                    <p>• संक्षिप्त कृती आराखडा</p>
+                    <p>• तपशील</p>
+                    <p>• सहकार्य</p>
                     </>
                 ) : (
                   <></>
