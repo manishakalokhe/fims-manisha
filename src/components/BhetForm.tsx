@@ -9,7 +9,6 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
-
 interface BhetFormProps {
   user: SupabaseUser;
   onBack: () => void;
