@@ -13,7 +13,7 @@ import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
 import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
 import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
 import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm.tsx';
-import { BhetForm } from './BhetForm.tsx';
+import { Bhetpraptra } from './BhetForm.tsx';
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
