@@ -56,6 +56,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       }
     }
   }, [editingInspection, categories]);
+  
   // Handle inspection type selection
   const handleInspectionTypeSelect = (type: string) => {
     setSelectedInspectionType(type);
