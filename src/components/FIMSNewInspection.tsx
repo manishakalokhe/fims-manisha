@@ -13,6 +13,7 @@ import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
 import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
 import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
 import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm.tsx';
+import { BhetForm } from './BhetForm.tsx';
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
@@ -205,6 +206,17 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       );
     }
 
+    if (selectedInspectionType === 'bhet_form') {
+      return (
+        <BhetForm
+          user={user}
+          onBack={handleBackToSelection}
+          categories={categories}
+          onInspectionCreated={onInspectionCreated}
+          editingInspection={editingInspection}
+        />
+      );
+    }
     return null;
   };
 
