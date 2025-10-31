@@ -590,7 +590,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
               <p className="text-orange-100 text-sm font-medium">{t('fims.pending')}</p>
               <p className="text-3xl font-bold">{getStatusCounts().pending}</p>
             </div>
-            <div className="bg-white/20 p-3 rounded-full">
+            <div className="bg-gray/20 p-3 rounded-full">
               <Clock className="h-8 w-8 text-black" />
             </div>
           </div>
