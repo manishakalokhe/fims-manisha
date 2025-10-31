@@ -572,7 +572,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
+        <div className="bg-gradient-to-br from-purple-400 to-red rose-400 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-green-100 text-sm font-medium">{t('fims.completed')}</p>
