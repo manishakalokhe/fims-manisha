@@ -411,7 +411,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
     switch (status) {
       case 'approved':
       case 'completed':
-        return 'bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300';
+        return 'bg-gradient-to-r from-red rose-100 to-purple-200 text-green-800 border border-green-300';
       case 'submitted':
       case 'under_review':
         return 'bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300';
