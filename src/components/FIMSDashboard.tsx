@@ -578,7 +578,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
               <p className="text-black-100 text-sm font-medium">{t('fims.completed')}</p>
               <p className="text-3xl font-bold">{getStatusCounts().completed}</p>
             </div>
-            <div className="bg-white/20 p-3 rounded-full">
+            <div className="rose red/20 p-3 rounded-full">
               <CheckCircle className="h-8 w-8 text-white" />
             </div>
           </div>
