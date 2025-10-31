@@ -12,8 +12,6 @@ import { RajyaGunwattaNirikshakTapasaniForm } from './RajyaGunwattaNirikshakTapa
 import { MahatmaGandhiRojgarHamiForm } from './MahatmaGandhiRojgarHamiForm';
 import { MumbaiNyayalayTapasaniForm } from './MumbaiNyayalayTapasaniForm';
 import { PahuvaidhakiyaTapasaniForm } from './PahuvaidhakiyaTapasaniForm.tsx';
-import { GrampanchayatInspectionForm } from './GrampanchayatInspectionForm.tsx';
-import { BhetForm } from './BhetForm.tsx';
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
@@ -56,7 +54,7 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       }
     }
   }, [editingInspection, categories]);
-  
+
   // Handle inspection type selection
   const handleInspectionTypeSelect = (type: string) => {
     setSelectedInspectionType(type);
@@ -194,29 +192,6 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
       );
     }
 
-    if (selectedInspectionType === 'gram_panchayat') {
-      return (
-        <GrampanchayatInspectionForm
-          user={user}
-          onBack={handleBackToSelection}
-          categories={categories}
-          onInspectionCreated={onInspectionCreated}
-          editingInspection={editingInspection}
-        />
-      );
-    }
-
-    if (selectedInspectionType === 'bhet_form') {
-      return (
-        <BhetForm
-          user={user}
-          onBack={handleBackToSelection}
-          categories={categories}
-          onInspectionCreated={onInspectionCreated}
-          editingInspection={editingInspection}
-        />
-      );
-    }
     return null;
   };
 
@@ -358,8 +333,11 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
                 <Plus className="h-5 w-5 text-white" />
               </div>
             </div>
-          </div>  
+          </div>
+
+        
           
+
           {/* Placeholder cards for the remaining 12 forms */}
           {[
             { key: 'bandhkam_vibhag1', title: 'बांधकाम विभाग प्रपत्र-1', subtitle: 'Construction Department Form-1', color: 'orange', active: true },
@@ -369,8 +347,6 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
             { key: 'mahatma_gandhi_rojgar_hami', title: 'महात्मा गांधी रोजगार हमी योजना', subtitle: 'MGNREGA Work Inspection Form', color: 'green', active: true },
             { key: 'mumbai_nyayalay', title: 'मुंबई न्यायालय तपासणी प्रपत्र', subtitle: 'Mumbai High Court School Inspection Form', color: 'red', active: true },
             { key: 'pashutapasani', title: 'पशुवैद्यकीय संस्थांचे तांत्रिक निरीक्षण', subtitle: 'Veterinary Institution Technical Inspection Form', color: 'red', active: true },
-      { key: 'gram_panchayat', title: 'ग्राम पंचायतांची तपासणीचा नमुना', subtitle: 'Grampanchayat Inspection Form', color: 'purple', active: true },
-      { key: 'bhet_form', title: 'भेट प्रपत्र', subtitle: 'Bhet Form', color: 'purple', active: true },
          //   { key: 'form_10', title: 'Form 10 Title', subtitle: 'Form 10 Description', color: 'cyan' },
          //   { key: 'form_11', title: 'Form 11 Title', subtitle: 'Form 11 Description', color: 'violet' },
          //   { key: 'form_12', title: 'Form 12 Title', subtitle: 'Form 12 Description', color: 'lime' },
@@ -448,21 +424,6 @@ export const FIMSNewInspection: React.FC<FIMSNewInspectionProps> = ({
                     <p>• कृत्रिम रेतन व गर्भधारणा तपासणी</p>
                     <p>• रोग माहिती व लसीकरण कार्यक्रम</p>
                     <p>• योजना प्रगती व तांत्रिक मूल्यांकन</p>
-                    </>
-              ) : form.key === 'gram_panchayat' ? (
-                  <>
-                    <p>• पंचायत समिती</p>
-                    <p>• तपासणी अधिकारीाचे नांव</p>
-                    <p>• सभेची कार्यसूची व सभेची नोंदवही</p>
-                    <p>• मासिक सभा</p>
-                    <p>• सर्वसाधारण तपासणीचे ठिकाण</p>
-                    </>
-              ) : form.key === 'bhet_form' ? (
-                  <>
-                    <p>• कृती आराखडा</p>
-                    <p>• संक्षिप्त कृती आराखडा</p>
-                    <p>• तपशील</p>
-                    <p>• सहकार्य</p>
                     </>
                 ) : (
                   <></>
