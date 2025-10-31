@@ -618,7 +618,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
         <div className={`grid grid-cols-1 ${userRole === 'developer' ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-4`}>
           <button
             onClick={() => setActiveTab('newInspection')}
-            className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white p-4 rounded-lg transition-all duration-200 flex items-center space-x-3 hover:shadow-lg hover:scale-105"
+            className="bg-gradient-to-r from-purple-600 to-red-500 hover:from-blue-700 hover:to-blue-600 text-white p-4 rounded-lg transition-all duration-200 flex items-center space-x-3 hover:shadow-lg hover:scale-105"
           >
             <Plus className="h-5 w-5" />
             <span className="font-medium">{t('fims.newInspection')}</span>
@@ -626,7 +626,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
 
           <button
             onClick={() => setActiveTab('inspections')}
-            className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white p-4 rounded-lg transition-all duration-200 flex items-center space-x-3 hover:shadow-lg hover:scale-105"
+            className="bg-gradient-to-r from-purple-600 to-red rose-500 hover:from-green-700 hover:to-green-600 text-white p-4 rounded-lg transition-all duration-200 flex items-center space-x-3 hover:shadow-lg hover:scale-105"
           >
             <FileText className="h-5 w-5" />
             <span className="font-medium">{t('fims.inspections')}</span>
