@@ -610,7 +610,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/30 rounded-xl shadow-lg border-2 border-blue-200 p-4 md:p-6">
+      <div className="bg-gradient-to-br from-purple via-blue-50/30 to-cyan-50/30 rounded-xl shadow-lg border-2 border-blue-200 p-4 md:p-6">
         <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-4 flex items-center">
           <Target className="h-6 w-6 mr-2 text-blue-600" />
           {t('fims.quickActions')}
