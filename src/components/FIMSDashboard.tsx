@@ -1248,7 +1248,7 @@ export const FIMSDashboard: React.FC<FIMSDashboardProps> = ({ user, onSignOut })
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
                     activeTab === 'newInspection'
                       ? 'bg-purple-300 text-purple-700'
-                      : 'text-gray-600 hover:text-purple-600 hover:bg-gray-50'
+                      : 'text-gray-600 hover:text-lavender-600 hover:bg-gray-50'
                   }`}
                 >
                   <Plus className="h-5 w-5" />
